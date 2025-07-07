@@ -3,99 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Napi Szó 2.0 - Szókereső Játék</title>
+    <title>Napi Szó - Dinamikus Szókereső</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS STÍLUSOK --- */
         :root {
-            --bg-color: #121213;
-            --text-color: #FFFFFF;
-            --border-color: #3a3a3c;
-            --absent-color: #3a3a3c;
-            --present-color: #b59f3b;
-            --correct-color: #538d4e;
-            --key-bg: #818384;
-            --key-text-color: #FFFFFF;
+            --bg-gradient-start: #2c3e50;
+            --bg-gradient-end: #1a252f;
+            --container-bg: #1e2b38;
+            --text-color: #ecf0f1;
+            --border-color-idle: #34495e;
+            --border-color-active: #95a5a6;
+            
+            --correct-color: #27ae60;
+            --present-color: #f39c12;
+            --absent-color: #34495e;
+            
+            --key-bg: #4a5568;
+            --key-text: #ffffff;
+            --font-title: 'Luckiest Guy', cursive;
+            --font-main: 'Roboto Mono', monospace;
         }
 
-        html {
-            height: -webkit-fill-available; /* iOS Safari magasság fix */
-        }
+        html { height: -webkit-fill-available; }
 
         body {
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
             color: var(--text-color);
-            font-family: 'Roboto Mono', monospace;
+            font-family: var(--font-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            /* iOS Safari magasság fix */
+            min-height: 100vh;
             min-height: -webkit-fill-available;
             margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
             -webkit-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            touch-action: manipulation; /* Dupla koppintás zoom kikapcsolása mobilon */
+            touch-action: manipulation;
         }
 
         #game-container {
+            background-color: var(--container-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             height: 100%;
+            max-height: 95vh;
             width: 100%;
-            max-width: 500px;
-            padding: 5px;
+            max-width: 600px;
+            padding: 20px;
             box-sizing: border-box;
         }
 
-        header {
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            width: 100%;
+        header { text-align: center; width: 100%; }
+        header h1 {
+            font-family: var(--font-title);
+            color: var(--text-color);
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
         }
 
-        header h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.2rem); letter-spacing: 0.1em; }
-        header p { margin-top: 5px; color: #a0a0a0; }
+        #info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        #category-display { font-weight: bold; }
+        #countdown-timer { font-family: var(--font-main); }
 
         #grid-container {
             display: grid;
             grid-template-rows: repeat(10, 1fr);
-            grid-gap: 5px;
+            gap: 5px;
             padding: 10px;
-            box-sizing: border-box;
-            width: 330px;
-            height: 400px;
-            flex-shrink: 0;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .grid-row { display: grid; grid-template-columns: repeat(6, 1fr); grid-gap: 5px; }
+        .grid-row { display: grid; gap: 5px; }
 
-        /* Új animációhoz szükséges stílusok */
-        .grid-cell {
-            position: relative;
-            perspective: 1000px;
-            transition: transform 0.2s;
-        }
-
+        .grid-cell { perspective: 1000px; }
         .cell-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            text-align: center;
             transition: transform 0.6s;
             transform-style: preserve-3d;
         }
-        
-        .grid-cell.flip .cell-inner {
-            transform: rotateY(180deg);
-        }
+        .grid-cell.flip .cell-inner { transform: rotateY(180deg); }
 
         .cell-face {
             position: absolute;
@@ -110,111 +122,90 @@
             font-weight: bold;
             text-transform: uppercase;
             box-sizing: border-box;
+            border-radius: 5px;
         }
-        
         .cell-front {
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--border-color-idle);
         }
-
         .grid-cell.filled .cell-front {
-            border-color: #565758;
+            border-color: var(--border-color-active);
             animation: pop 0.2s;
         }
-
         .cell-back {
-            color: var(--text-color);
+            color: var(--key-text);
             transform: rotateY(180deg);
-            border: 2px solid transparent;
         }
-
         .cell-back.correct { background-color: var(--correct-color); }
         .cell-back.present { background-color: var(--present-color); }
         .cell-back.absent  { background-color: var(--absent-color); }
 
-
         @keyframes pop {
-            0% { transform: scale(1); }
             50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
 
         #hint-container {
-            border: 1px dashed var(--border-color);
-            padding: 10px 15px;
-            margin: 15px 0;
-            border-radius: 8px;
+            border-top: 1px solid var(--border-color-idle);
+            padding: 15px;
+            margin-top: 15px;
             text-align: center;
+            width: 100%;
             min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 90%;
-            flex-grow: 1;
-            overflow-y: auto;
+            font-style: italic;
+            color: #bdc3c7;
         }
-
-        #hint-text { margin: 0; font-style: italic; color: #c0c0c0; }
 
         #keyboard-container {
             display: flex;
             flex-direction: column;
             gap: 8px;
             width: 100%;
-            padding: 0 5px 10px 5px;
-            box-sizing: border-box;
+            padding-top: 15px;
         }
-
         .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
-
         .key {
-            font-family: inherit;
+            font-family: var(--font-main);
             font-weight: bold;
             background-color: var(--key-bg);
-            color: var(--key-text-color);
+            color: var(--key-text);
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             height: 50px;
             flex: 1;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
-
-        .key:hover { background-color: #9d9fa1; }
-        .key.large { flex: 1.5; font-size: clamp(0.7rem, 2vw, 0.8rem); }
-        .key.correct { background-color: var(--correct-color); color: var(--text-color); }
-        .key.present { background-color: var(--present-color); color: var(--text-color); }
-        .key.absent  { background-color: var(--absent-color); color: var(--text-color); }
+        .key:active { transform: scale(0.95); }
+        .key.large { flex: 1.5; font-size: 0.8rem; }
+        .key.correct { background-color: var(--correct-color); }
+        .key.present { background-color: var(--present-color); }
+        .key.absent  { background-color: #2c3e50; opacity: 0.7; }
 
         #message-container {
             position: absolute;
-            top: 15%;
+            top: 20%;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #121213;
+            background-color: rgba(236, 240, 241, 0.98);
+            color: #2c3e50;
             padding: 15px 25px;
             border-radius: 8px;
             font-weight: bold;
-            z-index: 100;
+            z-index: 1000;
             opacity: 0;
-            transition: opacity 0.5s;
+            transition: opacity 0.5s, transform 0.5s;
             pointer-events: none;
             text-align: center;
         }
-
-        #message-container.show { opacity: 1; }
+        #message-container.show { opacity: 1; transform: translateX(-50%) translateY(-20px); }
         .row-shake { animation: shake 0.5s; }
-
         @keyframes shake {
-            10%, 90% { transform: translateX(-1px); }
-            20%, 80% { transform: translateX(2px); }
-            30%, 50%, 70% { transform: translateX(-4px); }
-            40%, 60% { transform: translateX(4px); }
+            10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(4px); }
+            30%, 50%, 70% { transform: translateX(-6px); } 40%, 60% { transform: translateX(6px); }
         }
     </style>
 </head>
@@ -223,7 +214,10 @@
     <div id="game-container">
         <header>
             <h1>Napi Szó</h1>
-            <p>Találd ki a mai 6 betűs szót!</p>
+            <div id="info-bar">
+                <span id="category-display">Kategória: ...</span>
+                <span id="countdown-timer">--:--:--</span>
+            </div>
         </header>
 
         <div id="message-container"></div>
@@ -237,303 +231,307 @@
     </div>
 
     <script>
-        // --- JÁTÉK LOGIKA (JAVASCRIPT) ---
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-            const wordsWithHints = [
-                // Eredeti szavak
-                { word: "ASZTAL", hints: ["Bútor.", "Általában négy lába van.", "Enni vagy dolgozni szoktunk rajta."] },
-                { word: "ISKOLA", hints: ["Épület.", "Gyerekek járnak ide.", "Tudást szereznek benne."] },
-                { word: "PALOTA", hints: ["Nagy, díszes épület.", "Régen uralkodók laktak benne.", "Gyakran van trónterme."] },
-                { word: "BARACK", hints: ["Gyümölcs.", "Lehet sárga vagy őszibarack.", "Szőrös a héja."] },
-                { word: "KALAND", hints: ["Élmény.", "Izgalmas és szokatlan.", "A hősök gyakran átélik."] },
-                { word: "KOVÁCS", hints: ["Szakma.", "Fémmel dolgozik.", "Üllőt és kalapácsot használ."] },
-                { word: "PÁLINKA", hints: ["Ital.", "Magyar hungarikum.", "Gyümölcsből erjesztik és főzik."] },
-                { word: "SZAPPAN", hints: ["Tisztálkodási szer.", "Vízzel habzik.", "Kézápolás elengedhetetlen kelléke."] },
-                { word: "TEKNŐS", hints: ["Állat.", "Páncélja van.", "Nagyon lassan mozog."] },
-                { word: "ABLAKO", hints: ["Épület része.", "Kilátást biztosít.", "Üvegből készül."] },
-                { word: "HARANG", hints: ["Tárgy.", "Hangot ad ki, ha megütik.", "Templomtoronyban található."] },
-                { word: "RADÍRO", hints: ["Iskolaszer.", "Hibajavításra használják.", "Eltünteti a grafitot."] },
-                { word: "VÁNDOR", hints: ["Személy.", "Sokat utazik.", "Nincs állandó otthona."] },
-                { word: "GOMBÓC", hints: ["Étel.", "Lehet édes vagy sós.", "Gyakran túróval vagy szilvával töltik."] },
-                { word: "SALÁTA", hints: ["Étel.", "Zöldségekből áll.", "Könnyű, egészséges köret vagy főétel."] },
-                { word: "RENDŐR", hints: ["Foglalkozás.", "A rendet és biztonságot felügyeli.", "Egyenruhát visel."] },
-                { word: "LEPKEF", hints: ["Élőlény.", "Színes szárnyai vannak.", "Hernyóból fejlődik ki."] },
-                { word: "PÉNZTÁ", hints: ["Hely.", "Itt fizetünk a boltban.", "Kasszás dolgozik benne."] },
-                { word: "FOGOLY", hints: ["Madár.", "Mezőkön él.", "Akit fogságban tartanak, szintén ez."] },
-                { word: "ORSZÁG", hints: ["Földrajzi egység.", "Saját kormánya és határai vannak.", "Például Magyarország."] },
-                
-                // +30 új szó
-                { word: "REPÜLŐ", hints: ["Jármű.", "A levegőben közlekedik.", "Szárnyai vannak és pilóta vezeti."] },
-                { word: "TÁNYÉR", hints: ["Eszköz.", "Ebből eszünk.", "Lehet lapos vagy mély."] },
-                { word: "FESTŐ", hints: ["Művész.", "Ecsetet és vásznat használ.", "Képeket alkot."] },
-                { word: "KERTÉSZ", hints: ["Szakma.", "Növényekkel foglalkozik.", "Gondozza a kerteket, parkokat."] },
-                { word: "POHÁR", hints: ["Tárgy.", "Ebből iszunk.", "Általában üvegből vagy műanyagból készül."] },
-                { word: "TAVASZ", hints: ["Évszak.", "A tél után következik.", "Rügyeznek a fák, nyílnak a virágok."] },
-                { word: "CIPŐS", hints: ["Bolt.", "Lábbeliket árulnak itt.", "Vagy egy szakma, aki készíti őket."] },
-                { word: "VÁROS", hints: ["Település.", "Nagyobb, mint egy falu.", "Sok utca és épület van benne."] },
-                { word: "KULACS", hints: ["Tárolóeszköz.", "Italt tartunk benne kiránduláskor.", "Segít, hogy ne legyünk szomjasak."] },
-                { word: "ZENÉSZ", hints: ["Foglalkozás.", "Hangszeren játszik.", "Koncerteken lép fel."] },
-                { word: "HINTAL", hints: ["Játékszer.", "Játszótereken található.", "Előre-hátra lehet rajta lengeni."] },
-                { word: "FELHŐS", hints: ["Időjárás.", "Az eget felhők borítják.", "Nem süt a nap."] },
-                { word: "HEGEDŰ", hints: ["Hangszer.", "Vonóval szólaltatják meg.", "Négy húrja van."] },
-                { word: "CSATOR", hints: ["Építmény.", "Vizet vezet el.", "Vagy TV-adást is jelenthet."] },
-                { word: "SZOBOR", hints: ["Műalkotás.", "Kőből, fémből vagy fából faragják.", "Emléket állít valaminek/valakinek."] },
-                { word: "MOTORO", hints: ["Jármű.", "Két kereke van.", "Bukósisak kell a vezetéséhez."] },
-                { word: "SZÍNHÁ", hints: ["Épület.", "Előadásokat tartanak benne.", "Vannak színészek és nézőtér."] },
-                { word: "PAPLAN", hints: ["Ágynemű.", "Ezzel takarózunk alvás közben.", "Melegen tart."] },
-                { word: "KÓRHÁZ", hints: ["Intézmény.", "Betegeket gyógyítanak itt.", "Orvosok és ápolók dolgoznak benne."] },
-                { word: "KÖNYVT", hints: ["Hely.", "Könyveket lehet innen kölcsönözni.", "Csendben kell lenni."] },
-                { word: "SPORTOL", hints: ["Cselekvés.", "Testmozgást végez.", "Lehet egyéni vagy csapatsport."] },
-                { word: "TÉRKÉP", hints: ["Eszköz.", "Segít a tájékozódásban.", "Utakat, városokat, országokat ábrázol."] },
-                { word: "CSOKOLÁ", hints: ["Édesség.", "Kakaóbabból készül.", "Lehet tej-, ét- vagy fehér."] },
-                { word: "EBÉDLŐ", hints: ["Helyiség.", "Itt zajlik a déli étkezés.", "Iskolákban, munkahelyeken gyakori."] },
-                { word: "SZEMÜV", hints: ["Eszköz.", "Segíti a látást.", "Két lencséből és egy keretből áll."] },
-                { word: "FAGYLA", hints: ["Édesség.", "Hideg, nyalni kell.", "Tölcsérben vagy kehelyben adják."] },
-                { word: "KEMENCE", hints: ["Sütőeszköz.", "Régen kenyeret sütöttek benne.", "Magas hőmérsékleten működik."] },
-                { word: "LÁMPÁS", hints: ["Világítóeszköz.", "Fényt ad a sötétben.", "Lehet vihar- vagy olaj- előtagja."] },
-                { word: "MANDULA", hints: ["Csonthéjas termés.", "Édességekhez használják.", "Vagy a torokban is van ilyen."] },
-                { word: "NARANC", hints: ["Gyümölcs.", "A színe is ez.", "Déligyümölcs, télen népszerű."] },
-            ];
+        const wordData = [
+            // Rövid szavak (3-4 betű)
+            { word: "HÁZ", category: "Épület", hints: ["Lakóhely.", "Lehet kertes vagy társas.", "Teteje és falai vannak."] },
+            { word: "NAP", category: "Fogalom", hints: ["Égitest.", "Meleget és fényt ad.", "Körülötte kering a Föld."] },
+            { word: "AUTÓ", category: "Jármű", hints: ["Négy kereke van.", "Motor hajtja.", "Utakon közlekedik."] },
+            { word: "FILM", category: "Művészet", hints: ["Mozgóképek sorozata.", "Moziban vagy TV-ben nézzük.", "Lehet dráma vagy vígjáték."] },
+            { word: "VÍZ", category: "Természet", hints: ["Folyadék.", "Az élet alapja.", "Képlete: H2O."] },
+
+            // Közepes szavak (5-7 betű)
+            { word: "ASZTAL", category: "Tárgy", hints: ["Bútor.", "Általában négy lába van.", "Enni vagy dolgozni szoktunk rajta."] },
+            { word: "ISKOLA", category: "Épület", hints: ["Oktatási intézmény.", "Gyerekek járnak ide.", "Tantárgyakat tanítanak benne."] },
+            { word: "BARACK", category: "Élőlény", hints: ["Gyümölcs.", "Lehet sárga vagy őszibarack.", "Szőrös a héja."] },
+            { word: "KALAND", category: "Fogalom", hints: ["Élmény.", "Izgalmas és szokatlan.", "A hősök gyakran átélik."] },
+            { word: "REPÜLŐ", category: "Jármű", hints: ["A levegőben közlekedik.", "Szárnyai vannak.", "Pilóta vezeti."] },
+            { word: "TÁNYÉR", category: "Tárgy", hints: ["Ebből eszünk.", "Lehet lapos vagy mély.", "Általában porcelánból készül."] },
+            { word: "FESTŐ", category: "Foglalkozás", hints: ["Művész.", "Ecsetet és vásznat használ.", "Képeket alkot."] },
+            { word: "KERTÉSZ", category: "Foglalkozás", hints: ["Növényekkel foglalkozik.", "Gondozza a kerteket.", "Metszőollót használ."] },
+            { word: "POHÁR", category: "Tárgy", hints: ["Ebből iszunk.", "Általában üvegből készül.", "Lehet talpas vagy sima."] },
+            { word: "TAVASZ", category: "Fogalom", hints: ["Évszak.", "A tél után következik.", "Rügyeznek a fák."] },
+            { word: "SZÍNHÁZ", category: "Épület", hints: ["Előadásokat tartanak benne.", "Vannak színészek és nézőtér.", "Függöny jelzi az előadás kezdetét."] },
+            { word: "KÓRHÁZ", category: "Épület", hints: ["Intézmény.", "Betegeket gyógyítanak itt.", "Orvosok és ápolók dolgoznak benne."] },
+            { word: "KÖNYVTÁR", category: "Hely", hints: ["Könyveket lehet innen kölcsönözni.", "Csendben kell lenni.", "Olvasóterme is van."] },
+            { word: "SPORTOL", category: "Cselekvés", hints: ["Testmozgást végez.", "Lehet egyéni vagy csapatsport.", "Javítja az állóképességet."] },
+            { word: "SZEMÜVEG", category: "Tárgy", hints: ["Segíti a látást.", "Két lencséből és egy keretből áll.", "Optikusnál kapható."] },
+
+            // Hosszú szavak (8+)
+            { word: "KERÉKPÁR", category: "Jármű", hints: ["Két kereke van.", "Pedállal kell hajtani.", "Környezetbarát közlekedési eszköz."] },
+            { word: "FAGYLALT", category: "Étel", hints: ["Hideg édesség.", "Nyáron népszerű.", "Tölcsérben vagy kehelyben adják."] },
+            { word: "BONYOLULT", category: "Tulajdonság", hints: ["Nem egyszerű.", "Sok részből áll, nehezen átlátható.", "A rejtvények gyakran ilyenek."] },
+            { word: "CSOKOLÁDÉ", category: "Étel", hints: ["Édesség.", "Kakaóbabból készül.", "Lehet tej-, ét- vagy fehér."] },
+            { word: "SZÁMÍTÓGÉP", category: "Tárgy", hints: ["Elektronikus eszköz.", "Adatok feldolgozására használják.", "Van monitorja és billentyűzete."] },
+            { word: "FÖLDGÖMB", category: "Tárgy", hints: ["A Föld kicsinyített mása.", "Tengely körül forog.", "Rajta vannak a kontinensek és óceánok."] },
+            { word: "IRODALOM", category: "Művészet", hints: ["Szöveges műalkotások összessége.", "Lehet vers vagy próza.", "Tantárgy az iskolában."] },
+            { word: "TELEFON", category: "Tárgy", hints: ["Kommunikációs eszköz.", "Lehet vezetékes vagy mobil.", "Hívásokat lehet vele indítani."] },
+            { word: "GITÁR", category: "Hangszer", hints: ["Pengetős hangszer.", "Általában 6 húrja van.", "Lehet akusztikus vagy elektromos."] },
+            { word: "FOTEL", category: "Tárgy", hints: ["Kényelmes bútor.", "Egy személy tud benne ülni.", "Gyakran a TV előtt áll."] },
+            { word: "TENGER", category: "Természet", hints: ["Nagy, sós vizű terület.", "Kisebb, mint az óceán.", "Partján strandolni lehet."] },
+            { word: "GYŐZELEM", category: "Fogalom", hints: ["Siker egy versenyben.", "A vereség ellentéte.", "Díj vagy érem jár érte."] },
+            { word: "KALAPÁCS", category: "Eszköz", hints: ["Szerszám.", "Szegek beverésére használják.", "Feje és nyele van."] },
+            { word: "KUKORICA", category: "Élőlény", hints: ["Növény.", "Sárga szemei vannak.", "Pattogatva is finom."] },
+            { word: "MOZDONY", category: "Jármű", hints: ["A vonat eleje.", "Ez húzza a vagonokat.", "Lehet gőz-, dízel- vagy villany-."] },
+            { word: "KARÁCSONY", category: "Ünnep", hints: ["Decemberben van.", "Ajándékozás és családi együttlét jellemzi.", "Jézus születésének ünnepe."] },
+            { word: "PILLANGÓ", category: "Élőlény", hints: ["Repülő rovar.", "Színes, pikkelyes szárnyai vannak.", "Hernyóból fejlődik ki."] },
+            { word: "ZONGORA", category: "Hangszer", hints: ["Billentyűs hangszer.", "Fekete és fehér billentyűi vannak.", "Hangversenyeken gyakori."] },
+            { word: "VILLÁMCSAPÁS", category: "Természet", hints: ["Időjárási jelenség.", "Viharban fordul elő.", "Hatalmas elektromos kisülés."] },
+            { word: "FŐZELÉK", category: "Étel", hints: ["Sűrű, zöldséges étel.", "Gyakran feltéttel eszik.", "Tipikus magyar ebéd."] },
+        ];
+        
+        const MAX_GUESSES = 10;
+        let currentRow = 0;
+        let currentCol = 0;
+        let isGameOver = false;
+        let targetWord, targetHints, targetCategory, wordLength;
+
+        const gridContainer = document.getElementById('grid-container');
+        const keyboardContainer = document.getElementById('keyboard-container');
+        const messageContainer = document.getElementById('message-container');
+        const hintText = document.getElementById('hint-text');
+        const categoryDisplay = document.getElementById('category-display');
+        const countdownTimer = document.getElementById('countdown-timer');
+
+        function getWordForPeriod() {
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const hoursPassed = now.getHours();
+            const periodIndexToday = Math.floor(hoursPassed / 4); // 0-5
+
+            const startDate = new Date("2024-01-01");
+            const dayDifference = Math.floor((startOfDay - startDate) / (1000 * 60 * 60 * 24));
             
-            const WORD_LENGTH = 6;
-            const MAX_GUESSES = 10;
-            let currentRow = 0;
-            let currentCol = 0;
-            let isGameOver = false;
+            const totalPeriodIndex = (dayDifference * 6) + periodIndexToday;
+            const wordIndex = totalPeriodIndex % wordData.length;
 
-            function getDailyWord() {
-                const startDate = new Date("2024-01-01");
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const dayDifference = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-                const wordIndex = dayDifference % wordsWithHints.length;
-                return wordsWithHints[wordIndex];
-            }
-            
-            const { word: targetWord, hints: targetHints } = getDailyWord();
-            const gridContainer = document.getElementById('grid-container');
-            const keyboardContainer = document.getElementById('keyboard-container');
-            const messageContainer = document.getElementById('message-container');
-            const hintText = document.getElementById('hint-text');
+            return wordData[wordIndex];
+        }
+        
+        function setupGame() {
+            const dailyWordData = getWordForPeriod();
+            targetWord = dailyWordData.word.toUpperCase();
+            targetHints = dailyWordData.hints;
+            targetCategory = dailyWordData.category;
+            wordLength = targetWord.length;
 
-            function initializeGame() {
-                for (let i = 0; i < MAX_GUESSES; i++) {
-                    const row = document.createElement('div');
-                    row.classList.add('grid-row');
-                    row.id = `row-${i}`;
-                    for (let j = 0; j < WORD_LENGTH; j++) {
-                        const cell = document.createElement('div');
-                        cell.classList.add('grid-cell');
-                        cell.id = `cell-container-${i}-${j}`;
-                        
-                        const cellInner = document.createElement('div');
-                        cellInner.classList.add('cell-inner');
-                        
-                        const cellFront = document.createElement('div');
-                        cellFront.classList.add('cell-face', 'cell-front');
-                        cellFront.id = `cell-front-${i}-${j}`;
-                        
-                        const cellBack = document.createElement('div');
-                        cellBack.classList.add('cell-face', 'cell-back');
-                        cellBack.id = `cell-back-${i}-${j}`;
+            categoryDisplay.textContent = `Kategória: ${targetCategory}`;
 
-                        cellInner.appendChild(cellFront);
-                        cellInner.appendChild(cellBack);
-                        cell.appendChild(cellInner);
-                        row.appendChild(cell);
-                    }
-                    gridContainer.appendChild(row);
-                }
+            initializeGrid();
+            initializeKeyboard();
+            startCountdown();
+        }
 
-                const keyLayout = [
-                    ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P'],
-                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á'],
-                    ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace'],
-                    ['Ö', 'Ü', 'Ó', 'Ő', 'Ú', 'Ű', 'Í']
-                ];
+        function startCountdown() {
+            setInterval(() => {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const nextPeriodHour = (Math.floor(currentHour / 4) + 1) * 4;
                 
-                keyLayout.forEach(rowKeys => {
-                    const row = document.createElement('div');
-                    row.classList.add('keyboard-row');
-                    rowKeys.forEach(key => {
-                        const button = document.createElement('button');
-                        button.textContent = key;
-                        button.classList.add('key');
-                        button.dataset.key = key.toLowerCase();
-                        if (key === 'Enter' || key === 'Backspace') {
-                            button.classList.add('large');
-                        }
-                        button.addEventListener('click', () => handleKeyPress(key));
-                        row.appendChild(button);
-                    });
-                    keyboardContainer.appendChild(row);
-                });
-            }
-
-            function handleKeyPress(key) {
-                if (isGameOver) return;
-                
-                const keyLower = key.toLowerCase();
-                
-                if (keyLower === 'enter') {
-                    submitGuess();
-                } else if (keyLower === 'backspace') {
-                    deleteLetter();
-                } else if (key.length === 1 && key.match(/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/)) {
-                    addLetter(key.toUpperCase());
-                }
-            }
-
-            function addLetter(letter) {
-                if (currentCol < WORD_LENGTH) {
-                    const cellContainer = document.getElementById(`cell-container-${currentRow}-${currentCol}`);
-                    const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
-                    cellFront.textContent = letter;
-                    cellContainer.classList.add('filled');
-                    currentCol++;
-                }
-            }
-
-            function deleteLetter() {
-                if (currentCol > 0) {
-                    currentCol--;
-                    const cellContainer = document.getElementById(`cell-container-${currentRow}-${currentCol}`);
-                    const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
-                    cellFront.textContent = '';
-                    cellContainer.classList.remove('filled');
-                }
-            }
-            
-            function updateHints() {
-                 let hintsToShow = [];
-                 if (currentRow >= 0) hintsToShow.push(targetHints[0]);
-                 if (currentRow >= 3) hintsToShow.push(targetHints[1]);
-                 if (currentRow >= 6) hintsToShow.push(targetHints[2]);
-                 hintText.innerHTML = "Segítség:<br>" + hintsToShow.join('<br>');
-            }
-
-            function submitGuess() {
-                if (currentCol !== WORD_LENGTH) {
-                    showMessage("A szó túl rövid!");
-                    shakeRow();
-                    return;
-                }
-
-                const guess = Array.from({ length: WORD_LENGTH }, (_, i) => 
-                    document.getElementById(`cell-front-${currentRow}-${i}`).textContent
-                ).join('');
-
-                flipRow(guess);
-                
-                if (guess === targetWord) {
-                    setTimeout(() => {
-                        showMessage("Sikeres megfejtés!", 5000);
-                        isGameOver = true;
-                        hintText.parentElement.style.borderColor = 'var(--correct-color)';
-                        hintText.innerHTML = `Ügyes! A helyes szó: <strong>${targetWord}</strong>.`;
-                    }, WORD_LENGTH * 200); // Wait for the flip animation to finish
-                    return;
-                }
-                
-                currentRow++;
-                
-                if (currentRow >= MAX_GUESSES) {
-                    setTimeout(() => {
-                        isGameOver = true;
-                        showMessage(`Sajnos nem sikerült!`, 10000);
-                        hintText.parentElement.style.borderColor = '#d9534f';
-                        hintText.innerHTML = `A helyes szó ez lett volna: <strong>${targetWord}</strong>.`;
-                    }, WORD_LENGTH * 200);
+                let targetDate = new Date(now);
+                if (nextPeriodHour >= 24) {
+                    targetDate.setDate(targetDate.getDate() + 1);
+                    targetDate.setHours(0, 0, 0, 0);
                 } else {
-                    currentCol = 0;
-                    updateHints();
+                    targetDate.setHours(nextPeriodHour, 0, 0, 0);
                 }
+
+                const diff = targetDate - now;
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                const s = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                countdownTimer.textContent = `${h}:${m}:${s}`;
+
+                if (h === '00' && m === '00' && s === '00') {
+                    location.reload();
+                }
+            }, 1000);
+        }
+
+        function initializeGrid() {
+            gridContainer.innerHTML = '';
+            for (let i = 0; i < MAX_GUESSES; i++) {
+                const row = document.createElement('div');
+                row.classList.add('grid-row');
+                row.id = `row-${i}`;
+                row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`;
+                for (let j = 0; j < wordLength; j++) {
+                    const cellHTML = `
+                        <div class="grid-cell" id="cell-container-${i}-${j}">
+                            <div class="cell-inner">
+                                <div class="cell-face cell-front" id="cell-front-${i}-${j}"></div>
+                                <div class="cell-face cell-back" id="cell-back-${i}-${j}"></div>
+                            </div>
+                        </div>`;
+                    row.innerHTML += cellHTML;
+                }
+                gridContainer.appendChild(row);
+            }
+        }
+
+        function initializeKeyboard() {
+            keyboardContainer.innerHTML = '';
+            const keyLayout = [
+                ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü', 'Ö'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű'],
+                ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Ó', 'Ő', 'Ú', 'Í', 'Backspace']
+            ];
+            keyLayout.forEach(rowKeys => {
+                const row = document.createElement('div');
+                row.classList.add('keyboard-row');
+                rowKeys.forEach(key => {
+                    const button = document.createElement('button');
+                    button.textContent = key;
+                    button.classList.add('key');
+                    button.dataset.key = key.toUpperCase();
+                    if (key === 'Enter' || key === 'Backspace') button.classList.add('large');
+                    button.addEventListener('click', () => handleKeyPress(key));
+                    row.appendChild(button);
+                });
+                keyboardContainer.appendChild(row);
+            });
+        }
+
+        function handleKeyPress(key) {
+            if (isGameOver) return;
+            const upperKey = key.toUpperCase();
+            if (upperKey === 'ENTER') submitGuess();
+            else if (upperKey === 'BACKSPACE') deleteLetter();
+            else if (upperKey.length === 1 && upperKey.match(/^[A-ZÁÉÍÓÖŐÚÜŰ]$/)) addLetter(upperKey);
+        }
+
+        function addLetter(letter) {
+            if (currentCol < wordLength) {
+                const cellContainer = document.getElementById(`cell-container-${currentRow}-${currentCol}`);
+                const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
+                cellFront.textContent = letter;
+                cellContainer.classList.add('filled');
+                currentCol++;
+            }
+        }
+
+        function deleteLetter() {
+            if (currentCol > 0) {
+                currentCol--;
+                const cellContainer = document.getElementById(`cell-container-${currentRow}-${currentCol}`);
+                const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
+                cellFront.textContent = '';
+                cellContainer.classList.remove('filled');
+            }
+        }
+        
+        function updateHints() {
+             let hintsToShow = [];
+             if (currentRow >= 1) hintsToShow.push(`1. ${targetHints[0]}`);
+             if (currentRow >= 3) hintsToShow.push(`2. ${targetHints[1]}`);
+             if (currentRow >= 6) hintsToShow.push(`3. ${targetHints[2]}`);
+             hintText.innerHTML = hintsToShow.join('<br>');
+        }
+
+        function submitGuess() {
+            if (currentCol !== wordLength) {
+                showMessage(`A szónak ${wordLength} betűből kell állnia!`);
+                shakeRow();
+                return;
             }
 
-            function flipRow(guess) {
-                const targetLetters = targetWord.split('');
-                const guessLetters = guess.split('');
-                const letterStates = Array(WORD_LENGTH).fill(null);
+            const guess = Array.from({ length: wordLength }, (_, i) => 
+                document.getElementById(`cell-front-${currentRow}-${i}`).textContent).join('');
 
-                // First pass for correct letters (green)
-                guessLetters.forEach((letter, index) => {
-                    if (letter === targetLetters[index]) {
-                        letterStates[index] = 'correct';
-                        targetLetters[index] = null; // Mark as used
-                    }
-                });
+            flipRow(guess);
+            
+            if (guess === targetWord) {
+                setTimeout(() => {
+                    showMessage("Sikeres megfejtés!", 5000);
+                    isGameOver = true;
+                    hintText.innerHTML = `Ügyes! A helyes szó: <strong>${targetWord}</strong>.`;
+                }, wordLength * 200);
+                return;
+            }
+            
+            currentRow++;
+            
+            if (currentRow >= MAX_GUESSES) {
+                setTimeout(() => {
+                    isGameOver = true;
+                    showMessage(`Sajnos nem sikerült!`, 10000);
+                    hintText.innerHTML = `A helyes szó ez lett volna: <strong>${targetWord}</strong>.`;
+                }, wordLength * 200);
+            } else {
+                currentCol = 0;
+                updateHints();
+            }
+        }
 
-                // Second pass for present letters (yellow)
-                guessLetters.forEach((letter, index) => {
-                    if (letterStates[index] === null && targetLetters.includes(letter)) {
+        function flipRow(guess) {
+            const targetLetters = targetWord.split('');
+            const guessLetters = guess.split('');
+            const letterStates = Array(wordLength).fill('absent');
+            const usedTargetIndexes = new Set();
+
+            // First pass for correct letters
+            guessLetters.forEach((letter, index) => {
+                if (letter === targetLetters[index]) {
+                    letterStates[index] = 'correct';
+                    usedTargetIndexes.add(index);
+                }
+            });
+
+            // Second pass for present letters
+            guessLetters.forEach((letter, index) => {
+                if (letterStates[index] !== 'correct') {
+                    const presentIndex = targetLetters.findIndex((targetLetter, targetIndex) => 
+                        targetLetter === letter && !usedTargetIndexes.has(targetIndex)
+                    );
+                    if (presentIndex !== -1) {
                         letterStates[index] = 'present';
-                        targetLetters[targetLetters.indexOf(letter)] = null; // Mark as used
+                        usedTargetIndexes.add(presentIndex);
                     }
-                });
-                
-                // Fill the rest as absent (gray)
-                letterStates.fill('absent', 0, WORD_LENGTH);
-
-                // Re-run for correct and present to override absent
-                 guessLetters.forEach((letter, index) => {
-                    if (letter === targetWord[index]) {
-                        letterStates[index] = 'correct';
-                    }
-                });
-                 guessLetters.forEach((letter, index) => {
-                    if (letterStates[index] !== 'correct' && targetWord.includes(letter) && targetLetters.includes(letter)) {
-                         letterStates[index] = 'present';
-                         targetLetters[targetLetters.indexOf(letter)] = null;
-                    }
-                });
-
-                for (let i = 0; i < WORD_LENGTH; i++) {
-                    const cellContainer = document.getElementById(`cell-container-${currentRow}-${i}`);
-                    const cellBack = document.getElementById(`cell-back-${currentRow}-${i}`);
-                    
-                    setTimeout(() => {
-                        cellBack.textContent = guessLetters[i];
-                        cellBack.classList.add(letterStates[i]);
-                        cellContainer.classList.add('flip');
-                        updateKeyboard(guessLetters[i], letterStates[i]);
-                    }, i * 200);
                 }
-            }
+            });
 
-            function updateKeyboard(letter, state) {
-                const key = document.querySelector(`.key[data-key="${letter.toLowerCase()}"]`);
-                if (!key) return;
-
-                const currentStatePriority = { 'correct': 3, 'present': 2, 'absent': 1 };
-                const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent';
-                
-                if (!currentClass || currentStatePriority[state] > currentStatePriority[currentClass]) {
-                    key.classList.remove('correct', 'present', 'absent');
-                    key.classList.add(state);
-                }
-            }
-            
-            function showMessage(message, duration = 3000) {
-                messageContainer.innerHTML = message;
-                messageContainer.classList.add('show');
+            for (let i = 0; i < wordLength; i++) {
+                const cellContainer = document.getElementById(`cell-container-${currentRow}-${i}`);
+                const cellBack = document.getElementById(`cell-back-${currentRow}-${i}`);
                 setTimeout(() => {
-                    messageContainer.classList.remove('show');
-                }, duration);
+                    cellBack.textContent = guessLetters[i];
+                    cellBack.classList.add(letterStates[i]);
+                    cellContainer.classList.add('flip');
+                    updateKeyboard(guessLetters[i], letterStates[i]);
+                }, i * 150);
             }
+        }
 
-            function shakeRow() {
-                const row = document.getElementById(`row-${currentRow}`);
-                row.classList.add('row-shake');
-                setTimeout(() => {
-                    row.classList.remove('row-shake');
-                }, 500);
+        function updateKeyboard(letter, state) {
+            const key = document.querySelector(`.key[data-key="${letter.toUpperCase()}"]`);
+            if (!key) return;
+
+            const priorities = { 'correct': 3, 'present': 2, 'absent': 1 };
+            const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent';
+            
+            if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) {
+                key.classList.remove('correct', 'present', 'absent');
+                key.classList.add(state);
             }
-            
-            document.addEventListener('keydown', (e) => handleKeyPress(e.key));
-            
-            initializeGame();
-        });
+        }
+        
+        function showMessage(message, duration = 3000) {
+            messageContainer.innerHTML = message;
+            messageContainer.classList.add('show');
+            setTimeout(() => messageContainer.classList.remove('show'), duration);
+        }
+
+        function shakeRow() {
+            const row = document.getElementById(`row-${currentRow}`);
+            row.classList.add('row-shake');
+            setTimeout(() => row.classList.remove('row-shake'), 500);
+        }
+        
+        document.addEventListener('keydown', (e) => handleKeyPress(e.key));
+        
+        setupGame();
+    });
     </script>
 </body>
 </html>

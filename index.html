@@ -3,204 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SzóMester - Dinamikus Szókereső</title>
+    <title>SzóMester Pro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #f4f7f9;
-            --container-bg: #ffffff;
-            --text-color: #34495e;
-            --title-color: #2980b9;
-            --border-color-idle: #dce4e8;
-            --border-color-active: #bdc3c7;
-            
-            --correct-color: #27ae60;
-            --present-color: #f1c40f;
-            --absent-color: #95a5a6;
-            
-            --key-bg: #d1d5db;
-            --key-text: #111827;
-            --key-shadow: 0 3px 0 #a8adb3;
-            
             --font-title: 'Fredoka One', cursive;
             --font-main: 'Roboto Mono', monospace;
+            --default-bg-start: #f4f7f9;
+            --default-bg-end: #dce4e8;
+            --default-container-bg: #ffffff;
+            --default-text-color: #34495e;
+            --default-title-color: #2980b9;
+            --default-info-bg: #ecf0f1;
+            --default-key-bg: #d1d5db;
+            --default-key-text: #111827;
+            --default-key-shadow: 0 3px 0 #a8adb3;
         }
 
-        html { height: -webkit-fill-available; }
+        /* Téma definíciók */
+        .theme-day {
+            --bg-start: #f4f7f9; --bg-end: #dce4e8; --container-bg: #fff; --text-color: #34495e;
+            --title-color: #2980b9; --info-bg: #ecf0f1; --key-bg: #d1d5db; --key-text: #111827; --key-shadow: 0 3px 0 #a8adb3;
+        }
+        .theme-dusk {
+            --bg-start: #2c3e50; --bg-end: #4ca1af; --container-bg: #34495e; --text-color: #ecf0f1;
+            --title-color: #ffffff; --info-bg: rgba(0,0,0,0.2); --key-bg: #95a5a6; --key-text: #ffffff; --key-shadow: 0 3px 0 #7f8c8d;
+        }
+        .theme-sunset {
+            --bg-start: #ff7e5f; --bg-end: #feb47b; --container-bg: #fff8f5; --text-color: #5d4037;
+            --title-color: #e65100; --info-bg: #ffccbc; --key-bg: #ffab91; --key-text: #5d4037; --key-shadow: 0 3px 0 #e64a19;
+        }
+        .theme-forest {
+            --bg-start: #134e5e; --bg-end: #71b280; --container-bg: #e8f5e9; --text-color: #1b5e20;
+            --title-color: #2e7d32; --info-bg: #c8e6c9; --key-bg: #a5d6a7; --key-text: #1b5e20; --key-shadow: 0 3px 0 #66bb6a;
+        }
+         .theme-royal {
+            --bg-start: #480048; --bg-end: #C04848; --container-bg: #2d182d; --text-color: #f3e5f5;
+            --title-color: #ce93d8; --info-bg: rgba(0,0,0,0.3); --key-bg: #7b1fa2; --key-text: #ffffff; --key-shadow: 0 3px 0 #4a0072;
+        }
 
+        html { height: 100%; }
         body {
-            background-color: var(--bg-color);
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dce4e8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            color: var(--text-color);
+            background: linear-gradient(135deg, var(--bg-start, var(--default-bg-start)), var(--bg-end, var(--default-bg-end)));
+            color: var(--text-color, var(--default-text-color));
             font-family: var(--font-main);
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
             touch-action: manipulation;
+            transition: background 0.5s ease;
         }
 
         #game-container {
-            background-color: var(--container-bg);
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background-color: var(--container-bg, var(--default-container-bg));
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 600px;
-            padding: clamp(15px, 4vw, 30px);
+            max-width: 720px; /* Szélesebb lett */
+            padding: clamp(20px, 4vw, 40px);
             box-sizing: border-box;
             margin-top: 2vh;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        header { text-align: center; width: 100%; margin-bottom: 20px; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            position: relative;
+        }
         header h1 {
             font-family: var(--font-title);
-            color: var(--title-color);
-            font-size: clamp(2.5rem, 10vw, 3.5rem);
-            margin: 0 0 15px 0;
+            color: var(--title-color, var(--default-title-color));
+            font-size: clamp(2.2rem, 8vw, 3.2rem);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .header-buttons { display: flex; gap: 10px; }
+        .icon-button {
+            background: var(--info-bg, var(--default-info-bg));
+            border: none; border-radius: 50%; width: 44px; height: 44px;
+            cursor: pointer; font-size: 22px;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-color, var(--default-text-color));
+            transition: all 0.2s ease;
+        }
+        .icon-button:hover { transform: scale(1.1); }
+        
+        #theme-panel {
+            position: absolute; top: 60px; right: 0;
+            background-color: var(--container-bg, var(--default-container-bg));
+            padding: 10px; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex; gap: 10px;
+            opacity: 0; transform: translateY(-10px);
+            pointer-events: none; transition: all 0.3s ease;
+            z-index: 100;
+        }
+        #theme-panel.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .theme-button {
+            width: 30px; height: 30px; border-radius: 50%;
+            border: 2px solid white; cursor: pointer; box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
 
         #info-bar {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 100%;
-            padding: 10px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
-            font-weight: 500;
+            width: 100%; padding: 12px;
+            background: var(--info-bg, var(--default-info-bg));
+            border-radius: 10px; text-align: center;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: 500;
         }
-        #countdown-wrapper { text-align: center; }
-        #word-info { text-align: center; }
-        #countdown-timer { font-weight: bold; color: var(--title-color); }
 
         #grid-container {
-            display: grid;
-            grid-template-rows: repeat(10, 1fr);
-            gap: 8px;
-            width: 100%;
-            max-width: 540px;
-            margin: 20px 0;
-            height: 450px;
+            display: grid; grid-template-rows: repeat(10, 1fr);
+            gap: 8px; width: 100%; max-width: 580px;
+            margin: 25px 0; height: 480px;
         }
-
         .grid-row { display: grid; gap: 8px; }
 
         .grid-cell { perspective: 1000px; }
         .cell-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d;
         }
         .grid-cell.flip .cell-inner { transform: rotateX(180deg); }
-
         .cell-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: clamp(1.5rem, 5vw, 2.2rem);
-            font-weight: bold;
-            text-transform: uppercase;
-            box-sizing: border-box;
-            border-radius: 8px;
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            display: flex; justify-content: center; align-items: center;
+            font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: bold;
+            text-transform: uppercase; box-sizing: border-box; border-radius: 8px;
         }
-        .cell-front {
-            border: 3px solid var(--border-color-idle);
-        }
-        .grid-cell.filled .cell-front {
-            border-color: var(--border-color-active);
-            animation: pop 0.2s;
-        }
+        .cell-front { border: 3px solid #dce4e8; }
+        .grid-cell.filled .cell-front { border-color: #bdc3c7; animation: pop 0.2s; }
         .cell-back {
-            color: white;
-            transform: rotateX(180deg);
+            color: white; transform: rotateX(180deg);
+            border: 3px solid transparent;
         }
-        .cell-back.correct { background-color: var(--correct-color); border: 3px solid var(--correct-color); }
-        .cell-back.present { background-color: var(--present-color); border: 3px solid var(--present-color); }
-        .cell-back.absent  { background-color: var(--absent-color); border: 3px solid var(--absent-color); }
+        .cell-back.correct { background-color: #27ae60; border-color: #27ae60;}
+        .cell-back.present { background-color: #f1c40f; border-color: #f1c40f;}
+        .cell-back.absent  { background-color: #95a5a6; border-color: #95a5a6;}
 
         @keyframes pop { 50% { transform: scale(1.1); } }
 
         #hint-container {
-            background-color: #ecf0f1;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            width: 100%;
-            min-height: 40px;
-            font-style: italic;
-            color: #7f8c8d;
-            font-weight: 500;
+            background-color: var(--info-bg, var(--default-info-bg));
+            border-radius: 10px; padding: 15px; margin: 20px 0;
+            text-align: center; width: 100%; min-height: 40px;
+            font-style: italic; color: #7f8c8d; font-weight: 500;
         }
-        #hint-text strong { color: var(--text-color); }
+        #hint-text strong { color: var(--text-color, var(--default-text-color)); }
 
         #keyboard-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            padding-top: 10px;
+            display: flex; flex-direction: column; gap: 10px;
+            width: 100%; padding-top: 10px;
         }
         .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
         .key {
-            font-family: var(--font-main);
-            font-weight: 500;
-            background-color: var(--key-bg);
-            color: var(--key-text);
-            border: none;
-            border-radius: 8px;
-            height: 55px;
-            flex: 1;
-            cursor: pointer;
-            text-transform: uppercase;
+            font-family: var(--font-main); font-weight: 500;
+            background-color: var(--key-bg, var(--default-key-bg));
+            color: var(--key-text, var(--default-key-text));
+            border: none; border-radius: 8px; height: 55px;
+            flex: 1; cursor: pointer; text-transform: uppercase;
             font-size: clamp(0.8rem, 2.5vw, 1.2rem);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             transition: all 0.1s ease-in-out;
-            box-shadow: var(--key-shadow);
+            box-shadow: var(--key-shadow, var(--default-key-shadow));
         }
         .key:active { transform: translateY(2px); box-shadow: none; }
         .key.large { flex: 1.5; font-size: 0.9rem; }
-        .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 3px 0 #1e8449; }
-        .key.present { background-color: var(--present-color); color: white; box-shadow: 0 3px 0 #c0392b; }
-        .key.absent  { background-color: var(--absent-color); color: white; box-shadow: 0 3px 0 #7f8c8d; }
+        .key.correct { background-color: #27ae60; color: white; box-shadow: 0 3px 0 #1e8449; }
+        .key.present { background-color: #f1c40f; color: white; box-shadow: 0 3px 0 #c0392b; }
+        .key.absent  { background-color: #95a5a6; color: white; box-shadow: 0 3px 0 #7f8c8d; }
 
         #message-container {
-            position: fixed;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #34495e;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.5s, transform 0.5s;
-            pointer-events: none;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: fixed; top: 10%; left: 50%; transform: translateX(-50%);
+            background-color: #34495e; color: white;
+            padding: 15px 25px; border-radius: 8px;
+            font-weight: bold; z-index: 1000;
+            opacity: 0; transition: all 0.5s; pointer-events: none;
+            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         #message-container.show { opacity: 1; transform: translateX(-50%) translateY(20px); }
         .row-shake { animation: shake 0.5s; }
@@ -214,17 +208,16 @@
     <div id="game-container">
         <header>
             <h1>SzóMester</h1>
-            <div id="info-bar">
-                <div id="word-info">
-                    <span id="category-display">Kategória: ...</span><br>
-                    <span id="word-length-display">... betűs</span>
-                </div>
-                <div id="countdown-wrapper">
-                    <span>Következő szó:</span><br>
-                    <span id="countdown-timer">--:--:--</span>
-                </div>
+            <div class="header-buttons">
+                <button id="theme-button" class="icon-button" title="Téma választás">🎨</button>
+                <button id="next-word-button" class="icon-button" title="Következő szó">🔄</button>
             </div>
+            <div id="theme-panel"></div>
         </header>
+
+        <div id="info-bar">
+            <span id="word-info">Kategória: ... | ... betűs</span>
+        </div>
 
         <div id="message-container"></div>
         <main id="grid-container"></main>
@@ -238,16 +231,21 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // A szólista változatlanul gazdag
         const wordData = [
+            // Rövid szavak (3-4 betű)
             { word: "HÁZ", category: "Épület", hints: ["Lakóhely.", "Lehet kertes vagy társas.", "Teteje és falai vannak."] },
             { word: "NAP", category: "Fogalom", hints: ["Égitest.", "Meleget és fényt ad.", "Körülötte kering a Föld."] },
             { word: "AUTÓ", category: "Jármű", hints: ["Négy kereke van.", "Motor hajtja.", "Utakon közlekedik."] },
             { word: "FILM", category: "Művészet", hints: ["Mozgóképek sorozata.", "Moziban vagy TV-ben nézzük.", "Lehet dráma vagy vígjáték."] },
             { word: "VÍZ", category: "Természet", hints: ["Folyadék.", "Az élet alapja.", "Képlete: H2O."] },
+            { word: "LABDA", category: "Sporteszköz", hints: ["Gömbölyű tárgy.", "Sportokban használják.", "Lehet rúgni, dobni, ütni."] },
+            { word: "FA", category: "Élőlény", hints: ["Növény.", "Törzse, ágai és levelei vannak.", "Erdőkben nő."] },
+            { word: "ÉG", category: "Természet", hints: ["Felettünk van.", "Nappal kék, éjjel fekete.", "Felhők, nap, hold látható rajta."] },
+
+            // Közepes szavak (5-7 betű)
             { word: "ASZTAL", category: "Tárgy", hints: ["Bútor.", "Általában négy lába van.", "Enni vagy dolgozni szoktunk rajta."] },
             { word: "ISKOLA", category: "Épület", hints: ["Oktatási intézmény.", "Gyerekek járnak ide.", "Tantárgyakat tanítanak benne."] },
-            { word: "BARACK", category: "Élőlény", hints: ["Gyümölcs.", "Lehet sárga vagy őszibarack.", "Szőrös a héja."] },
+            { word: "BARACK", category: "Növény", hints: ["Gyümölcs.", "Lehet sárga vagy őszibarack.", "Szőrös a héja."] },
             { word: "KALAND", category: "Fogalom", hints: ["Élmény.", "Izgalmas és szokatlan.", "A hősök gyakran átélik."] },
             { word: "REPÜLŐ", category: "Jármű", hints: ["A levegőben közlekedik.", "Szárnyai vannak.", "Pilóta vezeti."] },
             { word: "TÁNYÉR", category: "Tárgy", hints: ["Ebből eszünk.", "Lehet lapos vagy mély.", "Általában porcelánból készül."] },
@@ -260,8 +258,16 @@
             { word: "KÖNYVTÁR", category: "Hely", hints: ["Könyveket lehet innen kölcsönözni.", "Csendben kell lenni.", "Olvasóterme is van."] },
             { word: "SPORTOL", category: "Cselekvés", hints: ["Testmozgást végez.", "Lehet egyéni vagy csapatsport.", "Javítja az állóképességet."] },
             { word: "SZEMÜVEG", category: "Tárgy", hints: ["Segíti a látást.", "Két lencséből és egy keretből áll.", "Optikusnál kapható."] },
+            { word: "CSAVAR", category: "Eszköz", hints: ["Rögzítő elem.", "Menetes a szára.", "Csavarhúzóval lehet behajtani."] },
+            { word: "VILLÁM", category: "Természet", hints: ["Időjárási jelenség.", "Fényjelenség viharban.", "Hangja a dörgés."] },
+            { word: "CSALÁD", category: "Fogalom", hints: ["Emberek közössége.", "Rokoni szálak kötik össze őket.", "A társadalom alapja."] },
+            { word: "UTAZÁS", category: "Cselekvés", hints: ["Helyváltoztatás.", "Lehet nyaralás vagy üzleti.", "Új helyeket ismerhetünk meg."] },
+            { word: "FŐZELÉK", category: "Étel", hints: ["Sűrű, zöldséges étel.", "Gyakran feltéttel eszik.", "Tipikus magyar ebéd."] },
+
+            // Hosszú szavak (8+)
             { word: "KERÉKPÁR", category: "Jármű", hints: ["Két kereke van.", "Pedállal kell hajtani.", "Környezetbarát közlekedési eszköz."] },
             { word: "FAGYLALT", category: "Étel", hints: ["Hideg édesség.", "Nyáron népszerű.", "Tölcsérben vagy kehelyben adják."] },
+            { word: "BONYOLULT", category: "Tulajdonság", hints: ["Nem egyszerű.", "Sok részből áll, nehezen átlátható.", "A rejtvények gyakran ilyenek."] },
             { word: "CSOKOLÁDÉ", category: "Étel", hints: ["Édesség.", "Kakaóbabból készül.", "Lehet tej-, ét- vagy fehér."] },
             { word: "SZÁMÍTÓGÉP", category: "Tárgy", hints: ["Elektronikus eszköz.", "Adatok feldolgozására használják.", "Van monitorja és billentyűzete."] },
             { word: "FÖLDGÖMB", category: "Tárgy", hints: ["A Föld kicsinyített mása.", "Tengely körül forog.", "Rajta vannak a kontinensek és óceánok."] },
@@ -270,108 +276,105 @@
             { word: "GITÁR", category: "Hangszer", hints: ["Pengetős hangszer.", "Általában 6 húrja van.", "Lehet akusztikus vagy elektromos."] },
             { word: "GYŐZELEM", category: "Fogalom", hints: ["Siker egy versenyben.", "A vereség ellentéte.", "Díj vagy érem jár érte."] },
             { word: "KALAPÁCS", category: "Eszköz", hints: ["Szerszám.", "Szegek beverésére használják.", "Feje és nyele van."] },
-            { word: "KUKORICA", category: "Élőlény", hints: ["Növény.", "Sárga szemei vannak.", "Pattogatva is finom."] },
+            { word: "KUKORICA", category: "Növény", hints: ["Gabonaféle.", "Sárga szemei vannak.", "Pattogatva is finom."] },
             { word: "MOZDONY", category: "Jármű", hints: ["A vonat eleje.", "Ez húzza a vagonokat.", "Lehet gőz-, dízel- vagy villany-."] },
             { word: "KARÁCSONY", category: "Ünnep", hints: ["Decemberben van.", "Ajándékozás és családi együttlét jellemzi.", "Jézus születésének ünnepe."] },
-            { word: "PILLANGÓ", category: "Élőlény", hints: ["Repülő rovar.", "Színes, pikkelyes szárnyai vannak.", "Hernyóból fejlődik ki."] },
+            { word: "PILLANGÓ", category: "Állat", hints: ["Repülő rovar.", "Színes, pikkelyes szárnyai vannak.", "Hernyóból fejlődik ki."] },
             { word: "ZONGORA", category: "Hangszer", hints: ["Billentyűs hangszer.", "Fekete és fehér billentyűi vannak.", "Hangversenyeken gyakori."] },
-            { word: "FŐZELÉK", category: "Étel", hints: ["Sűrű, zöldséges étel.", "Gyakran feltéttel eszik.", "Tipikus magyar ebéd."] },
+            { word: "VILLÁMCSAPÁS", category: "Természet", hints: ["Időjárási jelenség.", "Viharban fordul elő.", "Hatalmas elektromos kisülés."] },
+            { word: "ALAPÍTVÁNY", category: "Szervezet", hints: ["Jótékony célú szervezet.", "Adományokból működik.", "Célja a társadalom segítése."] },
+            { word: "FÉNYKÉPEZŐGÉP", category: "Eszköz", hints: ["Képek készítésére való.", "Objektívje és gombjai vannak.", "Megörökíti a pillanatot."] },
+            { word: "MINISZTERELNÖK", category: "Foglalkozás", hints: ["Politikai vezető.", "A kormány feje.", "Az ország irányításáért felelős."] },
+            { word: "PARADICSOM", category: "Növény", hints: ["Piros színű zöldség (botanikailag gyümölcs).", "Salátákba, szószokba teszik.", "A lecsó egyik fő alapanyaga."] },
+            { word: "GOMBFOCO", category: "Sport", hints: ["Asztali játék.", "Pöcköléssel kell gólt lőni.", "Kis műanyag figurákkal játsszák."] },
+            { word: "TŰZIJÁTÉK", category: "Látványosság", hints: ["Ünnepekkor látható.", "Fényes, színes robbanások az égen.", "Augusztus 20-án is van."] },
+            { word: "RENDSZERVÁLTÁS", category: "Történelem", hints: ["Nagy politikai átalakulás.", "Magyarországon 1989-90-ben történt.", "A szocializmus végét jelentette."] },
+            { word: "HELIKOPTER", category: "Jármű", hints: ["Légi jármű.", "Nincs szárnya, rotorja van.", "Egy helyben is tud lebegni."] }
         ];
         
         const MAX_GUESSES = 10;
-        let currentRow = 0;
-        let currentCol = 0;
-        let isGameOver = false;
-        let targetWord, targetHints, targetCategory, wordLength;
+        let currentRow, currentCol, isGameOver, targetWord, targetHints, targetCategory, wordLength;
+        let lastWordIndex = -1;
 
         const gridContainer = document.getElementById('grid-container');
         const keyboardContainer = document.getElementById('keyboard-container');
         const messageContainer = document.getElementById('message-container');
         const hintText = document.getElementById('hint-text');
-        const categoryDisplay = document.getElementById('category-display');
-        const wordLengthDisplay = document.getElementById('word-length-display');
-        const countdownTimer = document.getElementById('countdown-timer');
-
-        function getWordForPeriod() {
-            const now = new Date();
-            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const hoursPassed = now.getHours();
-            const periodIndexToday = Math.floor(hoursPassed / 4);
-            const startDate = new Date("2024-01-01");
-            const dayDifference = Math.floor((startOfDay - startDate) / (1000 * 60 * 60 * 24));
-            const totalPeriodIndex = (dayDifference * 6) + periodIndexToday;
-            const wordIndex = totalPeriodIndex % wordData.length;
-            return wordData[wordIndex];
-        }
+        const wordInfoDisplay = document.getElementById('word-info');
+        const nextWordButton = document.getElementById('next-word-button');
+        const themeButton = document.getElementById('theme-button');
+        const themePanel = document.getElementById('theme-panel');
         
-        function setupGame() {
-            const dailyWordData = getWordForPeriod();
-            targetWord = dailyWordData.word.toUpperCase();
-            targetHints = dailyWordData.hints;
-            targetCategory = dailyWordData.category;
+        const themes = [
+            { name: 'Nappali', class: 'theme-day', gradient: 'linear-gradient(135deg, #f4f7f9, #dce4e8)' },
+            { name: 'Alkonyat', class: 'theme-dusk', gradient: 'linear-gradient(135deg, #2c3e50, #4ca1af)' },
+            { name: 'Naplemente', class: 'theme-sunset', gradient: 'linear-gradient(135deg, #ff7e5f, #feb47b)' },
+            { name: 'Erdő', class: 'theme-forest', gradient: 'linear-gradient(135deg, #134e5e, #71b280)' },
+            { name: 'Királyi', class: 'theme-royal', gradient: 'linear-gradient(135deg, #480048, #C04848)' },
+        ];
+
+        function startNewGame() {
+            // Reset game state
+            currentRow = 0;
+            currentCol = 0;
+            isGameOver = false;
+
+            // Pick a new, random word that wasn't the last one
+            let newWordIndex;
+            do {
+                newWordIndex = Math.floor(Math.random() * wordData.length);
+            } while (wordData.length > 1 && newWordIndex === lastWordIndex);
+            lastWordIndex = newWordIndex;
+            
+            const wordObject = wordData[newWordIndex];
+            targetWord = wordObject.word.toUpperCase();
+            targetHints = wordObject.hints;
+            targetCategory = wordObject.category;
             wordLength = targetWord.length;
 
-            categoryDisplay.textContent = `Kategória: ${targetCategory}`;
-            wordLengthDisplay.textContent = `${wordLength} betűs`;
-
+            wordInfoDisplay.textContent = `Kategória: ${targetCategory} | ${wordLength} betűs`;
+            hintText.innerHTML = "Tippelj, hogy megkapd az első segítséget!";
+            messageContainer.classList.remove('show');
+            
             initializeGrid();
             initializeKeyboard();
-            startCountdown();
-        }
-
-        function startCountdown() {
-            setInterval(() => {
-                const now = new Date();
-                const nextPeriodHour = (Math.floor(now.getHours() / 4) + 1) * 4;
-                let targetDate = new Date(now);
-                targetDate.setHours(nextPeriodHour, 0, 0, 0);
-                if (nextPeriodHour >= 24) targetDate.setDate(targetDate.getDate() + 1);
-                
-                const diff = targetDate - now;
-                if (diff < 0) { location.reload(); return; }
-                const h = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                const s = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                countdownTimer.textContent = `${h}:${m}:${s}`;
-                if (h === '00' && m === '00' && s === '00') location.reload();
-            }, 1000);
         }
 
         function initializeGrid() {
             gridContainer.innerHTML = '';
+            gridContainer.style.height = `${MAX_GUESSES * 56}px`; // Adjust height for better layout
             for (let i = 0; i < MAX_GUESSES; i++) {
                 const row = document.createElement('div');
-                row.classList.add('grid-row');
+                row.className = 'grid-row';
                 row.id = `row-${i}`;
                 row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`;
                 for (let j = 0; j < wordLength; j++) {
-                    const cellHTML = `
-                        <div class="grid-cell" id="cell-container-${i}-${j}">
-                            <div class="cell-inner">
-                                <div class="cell-face cell-front" id="cell-front-${i}-${j}"></div>
-                                <div class="cell-face cell-back" id="cell-back-${i}-${j}"></div>
-                            </div>
-                        </div>`;
-                    row.innerHTML += cellHTML;
+                    row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`;
                 }
                 gridContainer.appendChild(row);
             }
         }
 
         function initializeKeyboard() {
-            keyboardContainer.innerHTML = '';
-            const keyLayout = [
+            keyboardContainer.querySelectorAll('.key').forEach(key => {
+                key.classList.remove('correct', 'present', 'absent');
+            });
+        }
+        
+        function setupUI() {
+            // Static Keyboard setup
+             const keyLayout = [
                 ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'],
                 ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'],
                 ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace']
             ];
             keyLayout.forEach(rowKeys => {
                 const row = document.createElement('div');
-                row.classList.add('keyboard-row');
+                row.className = 'keyboard-row';
                 rowKeys.forEach(key => {
                     const button = document.createElement('button');
                     button.textContent = key;
-                    button.classList.add('key');
+                    button.className = 'key';
                     button.dataset.key = key.toUpperCase();
                     if (key === 'Enter' || key === 'Backspace') button.classList.add('large');
                     button.addEventListener('click', () => handleKeyPress(key));
@@ -379,6 +382,34 @@
                 });
                 keyboardContainer.appendChild(row);
             });
+            
+            // Theme switcher setup
+            themes.forEach(theme => {
+                const btn = document.createElement('button');
+                btn.className = 'theme-button';
+                btn.title = theme.name;
+                btn.style.background = theme.gradient;
+                btn.addEventListener('click', () => applyTheme(theme.class));
+                themePanel.appendChild(btn);
+            });
+
+            themeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                themePanel.classList.toggle('visible');
+            });
+            document.addEventListener('click', () => themePanel.classList.remove('visible'));
+            themePanel.addEventListener('click', e => e.stopPropagation());
+
+            const savedTheme = localStorage.getItem('szokereto_theme') || 'theme-day';
+            applyTheme(savedTheme);
+
+            nextWordButton.addEventListener('click', startNewGame);
+        }
+
+        function applyTheme(themeClass) {
+            document.body.className = themeClass;
+            localStorage.setItem('szokereto_theme', themeClass);
+            themePanel.classList.remove('visible');
         }
 
         function handleKeyPress(key) {
@@ -391,9 +422,9 @@
 
         function addLetter(letter) {
             if (currentCol < wordLength) {
-                const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
-                cellFront.parentElement.parentElement.classList.add('filled');
-                cellFront.textContent = letter;
+                const cell = document.querySelector(`#row-${currentRow} #cell-container-${currentRow}-${currentCol}`);
+                cell.querySelector('.cell-front').textContent = letter;
+                cell.classList.add('filled');
                 currentCol++;
             }
         }
@@ -401,9 +432,9 @@
         function deleteLetter() {
             if (currentCol > 0) {
                 currentCol--;
-                const cellFront = document.getElementById(`cell-front-${currentRow}-${currentCol}`);
-                cellFront.parentElement.parentElement.classList.remove('filled');
-                cellFront.textContent = '';
+                const cell = document.querySelector(`#row-${currentRow} #cell-container-${currentRow}-${currentCol}`);
+                cell.querySelector('.cell-front').textContent = '';
+                cell.classList.remove('filled');
             }
         }
         
@@ -412,9 +443,7 @@
              if (currentRow >= 1) hintsToShow.push(`<strong>1. segítség:</strong> ${targetHints[0]}`);
              if (currentRow >= 3) hintsToShow.push(`<strong>2. segítség:</strong> ${targetHints[1]}`);
              if (currentRow >= 6) hintsToShow.push(`<strong>3. segítség:</strong> ${targetHints[2]}`);
-             if (hintsToShow.length > 0) {
-                 hintText.innerHTML = hintsToShow.join('<br><br>');
-             }
+             if (hintsToShow.length > 0) hintText.innerHTML = hintsToShow.join('<br><br>');
         }
 
         function submitGuess() {
@@ -423,7 +452,7 @@
                 shakeRow();
                 return;
             }
-            const guess = Array.from({ length: wordLength }, (_, i) => document.getElementById(`cell-front-${currentRow}-${i}`).textContent).join('');
+            const guess = Array.from({ length: wordLength }, (_, i) => document.querySelector(`#row-${currentRow} #cell-container-${currentRow}-${i} .cell-front`).textContent).join('');
             flipRow(guess);
             if (guess === targetWord) {
                 setTimeout(() => {
@@ -468,8 +497,8 @@
                 }
             });
             for (let i = 0; i < wordLength; i++) {
-                const cellContainer = document.getElementById(`cell-container-${currentRow}-${i}`);
-                const cellBack = document.getElementById(`cell-back-${currentRow}-${i}`);
+                const cellContainer = document.querySelector(`#row-${currentRow} #cell-container-${currentRow}-${i}`);
+                const cellBack = cellContainer.querySelector('.cell-back');
                 setTimeout(() => {
                     cellBack.textContent = guessLetters[i];
                     cellBack.classList.add(letterStates[i]);
@@ -503,7 +532,9 @@
         }
         
         document.addEventListener('keydown', (e) => handleKeyPress(e.key));
-        setupGame();
+        
+        setupUI();
+        startNewGame();
     });
     </script>
 </body>

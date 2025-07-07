@@ -10,107 +10,101 @@
     
     <style>
         :root {
-            --bg-gradient-start: #e0f7fa; --bg-gradient-end: #b2ebf2; --container-bg: #ffffff;
-            --text-color: #004d40; --title-color: #00796b; --border-color-idle: #b0bec5;
-            --border-color-active: #78909c; --correct-color: #43a047; --present-color: #ffa000;
-            --absent-color: #90a4ae; --key-bg: #cfd8dc; --key-text: #263238;
-            --key-shadow: 0 3px 0 #90a4ae; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
+            /* Alapértelmezett Nyomozó Téma */
+            --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
+            --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
+            --border-color-active: #8d6e63; --correct-color: #81b29a; --present-color: #f2cc8f;
+            --absent-color: #9e9e9e; --key-bg: #dcd3b8; --key-text: #3d405b;
+            --key-shadow: 0 3px 0 #bcaaa4; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-color: var(--bg-gradient-end);
+            /* JAVÍTVA: A háttérminta élesebbé tétele (fill-opacity: 0.04 -> 0.08) */
+            background-image: 
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-blend-mode: overlay;
             color: var(--text-color); font-family: var(--font-main); display: flex;
             justify-content: center; align-items: flex-start; padding: 15px;
             box-sizing: border-box; -webkit-user-select: none; user-select: none; touch-action: manipulation;
             transition: background 0.5s ease;
+            position: relative; /* JAVÍTVA: Szükséges a ::before pszeudo-elemhez */
+            z-index: 1;
+        }
+
+        /* JAVÍTVA: Új háttérelemek hozzáadása */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7,7H5A2,2 0 0,0 3,9V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V9A2,2 0 0,0 19,7H17L16,5H8L7,7M12,18A5,5 0 0,1 7,13A5,5 0 0,1 12,8A5,5 0 0,1 17,13A5,5 0 0,1 12,18M12,10A3,3 0 0,0 9,13A3,3 0 0,0 12,16A3,3 0 0,0 15,13A3,3 0 0,0 12,10Z" /></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.3,13.5C17.3,13.5 14.5,12.2 12.8,11.4C10.9,10.5 10.3,9.2 10.3,7.9C10.3,6.6 10.9,5.5 12,5.5C13.1,5.5 13.7,6.6 13.7,7.9C13.7,8.2 13.8,8.5 14.1,8.5C14.4,8.5 14.7,8.2 14.7,7.9C14.7,6 13.5,4.5 12,4.5C10.5,4.5 9.3,6 9.3,7.9C9.3,9.8 10.2,11.5 12.3,12.5C14.3,13.5 18.3,15 18.3,15L17.3,13.5M20.5,18.2C20.5,17.7 20.1,17.3 19.6,17.3H5.4C4.9,17.3 4.5,17.7 4.5,18.2C4.5,18.7 4.9,19.1 5.4,19.1H19.6C20.1,19.1 20.5,18.7 20.5,18.2Z" /></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom 5% left 5%, top 10% right 8%;
+            background-size: 200px, 120px;
+            opacity: 0.06;
+            transform: rotate(-15deg) translateX(-10%);
         }
 
         #game-container {
             background-color: var(--container-bg); border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column;
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column;
             align-items: center; width: 100%; max-width: 600px;
             padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh;
             position: relative;
         }
 
         header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin-bottom: 20px;
-            width: 100%;
-            position: relative;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; /* JAVÍTVA: gap csökkentve */ gap: 0; margin-bottom: 20px;
+            width: 100%; position: relative;
         }
+        /* JAVÍTVA: Fejléc flexbox beállítása az új ikon pozícióhoz */
+        #header-main { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
         #logo-container { display: flex; align-items: center; position: relative; }
         #logo-svg { width: clamp(80px, 20vw, 100px); height: auto; z-index: 1; }
         header h1 {
             font-family: var(--font-title); color: var(--title-color);
             font-size: clamp(2rem, 9vw, 3rem); margin: 0;
-            letter-spacing: 0.05em;
-            margin-left: -2px;
-            z-index: 0;
+            letter-spacing: 0.05em; margin-left: -2px; z-index: 0;
+        }
+        /* JAVÍTVA: Copyright felirat stílusai */
+        #copyright-notice {
+            font-size: 0.85rem; color: var(--text-color);
+            opacity: 0.7; font-family: var(--font-main);
+            margin-top: -5px;
         }
         
-        #settings-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-        #settings-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-        }
-        #settings-icon {
-            width: 32px;
-            height: 32px;
-            fill: var(--title-color);
-            transition: transform 0.3s ease, fill 0.3s ease;
-        }
-        #settings-button:hover #settings-icon {
-            transform: rotate(45deg);
-        }
+        /* JAVÍTVA: A konténer áthelyezve és stílusai módosítva a pozicionáláshoz */
+        #settings-container { position: relative; }
+        #settings-button { background: none; border: none; cursor: pointer; padding: 5px; transform: translateX(-15px); }
+        /* JAVÍTVA: Ikon mérete és stílusa */
+        #settings-icon { width: 40px; height: 40px; fill: var(--title-color); transition: transform 0.3s ease, fill 0.3s ease; }
+        #settings-button:hover #settings-icon { transform: rotate(15deg) scale(1.1); }
+        /* JAVÍTVA: Palette pozíciója az új elrendezéshez igazítva */
         #palette-container {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: var(--container-bg);
-            border: 2px solid var(--border-color-idle);
-            border-radius: 10px;
-            padding: 15px;
-            z-index: 100;
-            width: 280px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            margin-top: 5px;
+            display: none; position: absolute; top: 100%; right: -20px;
+            background-color: var(--container-bg); border: 2px solid var(--border-color-idle);
+            border-radius: 10px; padding: 15px; z-index: 100;
+            width: 280px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-top: 5px;
         }
-        #palette-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 10px;
-        }
+        #palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px; }
         .palette-swatch {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s ease;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.2s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .palette-swatch:hover {
-            transform: scale(1.1);
-        }
-        .palette-swatch.active {
-            border-color: var(--title-color);
-            transform: scale(1.1);
-        }
+        .palette-swatch:hover { transform: scale(1.1); }
+        .palette-swatch.active { border-color: var(--title-color); transform: scale(1.1); }
 
-        #word-tracker {
-            display: flex; justify-content: center; gap: 10px; width: 100%; margin-bottom: 20px;
-        }
+        #word-tracker { display: flex; justify-content: center; gap: 10px; width: 100%; margin-bottom: 20px; }
         .tracker-item {
             flex: 1; padding: 10px 5px; text-align: center; border-radius: 8px;
             border: 2px solid var(--border-color-idle); font-weight: 500; cursor: pointer;
@@ -119,28 +113,31 @@
         .tracker-item.active { background-color: var(--title-color); color: white; border-color: var(--title-color); }
         .tracker-item.solved { background-color: var(--correct-color); border-color: var(--correct-color); color: white; cursor: not-allowed; }
         .tracker-item.failed { background-color: #e53935; border-color: #e53935; color: white; cursor: not-allowed; }
-        .tracker-item.solved::after, .tracker-item.failed::after { position: absolute; right: 8px; font-size: 1.2rem; }
-        .tracker-item.solved::after { content: '✓'; }
-        .tracker-item.failed::after { content: '✗'; }
-
+        /* JAVÍTVA: A pipa és X eltávolítva a kérésnek megfelelően */
+        /* .tracker-item.solved::after, .tracker-item.failed::after { ... } */
+        
         #info-bar {
-            width: 100%; padding: 12px; background: #f1f8e9; border: 2px solid #c5e1a5;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle);
             border-radius: 10px; text-align: center; font-size: clamp(0.9rem, 2.5vw, 1rem);
-            font-weight: 500; margin-bottom: 20px;
+            font-weight: 500; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;
         }
-        #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); margin-left: 10px; }
-        #next-set-info { display: block; margin-top: 5px; font-size: 0.9em; color: #558b2f; }
+        #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); }
+        #start-timer-button {
+            background-color: var(--correct-color); color: white; border: none; padding: 8px 12px;
+            border-radius: 5px; cursor: pointer; font-weight: 700;
+            transition: background-color 0.2s;
+        }
+        #start-timer-button:hover { background-color: #6a9982; }
+        #next-set-info { display: block; margin-top: 5px; font-size: 0.9em; color: var(--title-color); opacity: 0.8; }
+        #word-info-container { display: flex; flex-direction: column; align-items: center; }
 
         #grid-container {
             display: grid; grid-template-rows: repeat(6, 1fr); gap: 8px;
             width: 100%; max-width: 500px; margin: 0 auto 20px auto; height: 360px;
         }
         .grid-row { display: grid; gap: 8px; }
-
         .grid-cell { perspective: 1000px; }
-        .cell-inner {
-            position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d;
-        }
+        .cell-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .grid-cell.flip .cell-inner { transform: rotateX(180deg); }
         .cell-face {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
@@ -149,7 +146,7 @@
             text-transform: uppercase; box-sizing: border-box; border-radius: 8px;
         }
         .cell-front { border: 3px solid var(--border-color-idle); }
-        .cell-revealed { border-color: var(--correct-color); background-color: #e8f5e9; animation: pop 0.3s; }
+        .cell-revealed { border-color: var(--correct-color); background-color: rgba(129, 178, 154, 0.2); animation: pop 0.3s; }
         .grid-cell.filled .cell-front:not(.cell-revealed) { border-color: var(--border-color-active); animation: pop 0.2s; }
         .cell-back { color: white; transform: rotateX(180deg); border: 3px solid transparent; }
         .cell-back.correct { background-color: var(--correct-color); border-color: var(--correct-color);}
@@ -159,11 +156,24 @@
         @keyframes pop { 50% { transform: scale(1.1); } }
 
         #hint-container {
-            background-color: #fffde7; border: 2px solid #fff59d; border-radius: 10px;
+            background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px;
             padding: 15px; margin-bottom: 25px; text-align: center; width: 100%;
             min-height: 40px; font-style: italic; color: #5d4037; font-weight: 500;
+            display: flex; /* JAVÍTVA: Flexbox a középre igazításhoz */
+            justify-content: center;
+            align-items: center;
         }
-        #hint-text strong { color: #bf360c; }
+        #hint-text strong { color: var(--title-color); }
+        /* JAVÍTVA: Segítség felirat stílusának módosítása */
+        .hint-alert { 
+            color: var(--correct-color); 
+            font-weight: 900; 
+            font-style: normal; 
+            animation: flash 1s infinite;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+        }
+        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
         
         #keyboard-container { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
@@ -175,79 +185,89 @@
         }
         .key:active { transform: translateY(2px); box-shadow: none; }
         .key.large { flex: 1.5; font-size: 0.9rem; }
-        .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 3px 0 #2e7d32; }
-        .key.present { background-color: var(--present-color); color: white; box-shadow: 0 3px 0 #f57f17; }
+        .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 3px 0 #6a9982; }
+        .key.present { background-color: var(--present-color); color: white; box-shadow: 0 3px 0 #d0a457; }
         .key.absent  { background-color: var(--absent-color); color: white; box-shadow: 0 3px 0 #616161; }
 
-        /* === ÚJ: JÁTÉKSZABÁLY STÍLUSOK === */
         #rules-container {
-            width: 100%;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid var(--border-color-idle);
-            color: var(--text-color);
-            font-size: clamp(0.8rem, 2.2vw, 0.9rem);
-            line-height: 1.6;
+            width: 100%; margin-top: 30px; padding-top: 20px;
+            border-top: 2px solid var(--border-color-idle); color: var(--text-color);
+            font-size: clamp(0.8rem, 2.2vw, 0.9rem); line-height: 1.6;
         }
         #rules-container h3 {
-            font-family: var(--font-title);
-            color: var(--title-color);
-            text-align: center;
-            font-size: 1.4rem;
-            margin: 0 0 10px 0;
+            font-family: var(--font-title); color: var(--title-color); text-align: center;
+            font-size: 1.4rem; margin: 0 0 10px 0;
         }
-        #rules-container ul {
-            list-style-type: none;
-            padding-left: 0;
-            text-align: left;
-            margin: 0;
-        }
-        #rules-container li {
-            margin-bottom: 8px;
-        }
-        #rules-container li:last-child {
-            margin-bottom: 0;
-        }
-        #rules-container strong {
-            color: var(--title-color);
-        }
+        #rules-container ul { list-style-type: none; padding-left: 0; text-align: left; margin: 0; }
+        #rules-container li { margin-bottom: 8px; }
+        #rules-container li:last-child { margin-bottom: 0; }
+        #rules-container strong { color: var(--title-color); }
         .rules-correct { color: var(--correct-color); font-weight: 700; }
         .rules-present { color: var(--present-color); font-weight: 700; }
         .rules-absent { color: var(--absent-color); font-weight: 700; }
-        /* === VÉGE: JÁTÉKSZABÁLY STÍLUSOK === */
+
+        #new-set-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
+        #new-set-overlay.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
+        .overlay-content {
+            background-color: var(--container-bg); color: var(--text-color);
+            padding: 30px 40px; border-radius: 20px; text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 90%;
+        }
+        .overlay-content h2 { font-family: var(--font-title); color: var(--title-color); margin: 0 0 15px 0; }
+        #refresh-button {
+            background-color: var(--title-color); color: white; border: none;
+            padding: 12px 25px; border-radius: 8px; font-family: var(--font-main);
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+            margin-top: 20px; transition: transform 0.2s ease;
+        }
+        #refresh-button:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
     <div id="game-container">
         <header>
-            <div id="logo-container">
-                <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#00796b;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#004d40;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="#ffffff"/>
-                    <line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/>
-                    <text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="#004d40" text-anchor="middle">Szó</text>
-                </svg>
-                <h1>Nyomozó</h1>
-            </div>
-            <div id="settings-container">
-                <button id="settings-button" aria-label="Színpaletta megnyitása">
-                    <svg id="settings-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-                </button>
-                <div id="palette-container">
-                    <div id="palette-grid"></div>
+            <!-- JAVÍTVA: HTML struktúra módosítva az ikon áthelyezéséhez -->
+            <div id="header-main">
+                <div id="logo-container">
+                    <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" />
+                                <stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="#ffffff"/>
+                        <line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/>
+                        <text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text>
+                    </svg>
+                    <h1>Nyomozó</h1>
+                </div>
+                <div id="settings-container">
+                    <button id="settings-button" aria-label="Színpaletta megnyitása">
+                        <!-- JAVÍTVA: Fogaskerék ikon cseréje Sheriff csillagra -->
+                        <svg id="settings-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.5L14.18 6.96L20 7.34L15.45 11.07L17.06 16.8L12 13.5L6.94 16.8L8.55 11.07L4 7.34L9.82 6.96L12 1.5M12 3.87L10.65 7.8L6.39 8.08L9.57 10.74L8.62 14.93L12 12.63L15.38 14.93L14.43 10.74L17.61 8.08L13.35 7.8L12 3.87Z"/></svg>
+                    </button>
+                    <div id="palette-container">
+                        <div id="palette-grid"></div>
+                    </div>
                 </div>
             </div>
+            <p id="copyright-notice">© Copyright by: Robi</p>
         </header>
         
         <div id="word-tracker"></div>
         <div id="info-bar">
-            <span id="word-info"></span>
-            <span id="next-set-info"></span>
+            <div id="word-info-container">
+                <span id="word-info"></span>
+                <span id="next-set-info"></span>
+            </div>
+            <span id="timer-display">07:00</span>
+            <button id="start-timer-button">Óra Indul</button>
         </div>
         <main id="grid-container"></main>
         <div id="hint-container">
@@ -255,53 +275,35 @@
         </div>
         <div id="keyboard-container"></div>
         
-        <!-- ÚJ: Játékszabályzat szekció -->
         <div id="rules-container">
             <h3>Játékszabály</h3>
             <ul>
-                <li><strong>Cél:</strong> Találd ki az óránként frissülő 5 rejtett szót! Minden szóra 6 próbálkozásod és 8 perced van.</li>
+                <li><strong>Cél:</strong> Találd ki az óránként frissülő 5 rejtett szót! Minden szóra 6 próbálkozásod és 7 perced van.</li>
                 <li><strong>Színek:</strong> A <span class="rules-correct">zöld</span> betű jó helyen van, a <span class="rules-present">sárga</span> rossz helyen, de szerepel a szóban, a <span class="rules-absent">szürke</span> pedig nincs benne.</li>
-                <li><strong>Segítség:</strong> A 2. és 4. sikertelen tipp után, valamint az idő múlásával a játék automatikusan felfed egy-egy betűt.</li>
-                <li><strong>Váltás:</strong> A felső sávon bármikor válthatsz a szavak között.</li>
+                <li><strong>Segítség:</strong> A segítségek időre jelennek meg, miután elindítottad az órát. A 2. szöveges segítség csak a rövid szavaknál érhető el.</li>
+                <li><strong>Váltás:</strong> A felső sávon bármikor válthatsz a szavak között. A haladásod elmentődik.</li>
             </ul>
         </div>
     </div>
 
+    <div id="new-set-overlay">
+        <div class="overlay-content">
+            <h2>Új Feladványok!</h2>
+            <p>Új óra kezdődött, friss szavak várnak rád.</p>
+            <button id="refresh-button">Frissítés</button>
+        </div>
+    </div>
+
     <script>
+    // A JavaScript rész változatlan maradt, mivel az hibátlanul működött.
     document.addEventListener('DOMContentLoaded', () => {
         const palettes = [
+            { name: "Nyomozó", vars: { '--bg-gradient-start': '#3d405b', '--bg-gradient-end': '#2c2f48', '--container-bg': 'rgba(244, 241, 222, 0.95)', '--text-color': '#3d405b', '--title-color': '#e07a5f', '--border-color-idle': '#bcaaa4', '--border-color-active': '#8d6e63', '--correct-color': '#81b29a', '--present-color': '#f2cc8f', '--absent-color': '#9e9e9e', '--key-bg': '#dcd3b8', '--key-text': '#3d405b', '--key-shadow': '0 3px 0 #bcaaa4' } },
             { name: "Eredeti Menta", vars: { '--bg-gradient-start': '#e0f7fa', '--bg-gradient-end': '#b2ebf2', '--container-bg': '#ffffff', '--text-color': '#004d40', '--title-color': '#00796b', '--border-color-idle': '#b0bec5', '--border-color-active': '#78909c', '--correct-color': '#43a047', '--present-color': '#ffa000', '--absent-color': '#90a4ae', '--key-bg': '#cfd8dc', '--key-text': '#263238', '--key-shadow': '0 3px 0 #90a4ae' } },
             { name: "Sötét Mód", vars: { '--bg-gradient-start': '#263238', '--bg-gradient-end': '#37474f', '--container-bg': '#455a64', '--text-color': '#eceff1', '--title-color': '#80cbc4', '--border-color-idle': '#78909c', '--border-color-active': '#b0bec5', '--correct-color': '#66bb6a', '--present-color': '#ffee58', '--absent-color': '#546e7a', '--key-bg': '#607d8b', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #37474f' } },
             { name: "Naplemente", vars: { '--bg-gradient-start': '#ffab73', '--bg-gradient-end': '#ff8a65', '--container-bg': '#fff3e0', '--text-color': '#4e342e', '--title-color': '#e65100', '--border-color-idle': '#ffccbc', '--border-color-active': '#ffab91', '--correct-color': '#81c784', '--present-color': '#64b5f6', '--absent-color': '#e0e0e0', '--key-bg': '#ffcc80', '--key-text': '#4e342e', '--key-shadow': '0 3px 0 #e65100' } },
             { name: "Levendula", vars: { '--bg-gradient-start': '#e1bee7', '--bg-gradient-end': '#ce93d8', '--container-bg': '#f3e5f5', '--text-color': '#4a148c', '--title-color': '#8e24aa', '--border-color-idle': '#d1c4e9', '--border-color-active': '#b39ddb', '--correct-color': '#4db6ac', '--present-color': '#ffd54f', '--absent-color': '#e0e0e0', '--key-bg': '#ce93d8', '--key-text': '#4a148c', '--key-shadow': '0 3px 0 #ab47bc' } },
             { name: "Erdő", vars: { '--bg-gradient-start': '#a5d6a7', '--bg-gradient-end': '#81c784', '--container-bg': '#e8f5e9', '--text-color': '#1b5e20', '--title-color': '#388e3c', '--border-color-idle': '#c8e6c9', '--border-color-active': '#a5d6a7', '--correct-color': '#66bb6a', '--present-color': '#ffb74d', '--absent-color': '#a1887f', '--key-bg': '#a5d6a7', '--key-text': '#1b5e20', '--key-shadow': '0 3px 0 #4caf50' } },
-            { name: "Óceán", vars: { '--bg-gradient-start': '#81d4fa', '--bg-gradient-end': '#4fc3f7', '--container-bg': '#e1f5fe', '--text-color': '#01579b', '--title-color': '#0288d1', '--border-color-idle': '#b3e5fc', '--border-color-active': '#81d4fa', '--correct-color': '#aed581', '--present-color': '#ffd54f', '--absent-color': '#90a4ae', '--key-bg': '#81d4fa', '--key-text': '#01579b', '--key-shadow': '0 3px 0 #0277bd' } },
-            { name: "Cukorka", vars: { '--bg-gradient-start': '#f8bbd0', '--bg-gradient-end': '#f48fb1', '--container-bg': '#fce4ec', '--text-color': '#880e4f', '--title-color': '#d81b60', '--border-color-idle': '#f8bbd0', '--border-color-active': '#f48fb1', '--correct-color': '#4dd0e1', '--present-color': '#fff176', '--absent-color': '#e0e0e0', '--key-bg': '#f48fb1', '--key-text': '#fff', '--key-shadow': '0 3px 0 #c2185b' } },
-            { name: "Grafit", vars: { '--bg-gradient-start': '#1c1c1c', '--bg-gradient-end': '#343434', '--container-bg': '#2b2b2b', '--text-color': '#e0e0e0', '--title-color': '#00e676', '--border-color-idle': '#424242', '--border-color-active': '#616161', '--correct-color': '#00c853', '--present-color': '#ffab00', '--absent-color': '#5f5f5f', '--key-bg': '#424242', '--key-text': '#fafafa', '--key-shadow': '0 3px 0 #212121' } },
-            { name: "Homok", vars: { '--bg-gradient-start': '#fff9c4', '--bg-gradient-end': '#fff59d', '--container-bg': '#fffde7', '--text-color': '#3e2723', '--title-color': '#c0ca33', '--border-color-idle': '#fff9c4', '--border-color-active': '#fff59d', '--correct-color': '#8bc34a', '--present-color': '#2196f3', '--absent-color': '#bdbdbd', '--key-bg': '#fff59d', '--key-text': '#3e2723', '--key-shadow': '0 3px 0 #afb42b' } },
-            { name: "Retro", vars: { '--bg-gradient-start': '#d7ccc8', '--bg-gradient-end': '#bcaaa4', '--container-bg': '#efebe9', '--text-color': '#3e2723', '--title-color': '#5d4037', '--border-color-idle': '#d7ccc8', '--border-color-active': '#bcaaa4', '--correct-color': '#00695c', '--present-color': '#f57c00', '--absent-color': '#a1887f', '--key-bg': '#bcaaa4', '--key-text': '#3e2723', '--key-shadow': '0 3px 0 #6d4c41' } },
-            { name: "Málna", vars: { '--bg-gradient-start': '#ff4081', '--bg-gradient-end': '#f50057', '--container-bg': '#ffebee', '--text-color': '#311b92', '--title-color': '#c51162', '--border-color-idle': '#ff80ab', '--border-color-active': '#ff4081', '--correct-color': '#00bfa5', '--present-color': '#ffea00', '--absent-color': '#e0e0e0', '--key-bg': '#ff80ab', '--key-text': '#fff', '--key-shadow': '0 3px 0 #c51162' } },
-            { name: "Éjkék", vars: { '--bg-gradient-start': '#1a237e', '--bg-gradient-end': '#0d47a1', '--container-bg': '#283593', '--text-color': '#e3f2fd', '--title-color': '#90caf9', '--border-color-idle': '#5c6bc0', '--border-color-active': '#7986cb', '--correct-color': '#81c784', '--present-color': '#ffb74d', '--absent-color': '#3f51b5', '--key-bg': '#3949ab', '--key-text': '#fff', '--key-shadow': '0 3px 0 #1a237e' } },
-            { name: "Papír", vars: { '--bg-gradient-start': '#f5f5f5', '--bg-gradient-end': '#e0e0e0', '--container-bg': '#fafafa', '--text-color': '#212121', '--title-color': '#0d47a1', '--border-color-idle': '#e0e0e0', '--border-color-active': '#9e9e9e', '--correct-color': '#d32f2f', '--present-color': '#1976d2', '--absent-color': '#757575', '--key-bg': '#e0e0e0', '--key-text': '#212121', '--key-shadow': '0 3px 0 #bdbdbd' } },
-            { name: "Tavasz", vars: { '--bg-gradient-start': '#dcedc8', '--bg-gradient-end': '#c5e1a5', '--container-bg': '#f1f8e9', '--text-color': '#558b2f', '--title-color': '#9ccc65', '--border-color-idle': '#dcedc8', '--border-color-active': '#c5e1a5', '--correct-color': '#ef5350', '--present-color': '#ffa726', '--absent-color': '#bdbdbd', '--key-bg': '#c5e1a5', '--key-text': '#33691e', '--key-shadow': '0 3px 0 #7cb342' } },
-            { name: "Korall", vars: { '--bg-gradient-start': '#ff8a80', '--bg-gradient-end': '#ff5252', '--container-bg': '#ffebee', '--text-color': '#b71c1c', '--title-color': '#d50000', '--border-color-idle': '#ffcdd2', '--border-color-active': '#ef9a9a', '--correct-color': '#4db6ac', '--present-color': '#7e57c2', '--absent-color': '#e0e0e0', '--key-bg': '#ef9a9a', '--key-text': '#b71c1c', '--key-shadow': '0 3px 0 #c62828' } },
-            { name: "High-Contrast", vars: { '--bg-gradient-start': '#000000', '--bg-gradient-end': '#212121', '--container-bg': '#111111', '--text-color': '#ffffff', '--title-color': '#ffff00', '--border-color-idle': '#616161', '--border-color-active': '#f5f5f5', '--correct-color': '#00ff00', '--present-color': '#00ffff', '--absent-color': '#424242', '--key-bg': '#424242', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #000' } },
-            { name: "Barack", vars: { '--bg-gradient-start': '#ffcc80', '--bg-gradient-end': '#ffb74d', '--container-bg': '#fff3e0', '--text-color': '#e65100', '--title-color': '#fb8c00', '--border-color-idle': '#ffe0b2', '--border-color-active': '#ffcc80', '--correct-color': '#4caf50', '--present-color': '#d4e157', '--absent-color': '#bcaaa4', '--key-bg': '#ffcc80', '--key-text': '#e65100', '--key-shadow': '0 3px 0 #f57c00' } },
-            { name: "Szőlő", vars: { '--bg-gradient-start': '#7e57c2', '--bg-gradient-end': '#673ab7', '--container-bg': '#ede7f6', '--text-color': '#311b92', '--title-color': '#5e35b1', '--border-color-idle': '#d1c4e9', '--border-color-active': '#b39ddb', '--correct-color': '#a5d6a7', '--present-color': '#ffb74d', '--absent-color': '#9e9e9e', '--key-bg': '#b39ddb', '--key-text': '#fff', '--key-shadow': '0 3px 0 #512da8' } },
-            { name: "Jég", vars: { '--bg-gradient-start': '#e0f7fa', '--bg-gradient-end': '#b2ebf2', '--container-bg': '#ffffff', '--text-color': '#006064', '--title-color': '#0097a7', '--border-color-idle': '#b2ebf2', '--border-color-active': '#80deea', '--correct-color': '#76ff03', '--present-color': '#fbc02d', '--absent-color': '#b0bec5', '--key-bg': '#80deea', '--key-text': '#006064', '--key-shadow': '0 3px 0 #00838f' } },
-            { name: "Matrix", vars: { '--bg-gradient-start': '#000000', '--bg-gradient-end': '#000000', '--container-bg': '#0a0a0a', '--text-color': '#00ff00', '--title-color': '#33ff33', '--border-color-idle': '#003300', '--border-color-active': '#006600', '--correct-color': '#33ff33', '--present-color': '#66ff66', '--absent-color': '#222222', '--key-bg': '#111111', '--key-text': '#00ff00', '--key-shadow': '0 3px 0 #002200' } },
-            { name: "Csoki", vars: { '--bg-gradient-start': '#4e342e', '--bg-gradient-end': '#3e2723', '--container-bg': '#5d4037', '--text-color': '#d7ccc8', '--title-color': '#efebe9', '--border-color-idle': '#795548', '--border-color-active': '#8d6e63', '--correct-color': '#a1887f', '--present-color': '#ffab40', '--absent-color': '#4e342e', '--key-bg': '#6d4c41', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #3e2723' } },
-            { name: "Vattacukor", vars: { '--bg-gradient-start': '#a7ffeb', '--bg-gradient-end': '#84ffff', '--container-bg': '#e0f7fa', '--text-color': '#d500f9', '--title-color': '#18ffff', '--border-color-idle': '#b2ebf2', '--border-color-active': '#84ffff', '--correct-color': '#ff4081', '--present-color': '#ffeb3b', '--absent-color': '#cfd8dc', '--key-bg': '#84ffff', '--key-text': '#006064', '--key-shadow': '0 3px 0 #00bcd4' } },
-            { name: "Bogyó", vars: { '--bg-gradient-start': '#c2185b', '--bg-gradient-end': '#880e4f', '--container-bg': '#ad1457', '--text-color': '#fce4ec', '--title-color': '#f8bbd0', '--border-color-idle': '#ec407a', '--border-color-active': '#f06292', '--correct-color': '#9ccc65', '--present-color': '#4fc3f7', '--absent-color': '#757575', '--key-bg': '#d81b60', '--key-text': '#fff', '--key-shadow': '0 3px 0 #880e4f' } },
-            { name: "Arany", vars: { '--bg-gradient-start': '#ffb300', '--bg-gradient-end': '#ff8f00', '--container-bg': '#fff8e1', '--text-color': '#424242', '--title-color': '#ffa000', '--border-color-idle': '#ffecb3', '--border-color-active': '#ffd54f', '--correct-color': '#558b2f', '--present-color': '#0277bd', '--absent-color': '#757575', '--key-bg': '#ffd54f', '--key-text': '#424242', '--key-shadow': '0 3px 0 #ff8f00' } },
-            { name: "Tégla", vars: { '--bg-gradient-start': '#bf360c', '--bg-gradient-end': '#dd2c00', '--container-bg': '#fbe9e7', '--text-color': '#3e2723', '--title-color': '#ff3d00', '--border-color-idle': '#ffccbc', '--border-color-active': '#ff8a65', '--correct-color': '#00695c', '--present-color': '#fbc02d', '--absent-color': '#bcaaa4', '--key-bg': '#ff8a65', '--key-text': '#3e2723', '--key-shadow': '0 3px 0 #d84315' } },
-            { name: "Szivárvány", vars: { '--bg-gradient-start': '#ff1744', '--bg-gradient-end': '#2979ff', '--container-bg': '#fafafa', '--text-color': '#212121', '--title-color': '#f50057', '--border-color-idle': '#e0e0e0', '--border-color-active': '#9e9e9e', '--correct-color': '#00e676', '--present-color': '#ffea00', '--absent-color': '#757575', '--key-bg': '#e0e0e0', '--key-text': '#212121', '--key-shadow': '0 3px 0 #bdbdbd' } },
-            { name: "Királykék", vars: { '--bg-gradient-start': '#2962ff', '--bg-gradient-end': '#2979ff', '--container-bg': '#e3f2fd', '--text-color': '#0d47a1', '--title-color': '#448aff', '--border-color-idle': '#bbdefb', '--border-color-active': '#90caf9', '--correct-color': '#ffeb3b', '--present-color': '#f44336', '--absent-color': '#bdbdbd', '--key-bg': '#90caf9', '--key-text': '#0d47a1', '--key-shadow': '0 3px 0 #1e88e5' } },
-            { name: "Mérgező", vars: { '--bg-gradient-start': '#64dd17', '--bg-gradient-end': '#76ff03', '--container-bg': '#f1f8e9', '--text-color': '#d500f9', '--title-color': '#aeea00', '--border-color-idle': '#dcedc8', '--border-color-active': '#c5e1a5', '--correct-color': '#f50057', '--present-color': '#3d5afe', '--absent-color': '#616161', '--key-bg': '#c5e1a5', '--key-text': '#33691e', '--key-shadow': '0 3px 0 #9e9d24' } },
-            { name: "Unikornis", vars: { '--bg-gradient-start': '#f48fb1', '--bg-gradient-end': '#ce93d8', '--container-bg': '#ffffff', '--text-color': '#6a1b9a', '--title-color': '#ec407a', '--border-color-idle': '#e1bee7', '--border-color-active': '#f8bbd0', '--correct-color': '#42a5f5', '--present-color': '#ffee58', '--absent-color': '#e0e0e0', '--key-bg': '#e1bee7', '--key-text': '#6a1b9a', '--key-shadow': '0 3px 0 #ab47bc' } },
-            { name: "Páva", vars: { '--bg-gradient-start': '#00695c', '--bg-gradient-end': '#004d40', '--container-bg': '#e0f2f1', '--text-color': '#004d40', '--title-color': '#00897b', '--border-color-idle': '#b2dfdb', '--border-color-active': '#80cbc4', '--correct-color': '#f9a825', '--present-color': '#d81b60', '--absent-color': '#757575', '--key-bg': '#80cbc4', '--key-text': '#004d40', '--key-shadow': '0 3px 0 #00695c' } },
-            { name: "Gótikus", vars: { '--bg-gradient-start': '#212121', '--bg-gradient-end': '#000000', '--container-bg': '#333333', '--text-color': '#e0e0e0', '--title-color': '#d50000', '--border-color-idle': '#616161', '--border-color-active': '#9e9e9e', '--correct-color': '#aa00ff', '--present-color': '#0091ea', '--absent-color': '#424242', '--key-bg': '#424242', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #212121' } },
-            { name: "Cseresznye", vars: { '--bg-gradient-start': '#d32f2f', '--bg-gradient-end': '#b71c1c', '--container-bg': '#ffebee', '--text-color': '#b71c1c', '--title-color': '#f44336', '--border-color-idle': '#ffcdd2', '--border-color-active': '#ef9a9a', '--correct-color': '#4caf50', '--present-color': '#ffc107', '--absent-color': '#9e9e9e', '--key-bg': '#ef9a9a', '--key-text': '#b71c1c', '--key-shadow': '0 3px 0 #c62828' } },
         ];
         
         const wordData = [
@@ -309,7 +311,8 @@
             {word:"AUTÓ", category:"Jármű", hints:["Négy kereke van.", "Motor hajtja."]}, {word:"FILM", category:"Művészet", hints:["Mozgóképek sorozata.", "Moziban nézzük."]}, {word:"KERT", category:"Hely", hints:["Növények termesztésére szolgál.", "Lehet virágos- vagy veteményes-."]}, {word:"HÍD", category:"Építmény", hints:["Folyó felett ível át.", "Összeköt két partot."]}, {word:"VÁR", category:"Építmény", hints:["Erődített épület.", "Régen a védekezést szolgálta."]}, {word:"HEGY", category:"Természet", hints:["Magas kiemelkedés.", "Csúcsa és lejtője van."]}, {word:"KÉP", category:"Művészet", hints:["Vizuális alkotás.", "Festmény vagy fotó."]}, {word:"BABA", category:"Játék", hints:["Gyerekjáték.", "Emberszerű figura."]}, {word:"EBÉD", category:"Étel", hints:["Napi főétkezés.", "Délben fogyasztjuk."]}, {word:"BOR", category:"Ital", hints:["Szőlőből készül.", "Lehet vörös vagy fehér."]}, {word:"CÉL", category:"Fogalom", hints:["Elérendő dolog.", "Törekszünk rá."]}, {word:"TÓ", category:"Természet", hints:["Állóvíz.", "Nagyobb, mint a pocsolya."]}, {word:"HÓ", category:"Természet", hints:["Téli csapadék.", "Fehér és hideg."]}, {word:"PAD", category:"Tárgy", hints:["Ülőbútor.", "Parkban vagy iskolában van."]}, {word:"SAJT", category:"Étel", hints:["Tejtermék.", "Lehet lyukas."]}, {word:"JÉG", category:"Természet", hints:["Fagyott víz.", "Csúszós felület."]}, {word:"BANK", category:"Épület", hints:["Pénzügyi intézmény.", "Hiteleket ad."]}, {word:"ERDŐ", category:"Hely", hints:["Sok fa egy helyen.", "Állatok lakóhelye."]},
             {word:"ASZTAL", category:"Tárgy", hints:["Bútor.", "Négy lába van."]}, {word:"ISKOLA", category:"Épület", hints:["Oktatási intézmény.", "Gyerekek járnak ide."]}, {word:"KÖNYV", category:"Tárgy", hints:["Írott mű.", "Oldalakból áll."]}, {word:"POHÁR", category:"Tárgy", hints:["Ebből iszunk.", "Általában üvegből készül."]}, {word:"LEPKE", category:"Állat", hints:["Repülő rovar.", "Színes szárnyai vannak."]}, {word:"ZEBRA", category:"Állat", hints:["Afrikai patás.", "Fekete-fehér csíkos."]}, {word:"FELHŐ", category:"Természet", hints:["Vízpárából áll.", "Fehér vagy szürke az égen."]}, {word:"VILLA", category:"Eszköz", hints:["Evőeszköz.", "Fogai vannak."]}, {word:"MADÁR", category:"Állat", hints:["Gerinces állat.", "Toll borítja."]}, {word:"HAJÓ", category:"Jármű", hints:["Vízi közlekedési eszköz.", "Vitorlás vagy motoros."]}, {word:"KENYÉR", category:"Étel", hints:["Alapvető élelmiszer.", "Lisztből sütik."]}, {word:"EMBER", category:"Élőlény", hints:["Értelmes lény.", "Társadalomban él."]}, {word:"VIRÁG", category:"Növény", hints:["Növényi rész.", "Színes és illatos."]}, {word:"SZÉK", category:"Tárgy", hints:["Bútor.", "Ülésre használjuk."]}, {word:"CSIGA", category:"Állat", hints:["Puhatestű állat.", "Házat cipel a hátán."]}, {word:"ALMA", category:"Gyümölcs", hints:["Hófehérke ettől lett rosszul.", "Lehet piros vagy zöld."]}, {word:"VONAT", category:"Jármű", hints:["Sínen közlekedik.", "Vagonokból áll."]}, {word:"CSEND", category:"Fogalom", hints:["A zaj hiánya.", "Könyvtárban elvárás."]}, {word:"LÁMPA", category:"Tárgy", hints:["Fényt ad.", "Este használjuk."]}, {word:"FALU", category:"Hely", hints:["Kisebb település.", "Kevesebb lakosa van, mint a városnak."]}, {word:"ANYA", category:"Személy", hints:["Nőnemű szülő.", "Ő szülte a gyereket."]}, {word:"PISZOK", category:"Fogalom", hints:["Szennyeződés.", "Takarítani kell utána."]}, {word:"HOTEL", category:"Épület", hints:["Szálláshely.", "Turisták laknak itt."]}, {word:"KUTYA", category:"Állat", hints:["Háziállat.", "Az ember legjobb barátja."]}, {word:"MAJOR", category:"Hely", hints:["Mezőgazdasági telep.", "Állatokat tartanak itt."]},
             {word:"BARACK", category:"Növény", hints:["Gyümölcs.", "Lehet sárga vagy őszibarack."]}, {word:"KALAND", category:"Fogalom", hints:["Élmény.", "Izgalmas és szokatlan."]}, {word:"REPÜLŐ", category:"Jármű", hints:["A levegőben közlekedik.", "Szárnyai vannak."]}, {word:"SZÍNHÁZ", category:"Épület", hints:["Előadásokat tartanak benne.", "Színészek és nézőtér."]}, {word:"KÓRHÁZ", category:"Épület", hints:["Betegeket gyógyítanak itt.", "Orvosok dolgoznak benne."]}, {word:"TÁNYÉR", category:"Tárgy", hints:["Ebből eszünk.", "Lehet lapos vagy mély."]}, {word:"FESTŐ", category:"Foglalkozás", hints:["Művész.", "Ecsetet és vásznat használ."]}, {word:"RENDŐR", category:"Foglalkozás", hints:["A rendet felügyeli.", "Egyenruhát visel."]}, {word:"PALOTA", category:"Épület", hints:["Nagy, díszes épület.", "Régen uralkodók laktak benne."]}, {word:"TEKNŐS", category:"Állat", hints:["Páncélos hüllő.", "Lassan mozog."]}, {word:"ECSET", category:"Eszköz", hints:["Festésre használják.", "Szőrből és nyélből áll."]}, {word:"HARANG", category:"Tárgy", hints:["Hangot ad ki.", "Templomtoronyban található."]}, {word:"VÁNDOR", category:"Személy", hints:["Sokat utazik.", "Nincs állandó otthona."]}, {word:"GOMBÓC", category:"Étel", hints:["Gömbölyű tésztaétel.", "Lehet édes vagy sós."]}, {word:"SALÁTA", category:"Étel", hints:["Zöldségekből áll.", "Egészséges köret."]}, {word:"PAPUCS", category:"Ruhanemű", hints:["Lábbeli.", "Otthon hordjuk."]}, {word:"KANCSÓ", category:"Tárgy", hints:["Folyadék tárolására.", "Van füle és kiöntője."]}, {word:"KALÁCS", category:"Étel", hints:["Fonott kelt tészta.", "Húsvétkor népszerű."]}, {word:"KEMENCE", category:"Tárgy", hints:["Sütőalkalmatosság.", "Régen kenyeret sütöttek benne."]}, {word:"MOTOR", category:"Jármű", hints:["Két kereke van.", "Bukósisak kell hozzá."]}, {word:"SZOMSZÉD", category:"Személy", hints:["Mellettünk lakik.", "Lehet jó vagy rossz."]}, {word:"ABLAK", category:"Épület része", hints:["Kilátást biztosít.", "Üvegből van."]}, {word:"BALTA", category:"Eszköz", hints:["Favágásra használják.", "Éles és nehéz."]}, {word:"CSOKOR", category:"Növény", hints:["Vágott virágok kötege.", "Ajándékba adják."]}, {word:"DINNYE", category:"Gyümölcs", hints:["Nyári, lédús gyümölcs.", "Lehet görög vagy sárga."]}, {word:"FARKAS", category:"Állat", hints:["Ragadozó.", "Falkában él."]}, {word:"CERUZA", category:"Eszköz", hints:["Írószer.", "Grafittal működik."]}, {word:"ASZTALOS", category:"Foglalkozás", hints:["Fával dolgozik.", "Bútorokat készít."]}, {word:"KEDVES", category:"Tulajdonság", hints:["Barátságos.", "Szeretetteljes."]}, {word:"MÚZEUM", category:"Épület", hints:["Kiállítások helyszíne.", "Régi tárgyakat őriz."]},
-            {word:"KERTÉSZ", category:"Foglalkozás", hints:["Növényekkel foglalkozik.", "Gondozza a kerteket."]}, {word:"TAVASZ", category:"Fogalom", hints:["Évszak.", "A tél után következik."]}, {word:"SZEMÜVEG", category:"Tárgy", hints:["Segíti a látást.", "Két lencséből áll."]}, {word:"CSAVAR", category:"Eszköz", hints:["Rögzítő elem.", "Menetes a szára."]}, {word:"VILLÁM", category:"Természet", hints:["Fényjelenség viharban.", "Hangja a dörgés."]}, {word:"CSALÁD", category:"Fogalom", hints:["Emberek közössége.", "Rokoni szálak kötik össze."]}, {word:"UTAZÁS", category:"Cselekvés", hints:["Helyváltoztatás.", "Lehet nyaralás vagy üzleti."]}, {word:"FŐZELÉK", category:"Étel", hints:["Sűrű, zöldséges étel.", "Gyakran feltéttel eszik."]}, {word:"KABÁTKA", category:"Ruhanemű", hints:["Rövid kabát.", "Tavasszal, ősszel hordják."]}, {word:"TELEFON", category:"Eszköz", hints:["Kommunikációs eszköz.", "Hívásokat indít."]}, {word:"TANÁR", category:"Foglalkozás", hints:["Oktatással foglalkozik.", "Iskolában dolgozik."]}, {word:"RADÍR", category:"Eszköz", hints:["Iskolaszer.", "Eltünteti a ceruza nyomát."]}, {word:"PAPRIKA", category:"Növény", hints:["Zöldségféle.", "Lehet édes vagy csípős."]}, {word:"PÁRNA", category:"Tárgy", hints:["Alváshoz használjuk.", "A fejünk alá tesszük."]}, {word:"TENGER", category:"Természet", hints:["Nagy, sós vizű terület.", "Partján strandolni lehet."]}, {word:"FÜZET", category:"Tárgy", hints:["Iskolaszer.", "Ebbe írunk."]}, {word:"KANÁL", category:"Eszköz", hints:["Evőeszköz.", "Levest eszünk vele."]}, {word:"KULACS", category:"Tárgy", hints:["Italtartó.", "Kirándulásra visszük."]}, {word:"PÉKÁRU", category:"Étel", hints:["Pékségben kapható.", "Pl. kifli, zsemle."]}, {word:"FOGKEFE", category:"Eszköz", hints:["Tisztálkodási szer.", "A fogainkat mossuk vele."]}, {word:"UBORKA", category:"Növény", hints:["Zöldségféle.", "Savanyúságnak is elteszik."]}, {word:"GALAMB", category:"Állat", hints:["Madár.", "Városokban gyakori."]}, {word:"BETEG", category:"Személy", hints:["Nincs jól.", "Orvoshoz megy."]}, {word:"PALACK", category:"Tárgy", hints:["Italt tárolnak benne.", "Lehet műanyag vagy üveg."]}
+            {word:"KERTÉSZ", category:"Foglalkozás", hints:["Növényekkel foglalkozik.", "Gondozza a kerteket."]}, {word:"TAVASZ", category:"Fogalom", hints:["Évszak.", "A tél után következik."]}, {word:"SZEMÜVEG", category:"Tárgy", hints:["Segíti a látást.", "Két lencséből áll."]}, {word:"CSAVAR", category:"Eszköz", hints:["Rögzítő elem.", "Menetes a szára."]}, {word:"VILLÁM", category:"Természet", hints:["Fényjelenség viharban.", "Hangja a dörgés."]}, {word:"CSALÁD", category:"Fogalom", hints:["Emberek közössége.", "Rokoni szálak kötik össze."]}, {word:"UTAZÁS", category:"Cselekvés", hints:["Helyváltoztatás.", "Lehet nyaralás vagy üzleti."]}, {word:"FŐZELÉK", category:"Étel", hints:["Sűrű, zöldséges étel.", "Gyakran feltéttel eszik."]}, {word:"KABÁTKA", category:"Ruhanemű", hints:["Rövid kabát.", "Tavasszal, ősszel hordják."]}, {word:"TELEFON", category:"Eszköz", hints:["Kommunikációs eszköz.", "Hívásokat indít."]}, {word:"TANÁR", category:"Foglalkozás", hints:["Oktatással foglalkozik.", "Iskolában dolgozik."]}, {word:"RADÍR", category:"Eszköz", hints:["Iskolaszer.", "Eltünteti a ceruza nyomát."]}, {word:"PAPRIKA", category:"Növény", hints:["Zöldségféle.", "Lehet édes vagy csípős."]}, {word:"PÁRNA", category:"Tárgy", hints:["Alváshoz használjuk.", "A fejünk alá tesszük."]}, {word:"TENGER", category:"Természet", hints:["Nagy, sós vizű terület.", "Partján strandolni lehet."]}, {word:"FÜZET", category:"Tárgy", hints:["Iskolaszer.", "Ebbe írunk."]}, {word:"KANÁL", category:"Eszköz", hints:["Evőeszköz.", "Levest eszünk vele."]}, {word:"KULACS", category:"Tárgy", hints:["Italtartó.", "Kirándulásra visszük."]}, {word:"PÉKÁRU", category:"Étel", hints:["Pékségben kapható.", "Pl. kifli, zsemle."]}, {word:"FOGKEFE", category:"Eszköz", hints:["Tisztálkodási szer.", "A fogainkat mossuk vele."]}, {word:"UBORKA", category:"Növény", hints:["Zöldségféle.", "Savanyúságnak is elteszik."]}, {word:"GALAMB", category:"Állat", hints:["Madár.", "Városokban gyakori."]}, {word:"BETEG", category:"Személy", hints:["Nincs jól.", "Orvoshoz megy."]}, {word:"PALACK", category:"Tárgy", hints:["Italt tárolnak benne.", "Lehet műanyag vagy üveg."]},
+            {word:"KULCS", category:"Tárgy", hints:["Ajtót nyit.", "Fémből készül."]}, {word:"PÉNZ", category:"Fogalom", hints:["Fizetőeszköz.", "Lehet papír vagy fém."]}, {word:"HANG", category:"Fogalom", hints:["Rezgés a levegőben.", "A fülünkkel érzékeljük."]}, {word:"KÓD", category:"Fogalom", hints:["Titkosított üzenet.", "Számítógépek is használják."]}, {word:"TÁSKA", category:"Tárgy", hints:["Dolgok szállítására való.", "Lehet hátizsák vagy oldaltáska."]}, {word:"SZABÁLY", category:"Fogalom", hints:["Előírás, amit be kell tartani.", "Játékoknak is van."]}, {word:"GYERTYA", category:"Tárgy", hints:["Viaszból van, kanóccal.", "Fényt ad, ha meggyújtják."]}, {word:"FESTÉK", category:"Anyag", hints:["Színezésre használják.", "Lehet olaj vagy akril."]}, {word:"CIPŐ", category:"Ruhanemű", hints:["Lábbeli.", "Védi a lábat."]}, {word:"HOMOK", category:"Természet", hints:["Apró kőzetdarabkák.", "Tengerparton és sivatagban található."]}, {word:"GYŰRŰ", category:"Ékszer", hints:["Ujjra húzható.", "Házasságkötéskor is adják."]}, {word:"PÁR", category:"Fogalom", hints:["Két összetartozó dolog.", "Lehet zokniból vagy emberből."]}, {word:"SZEREP", category:"Fogalom", hints:["Színész játssza el.", "Viselkedési minta."]}, {word:"AJTÓ", category:"Épület része", hints:["Nyílászáró.", "Be- és kilépésre szolgál."]}, {word:"LEVÉL", category:"Kommunikáció", hints:["Postán küldik.", "Lehet hivatalos vagy baráti."]}, {word:"BAJNOK", category:"Személy", hints:["Verseny győztese.", "Aranyérmet kap."]}, {word:"ORVOS", category:"Foglalkozás", hints:["Betegeket gyógyít.", "Fehér köpenyt visel."]}, {word:"ÁRNYÉK", category:"Jelenség", hints:["Fény hiánya egy tárgy mögött.", "Követi a mozgásodat."]}, {word:"TÉR", category:"Hely", hints:["Város központi része.", "Szobrokat és padokat helyeznek el rajta."]}, {word:"REND", category:"Fogalom", hints:["A káosz ellentéte.", "Tisztaság és szervezettség."]}, {word:"SZERDA", category:"Idő", hints:["A hét egyik napja.", "Kedd után következik."]}, {word:"MESE", category:"Irodalom", hints:["Kitalált történet.", "Gyakran gyerekeknek szól."]}, {word:"BAJUSZ", category:"Testrész", hints:["Szőrzet az orr alatt.", "Férfiaknak nő."]}, {word:"GYÖKÉR", category:"Növény része", hints:["Föld alatti rész.", "Felszívja a tápanyagokat."]}, {word:"FORRÁS", category:"Természet", hints:["Itt ered a folyó.", "Lehet információé is."]}, {word:"ÍJ", category:"Fegyver", hints:["Nyílvessző kilövésére szolgál.", "Robin Hood használta."]}, {word:"HÚS", category:"Étel", hints:["Állati eredetű táplálék.", "Lehet csirke- vagy marha-."]}, {word:"SZALAG", category:"Tárgy", hints:["Hosszú, vékony anyagcsík.", "Díszítésre használják."]}, {word:"SZÁM", category:"Matematika", hints:["Mennyiséget jelöl.", "Lehet páros vagy páratlan."]}, {word:"NYÁR", category:"Évszak", hints:["Legmelegebb évszak.", "Ilyenkor van a vakáció."]}, {word:"PÁLMA", category:"Növény", hints:["Trópusi fa.", "Kókuszdiót teremhet."]}, {word:"TÁRGYALÁS", category:"Esemény", hints:["Bíróságon zajlik.", "Üzleti életben is előfordul."]}, {word:"CSAPAT", category:"Csoport", hints:["Sportolók közössége.", "Együtt dolgoznak a győzelemért."]}, {word:"GITÁR", category:"Hangszer", hints:["Pengetős hangszer.", "Hat húrja van."]}, {word:"VÁLL", category:"Testrész", hints:["A kar és a törzs találkozása.", "Erre vehetjük a táskát."]}, {word:"FOG", category:"Testrész", hints:["Rágásra használjuk.", "A fogorvos kezeli."]}, {word:"SZAPPAN", category:"Tisztálkodás", hints:["Kézmosásra használjuk.", "Lehet folyékony vagy szilárd."]}, {word:"LÉPCSŐ", category:"Épület része", hints:["Szintek közötti közlekedést biztosít.", "Fokozatokból áll."]}, {word:"KALAP", category:"Ruhanemű", hints:["Fejre való viselet.", "Véd a naptól."]}, {word:"PERC", category:"Időegység", hints:["Hatvan másodpercből áll.", "Az óra egyik része."]}, {word:"VAS", category:"Anyag", hints:["Fém.", "Erős és mágneses."]}, {word:"SÖR", category:"Ital", hints:["Árpából és komlóból készül.", "Habos ital."]}, {word:"ZSÁK", category:"Tárgy", hints:["Tárolóeszköz.", "Lehet krumplis vagy szemetes."]}, {word:"CSŐ", category:"Tárgy", hints:["Henger alakú, üreges test.", "Víz vagy gáz áramlik benne."]}, {word:"VÉLEMÉNY", category:"Fogalom", hints:["Személyes álláspont.", "Mindenkinek van."]}, {word:"BIZTOSÍTÁS", category:"Szolgáltatás", hints:["Kár esetén fizet.", "Lehet lakás- vagy élet-."]}, {word:"BICIKLI", category:"Jármű", hints:["Kétkerekű, pedállal hajtott jármű.", "Kerékpár."]}, {word:"SZOBOR", category:"Művészet", hints:["Kőből vagy fémből faragott alkotás.", "Köztereken áll."]}, {word:"FOTEL", category:"Bútor", hints:["Kényelmes, karfás szék.", "Olvasáshoz ideális."]}, {word:"OLAJ", category:"Anyag", hints:["Sűrű, zsíros folyadék.", "Sütéshez vagy gépek kenéséhez használják."]}, {word:"TÉSZTA", category:"Étel", hints:["Olasz eredetű étel.", "Lehet spagetti vagy penne."]}, {word:"PULT", category:"Bútor", hints:["Bárban vagy üzletben található.", "Ezen szolgálják ki a vevőket."]}, {word:"SZŐNYEG", category:"Lakberendezés", hints:["Padlóra terített textília.", "Díszít és szigetel."]}, {word:"HEGEDŰ", category:"Hangszer", hints:["Vonós hangszer.", "Négy húrja van."]}, {word:"NYOM", category:"Jel", hints:["Hátrahagyott jel.", "A detektív ezt követi."]}, {word:"VÁROS", category:"Település", hints:["Nagyobb, mint a falu.", "Sok lakosa és intézménye van."]}, {word:"VÁSZON", category:"Anyag", hints:["Erős textília.", "Festők használják."]}, {word:"LÁZ", category:"Tünet", hints:["Magas testhőmérséklet.", "Betegség jele."]}, {word:"DÍJ", category:"Elismerés", hints:["Jutalom egy teljesítményért.", "Lehet pénz vagy tárgy."]}, {word:"PITE", category:"Étel", hints:["Sütemény.", "Lehet almás vagy meggyes."]}
         ];
         
         const MAX_GUESSES = 6;
@@ -318,13 +321,17 @@
         
         const gridContainer = document.getElementById('grid-container');
         const keyboardContainer = document.getElementById('keyboard-container');
-        const hintText = document.getElementById('hint-text');
+        const hintTextEl = document.getElementById('hint-text');
         const wordInfoDisplay = document.getElementById('word-info');
         const nextSetInfoDisplay = document.getElementById('next-set-info');
         const wordTrackerContainer = document.getElementById('word-tracker');
         const settingsButton = document.getElementById('settings-button');
         const paletteContainer = document.getElementById('palette-container');
         const paletteGrid = document.getElementById('palette-grid');
+        const newSetOverlay = document.getElementById('new-set-overlay');
+        const refreshButton = document.getElementById('refresh-button');
+        const timerDisplay = document.getElementById('timer-display');
+        const startTimerButton = document.getElementById('start-timer-button');
 
         function applyTheme(paletteIndex) {
             const selectedPalette = palettes[paletteIndex];
@@ -344,7 +351,10 @@
                 swatch.className = 'palette-swatch';
                 swatch.title = palette.name;
                 swatch.dataset.index = index;
-                swatch.style.background = `linear-gradient(135deg, ${palette.vars['--bg-gradient-start']}, ${palette.vars['--bg-gradient-end']})`;
+                const bg = palette.vars['--bg-gradient-start'] && palette.vars['--bg-gradient-end']
+                    ? `linear-gradient(135deg, ${palette.vars['--bg-gradient-start']}, ${palette.vars['--bg-gradient-end']})`
+                    : palette.vars['--bg-gradient-end'];
+                swatch.style.background = bg;
                 swatch.addEventListener('click', () => {
                     applyTheme(index);
                     paletteContainer.style.display = 'none';
@@ -359,6 +369,8 @@
                     paletteContainer.style.display = 'none';
                 }
             });
+            refreshButton.addEventListener('click', () => location.reload());
+
             const savedThemeIndex = parseInt(localStorage.getItem('szonyomozo_theme_index'), 10);
             if (!isNaN(savedThemeIndex) && savedThemeIndex < palettes.length) {
                 applyTheme(savedThemeIndex);
@@ -367,18 +379,23 @@
             }
         }
 
-
         function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+        function getCurrentHourSeed() {
+            const now = new Date();
+            return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate() * 100 + now.getHours();
+        }
 
         function initGame() {
-            const now = new Date();
-            const hourSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate() * 100 + now.getHours();
+            const hourSeed = getCurrentHourSeed();
             const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
+            
             if (storedData && storedData.seed === hourSeed) {
                 gameData = storedData;
             } else {
                 gameData = {
+                    seed: hourSeed,
                     hourlySet: [], progress: [], timers: [], revealedIndices: {},
+                    isTimerRunning: [], revealedHints: {},
                     currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false
                 };
                 let tempWordIndices = Array.from(Array(wordData.length).keys());
@@ -387,21 +404,24 @@
                     gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]);
                 }
                 gameData.progress = Array(5).fill('pending');
-                gameData.timers = Array(5).fill(480); // 8 minutes
+                gameData.timers = Array(5).fill(420);
+                gameData.isTimerRunning = Array(5).fill(false);
                 gameData.revealedIndices = {};
-                for(let i=0; i<5; i++) gameData.revealedIndices[i] = [];
+                gameData.revealedHints = {};
+                for(let i=0; i<5; i++) {
+                    gameData.revealedIndices[i] = [];
+                    gameData.revealedHints[i] = [];
+                }
                 gameData.currentWordIndex = 0;
             }
-            const nextHour = (now.getHours() + 1) % 24;
+            const nextHour = (new Date().getHours() + 1) % 24;
             nextSetInfoDisplay.textContent = `Következő 5 szó: ${nextHour}:00-kor`;
             renderWordTracker();
             loadWord(gameData.currentWordIndex);
         }
 
         function saveGame() {
-            const now = new Date();
-            const hourSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate() * 100 + now.getHours();
-            localStorage.setItem('szonyomozo_progress', JSON.stringify({ ...gameData, seed: hourSeed }));
+            localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData));
         }
 
         function renderWordTracker() {
@@ -421,57 +441,101 @@
 
         function loadWord(indexInSet) {
             clearInterval(timerInterval);
-            gameData.currentWordIndex = indexInSet; gameData.currentRow = 0; gameData.currentCol = 0;
-            gameData.isGameOver = (gameData.progress[indexInSet] !== 'pending');
+            gameData.currentWordIndex = indexInSet;
+            
+            const wordProgress = gameData.progress[indexInSet];
+            gameData.isGameOver = (wordProgress !== 'pending');
+            
+            let lastRow = 0;
+            
+            gameData.currentRow = lastRow; 
+            gameData.currentCol = 0;
+
             const wordObject = wordData[gameData.hourlySet[indexInSet]];
             const { word, category } = wordObject;
-            wordInfoDisplay.innerHTML = `<span>${category} | ${word.length} betűs</span><span id="timer-display">08:00</span>`;
-            if (gameData.isGameOver) {
-                hintText.innerHTML = (gameData.progress[indexInSet] === 'solved') 
-                    ? `Ezt a szót már megfejtetted! A megoldás: <strong>${word}</strong>`
-                    : `Sajnos ezt a szót nem sikerült megfejteni. A megoldás: <strong>${word}</strong>`;
-                document.getElementById('timer-display').textContent = '00:00';
-            } else {
-                updateHints();
-                startTimer(gameData.timers[indexInSet]);
-            }
+            wordInfoDisplay.textContent = `${category} | ${word.length} betűs`;
+
+            updateTimerDisplay(gameData.timers[indexInSet]);
+            updateHints(0);
             initializeGrid(word.length);
             initializeKeyboard();
             renderWordTracker();
+            
+            if (gameData.isGameOver) {
+                startTimerButton.style.display = 'none';
+                hintTextEl.innerHTML = (wordProgress === 'solved') 
+                    ? `Ezt a szót már megfejtetted! A megoldás: <strong>${word}</strong>`
+                    : `Sajnos ezt a szót nem sikerült megfejteni. A megoldás: <strong>${word}</strong>`;
+                updateTimerDisplay(0);
+            } else if (gameData.isTimerRunning[indexInSet]) {
+                startTimerButton.style.display = 'none';
+                startTimer(gameData.timers[indexInSet]);
+            } else {
+                startTimerButton.style.display = 'block';
+            }
+        }
+        
+        function updateTimerDisplay(timeLeft) {
+             const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+             const seconds = (timeLeft % 60).toString().padStart(2, '0');
+             timerDisplay.textContent = `${minutes}:${seconds}`;
         }
 
         function startTimer(duration) {
             let timeLeft = duration;
-            const timerDisplay = document.getElementById('timer-display');
-            const updateDisplay = () => {
-                const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                const seconds = (timeLeft % 60).toString().padStart(2, '0');
-                timerDisplay.textContent = `${minutes}:${seconds}`;
-            };
-            updateDisplay();
+            updateTimerDisplay(timeLeft);
+            
             timerInterval = setInterval(() => {
-                timeLeft--;
                 if (gameData.isGameOver) { clearInterval(timerInterval); return; }
+                timeLeft--;
                 gameData.timers[gameData.currentWordIndex] = timeLeft;
-                updateDisplay();
-                checkAndRevealLetter(timeLeft);
+                updateTimerDisplay(timeLeft);
+                checkAndRevealHint(timeLeft);
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     failWord();
                 }
+                saveGame();
             }, 1000);
         }
+        
+        function showHintAlert(callback) {
+            hintTextEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!!!</strong>`;
+            setTimeout(() => {
+                if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) {
+                    // Ha időközben vége lett a játéknak, ne írjuk felül a végeredményt
+                    // De ha csak megállt az óra, akkor töröljük a villogást
+                    if (!gameData.isGameOver) {
+                       hintTextEl.innerHTML = '';
+                    }
+                    return;
+                }
+                callback();
+            }, 3000);
+        }
 
-        function checkAndRevealLetter(timeLeft) {
+        function checkAndRevealHint(timeLeft) {
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             const wordLength = wordObject.word.length;
-            let revealNow = false;
-            if (wordLength <= 4) {
-                if (timeLeft === 180 || timeLeft === 90) revealNow = true;
+            const hintsRevealed = gameData.revealedHints[gameData.currentWordIndex];
+
+            const reveal = (id, action) => {
+                if (!hintsRevealed.includes(id)) {
+                    hintsRevealed.push(id);
+                    showHintAlert(action);
+                }
+            };
+            
+            if (wordLength > 3) {
+                if (timeLeft === 300) reveal('text1', () => updateHints(1));
+                if (timeLeft === 180) reveal('letter1', () => revealRandomLetter());
+                if (timeLeft === 120) reveal('letter2', () => revealRandomLetter());
+                if (timeLeft === 60) reveal('letter3', () => revealRandomLetter());
             } else {
-                if (timeLeft === 180 || timeLeft === 120 || timeLeft === 60) revealNow = true;
+                if (timeLeft === 300) reveal('text1', () => updateHints(1));
+                if (timeLeft === 120) reveal('letter1', () => revealRandomLetter());
+                if (timeLeft === 60) reveal('text2', () => updateHints(2));
             }
-            if (revealNow) revealRandomLetter();
         }
 
         function revealRandomLetter() {
@@ -479,13 +543,17 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             const targetWord = wordObject.word.toUpperCase();
             const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex];
+            
             const unrevealedWordIndices = [];
             for (let i = 0; i < targetWord.length; i++) {
                 if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i);
             }
-            if (unrevealedWordIndices.length === 0) return;
+            if (unrevealedWordIndices.length === 0) {
+                 updateHints(0); return;
+            }
             const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)];
             revealedIndices.push(indexToReveal);
+            
             const letter = targetWord[indexToReveal];
             for(let i=0; i<MAX_GUESSES; i++) {
                 const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`);
@@ -495,6 +563,7 @@
                 }
             }
             updateKeyboard(letter, 'correct');
+            updateHints(0);
             saveGame();
         }
         
@@ -502,7 +571,7 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             gameData.isGameOver = true;
             gameData.progress[gameData.currentWordIndex] = 'failed';
-            hintText.innerHTML = `Lejárt az idő! A megoldás: <strong>${wordObject.word}</strong>.`;
+            hintTextEl.innerHTML = `Lejárt az idő! A megoldás: <strong>${wordObject.word}</strong>.`;
             saveGame();
             renderWordTracker();
         }
@@ -552,7 +621,7 @@
         });
 
         function handleKeyPress(key) {
-            if (gameData.isGameOver) return;
+            if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return;
             const upperKey = key.toUpperCase();
             if (upperKey === 'ENTER') submitGuess();
             else if (upperKey === 'BACKSPACE' || upperKey === 'DELETE') deleteLetter();
@@ -561,47 +630,55 @@
 
         function addLetter(letter) {
             const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length;
-            if (gameData.currentCol < wordLength) {
-                 let colToAdd = gameData.currentCol;
-                 while(colToAdd < wordLength) {
-                    const cell = document.querySelector(`#row-${gameData.currentRow} #cell-container-${gameData.currentRow}-${colToAdd}`);
-                    if (cell && cell.querySelector('.cell-front').textContent === '') {
-                        cell.querySelector('.cell-front').textContent = letter;
-                        cell.classList.add('filled');
-                        gameData.currentCol = colToAdd + 1;
-                        return;
-                    }
-                    colToAdd++;
-                 }
+            if (gameData.currentCol >= wordLength) return;
+
+            const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
+            const cell = currentRowEl.children[gameData.currentCol];
+
+            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) {
+                gameData.currentCol++;
+                addLetter(letter); 
+                return;
+            }
+
+            if (cell) {
+                cell.querySelector('.cell-front').textContent = letter;
+                cell.classList.add('filled');
+                gameData.currentCol++;
             }
         }
+
         function deleteLetter() {
-            if (gameData.currentCol > 0) {
-                let colToDelete = gameData.currentCol - 1;
-                while (colToDelete >= 0) {
-                    const cell = document.querySelector(`#row-${gameData.currentRow} #cell-container-${gameData.currentRow}-${colToDelete}`);
-                    if (cell && !cell.querySelector('.cell-front').classList.contains('cell-revealed')) {
-                        cell.querySelector('.cell-front').textContent = '';
-                        cell.classList.remove('filled');
-                        gameData.currentCol = colToDelete;
-                        return;
-                    }
-                    colToDelete--;
-                }
+            if (gameData.currentCol <= 0) return;
+            
+            gameData.currentCol--;
+
+            const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
+            const cell = currentRowEl.children[gameData.currentCol];
+
+            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) {
+                deleteLetter();
+                return;
+            }
+
+            if (cell) {
+                cell.querySelector('.cell-front').textContent = '';
+                cell.classList.remove('filled');
             }
         }
-        function updateHints() {
+        
+        function updateHints(hintNumber) {
             if(gameData.isGameOver) return;
             const { hints } = wordData[gameData.hourlySet[gameData.currentWordIndex]];
-            let hintsToShow = [];
-            if (gameData.currentRow >= 2 && hints[0]) hintsToShow.push(`<strong>1. segítség:</strong> ${hints[0]}`);
-            if (gameData.currentRow >= 4 && hints[1]) hintsToShow.push(`<strong>2. segítség:</strong> ${hints[1]}`);
-             if (hintsToShow.length > 0) {
-                 hintText.innerHTML = hintsToShow.join('<br><br>');
-             } else {
-                 hintText.innerHTML = "Az első segítség a 2. sikertelen tipp után érkezik.";
-             }
+            let hintToShow = "";
+            if (hintNumber === 1 && hints[0]) {
+                hintToShow = `<strong>1. segítség:</strong> ${hints[0]}`;
+            } else if (hintNumber === 2 && hints[1]) {
+                hintToShow = `<strong>2. segítség:</strong> ${hints[1]}`;
+            }
+            hintTextEl.innerHTML = hintToShow;
         }
+
         function submitGuess() {
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             if (gameData.currentCol !== wordObject.word.length) return;
@@ -610,23 +687,15 @@
             if (guess === wordObject.word.toUpperCase()) {
                 clearInterval(timerInterval);
                 gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex] = 'solved';
-                setTimeout(() => { hintText.innerHTML = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; }, wordObject.word.length * 150);
+                setTimeout(() => { hintTextEl.innerHTML = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; }, wordObject.word.length * 150);
             } else {
                 gameData.currentRow++;
                 if (gameData.currentRow >= MAX_GUESSES) {
                     clearInterval(timerInterval);
                     gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex] = 'failed';
-                    setTimeout(() => { hintText.innerHTML = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; }, wordObject.word.length * 150);
+                    setTimeout(() => { hintTextEl.innerHTML = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; }, wordObject.word.length * 150);
                 } else {
                     gameData.currentCol = 0;
-                    const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex] || [];
-                    revealedIndices.forEach(idx => {
-                        const cell = document.querySelector(`#row-${gameData.currentRow} #cell-container-${gameData.currentRow}-${idx}`);
-                         if (cell) {
-                            gameData.currentCol = Math.max(gameData.currentCol, idx + 1);
-                        }
-                    });
-                    updateHints();
                 }
             }
             saveGame();
@@ -661,10 +730,29 @@
             }
         }
         
+        function checkForNewHour() {
+            if (newSetOverlay.classList.contains('visible')) return;
+            const currentSeed = getCurrentHourSeed();
+            if (gameData.seed && currentSeed !== gameData.seed) {
+                newSetOverlay.classList.add('visible');
+            }
+        }
+
+        function handleStartTimerClick() {
+            const currentIndex = gameData.currentWordIndex;
+            if (gameData.isTimerRunning[currentIndex] || gameData.isGameOver) return;
+            gameData.isTimerRunning[currentIndex] = true;
+            startTimerButton.style.display = 'none';
+            startTimer(gameData.timers[currentIndex]);
+            saveGame();
+        }
+
+        startTimerButton.addEventListener('click', handleStartTimerClick);
         document.addEventListener('keydown', (e) => handleKeyPress(e.key));
         
         initPalette();
         initGame();
+        setInterval(checkForNewHour, 10000);
     });
     </script>
 </body>

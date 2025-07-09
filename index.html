@@ -141,14 +141,21 @@
         #bonus-header { display: flex; justify-content: space-around; align-items: center; width: 100%;}
         #bonus-timer-display { font-size: 1.8rem; font-weight: 700; color: var(--title-color); }
         #bonus-grid-wrapper { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
-        #bonus-grid-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-        .bonus-cell { width: clamp(40px, 10vw, 55px); height: clamp(40px, 10vw, 55px); background-color: #fff; border: 2px solid var(--border-color-idle); text-align: center; font-size: 1.8rem; text-transform: uppercase; font-family: var(--font-main); font-weight: 700; color: var(--text-color); border-radius: 5px; padding: 0;}
+        #bonus-grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; } /* MÓDOSÍTVA 6x6-ra */
+        .bonus-cell { width: clamp(35px, 8vw, 45px); height: clamp(35px, 8vw, 45px); background-color: #fff; border: 2px solid var(--border-color-idle); text-align: center; font-size: 1.5rem; text-transform: uppercase; font-family: var(--font-main); font-weight: 700; color: var(--text-color); border-radius: 5px; padding: 0; transition: all 0.2s ease;}
         .bonus-cell:focus { outline: 3px solid var(--title-color); }
+        .bonus-cell.highlighted { /* ÚJ: Kijelölés stílusa */
+            outline: 4px solid var(--present-color);
+            transform: scale(1.05);
+            z-index: 10;
+        }
         .bonus-cell.pre-filled { background-color: var(--key-bg); font-weight: 900; color: var(--title-color); }
         .bonus-cell.correct { background-color: var(--correct-color); color: white; border-color: var(--correct-color); }
         .bonus-cell.incorrect { background-color: #e53935; color: white; border-color: #e53935; }
         .empty-cell { background-color: transparent; border: none; }
-        #bonus-clues-container { text-align: left; list-style-type: none; padding: 0; margin: 0; line-height: 1.8; font-size: clamp(0.9rem, 2.5vw, 1.1rem); }
+        #bonus-clues-container { text-align: left; list-style-type: none; padding: 0; margin: 0; line-height: 1.8; font-size: clamp(0.9rem, 2.5vw, 1rem); }
+        #bonus-clues-container li { cursor: pointer; padding: 4px 8px; border-radius: 5px; transition: background-color 0.2s; } /* ÚJ: kurzor és stílus */
+        #bonus-clues-container li:hover { background-color: rgba(0,0,0,0.05); } /* ÚJ: hover effektus */
         #bonus-clues-container strong { color: var(--title-color); }
     </style>
 </head>
@@ -232,258 +239,58 @@
         </div>
     </div>
 
+    <!-- A szavakat mostantól a 'szavak.js' fájlból töltjük be. -->
+    <!-- Ennek a fájlnak a HTML mellett kell lennie. -->
+    <script src="szavak.js"></script>
+    
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const palettes = [ { name: "Nyomozó", vars: { '--bg-gradient-start': '#3d405b', '--bg-gradient-end': '#2c2f48', '--container-bg': 'rgba(244, 241, 222, 0.95)', '--text-color': '#3d405b', '--title-color': '#e07a5f', '--border-color-idle': '#bcaaa4', '--border-color-active': '#8d6e63', '--correct-color': '#81b29a', '--present-color': '#f2cc8f', '--absent-color': '#9e9e9e', '--key-bg': '#dcd3b8', '--key-text': '#3d405b', '--key-shadow': '0 3px 0 #bcaaa4', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#f57c00', '--difficulty-extra': '#d32f2f' } }, { name: "Eredeti Menta", vars: { '--bg-gradient-start': '#e0f7fa', '--bg-gradient-end': '#b2ebf2', '--container-bg': '#ffffff', '--text-color': '#004d40', '--title-color': '#00796b', '--border-color-idle': '#b0bec5', '--border-color-active': '#78909c', '--correct-color': '#43a047', '--present-color': '#ffa000', '--absent-color': '#90a4ae', '--key-bg': '#cfd8dc', '--key-text': '#263238', '--key-shadow': '0 3px 0 #90a4ae', '--difficulty-easy': '#43a047', '--difficulty-hard': '#ffa000', '--difficulty-extra': '#e53935' } }, { name: "Sötét Mód", vars: { '--bg-gradient-start': '#263238', '--bg-gradient-end': '#37474f', '--container-bg': '#455a64', '--text-color': '#eceff1', '--title-color': '#80cbc4', '--border-color-idle': '#78909c', '--border-color-active': '#b0bec5', '--correct-color': '#66bb6a', '--present-color': '#ffee58', '--absent-color': '#546e7a', '--key-bg': '#607d8b', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #37474f', '--difficulty-easy': '#66bb6a', '--difficulty-hard': '#ffee58', '--difficulty-extra': '#ef5350' } }, { name: "Naplemente", vars: { '--bg-gradient-start': '#ffab73', '--bg-gradient-end': '#ff8a65', '--container-bg': '#fff3e0', '--text-color': '#4e342e', '--title-color': '#e65100', '--border-color-idle': '#ffccbc', '--border-color-active': '#ffab91', '--correct-color': '#81c784', '--present-color': '#64b5f6', '--absent-color': '#e0e0e0', '--key-bg': '#ffcc80', '--key-text': '#4e342e', '--key-shadow': '0 3px 0 #e65100', '--difficulty-easy': '#81c784', '--difficulty-hard': '#e65100', '--difficulty-extra': '#b71c1c' } }, { name: "Levendula", vars: { '--bg-gradient-start': '#e1bee7', '--bg-gradient-end': '#ce93d8', '--container-bg': '#f3e5f5', '--text-color': '#4a148c', '--title-color': '#8e24aa', '--border-color-idle': '#d1c4e9', '--border-color-active': '#b39ddb', '--correct-color': '#4db6ac', '--present-color': '#ffd54f', '--absent-color': '#e0e0e0', '--key-bg': '#ce93d8', '--key-text': '#4a148c', '--key-shadow': '0 3px 0 #ab47bc', '--difficulty-easy': '#4db6ac', '--difficulty-hard': '#fbc02d', '--difficulty-extra': '#e91e63' } }, { name: "Erdő", vars: { '--bg-gradient-start': '#a5d6a7', '--bg-gradient-end': '#81c784', '--container-bg': '#e8f5e9', '--text-color': '#1b5e20', '--title-color': '#388e3c', '--border-color-idle': '#c8e6c9', '--border-color-active': '#a5d6a7', '--correct-color': '#66bb6a', '--present-color': '#ffb74d', '--absent-color': '#a1887f', '--key-bg': '#a5d6a7', '--key-text': '#1b5e20', '--key-shadow': '0 3px 0 #4caf50', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#ffb74d', '--difficulty-extra': '#e57373' } }, ];
         
-        const wordData = [
-    {word:"HÁZ", category:"Épület", difficulty:"Könnyű", hints:["Lakni lehet benne.", "Teteje és falai vannak.", "Lehet családi vagy társas."]},
-    {word:"NAP", category:"Égitest", difficulty:"Könnyű", hints:["Fényt és meleget ad.", "Körülötte kering a Föld.", "A Naprendszer központi csillaga."]},
-    {word:"VÍZ", category:"Folyadék", difficulty:"Könnyű", hints:["Az élet alapja.", "Képlete: H₂O.", "Lehet folyó, tó vagy tenger."]},
-    {word:"KŐ", category:"Természet", difficulty:"Könnyű", hints:["Kemény, szilárd anyag.", "Az ollót legyőzi a játékban.", "Építkezéshez is használják."]},
-    {word:"ÉG", category:"Természet", difficulty:"Könnyű", hints:["Felettünk terül el.", "Nappal kék, éjjel fekete.", "Felhők úsznak rajta."]},
-    {word:"SÓ", category:"Étel", difficulty:"Könnyű", hints:["Fehér, kristályos fűszer.", "A tengerben is megtalálható.", "Túlzott fogyasztása egészségtelen."]},
-    {word:"KOR", category:"Fogalom", difficulty:"Könnyű", hints:["Időszakot jelöl.", "Lehet új- vagy közép-.", "Az ember életének szakaszait is jelöli."]},
-    {word:"ÁGY", category:"Bútor", difficulty:"Könnyű", hints:["Alvásra használjuk.", "Párna és takaró tartozik hozzá.", "A hálószoba központi eleme."]},
-    {word:"ÚT", category:"Hely", difficulty:"Könnyű", hints:["Két pontot köt össze.", "Járművek közlekednek rajta.", "Lehet aszfalt vagy föld."]},
-    {word:"TŰZ", category:"Jelenség", difficulty:"Könnyű", hints:["Égés során keletkezik.", "Meleget és fényt ad.", "Vigyázni kell vele, mert veszélyes."]},
-    {word:"FA", category:"Növény", difficulty:"Könnyű", hints:["Levelei, törzse és ágai vannak.", "Papírt készítenek belőle.", "Oxigént termel."]},
-    {word:"AUTÓ", category:"Jármű", difficulty:"Könnyű", hints:["Négy kereke van.", "Benzinnel vagy árammal működik.", "Jogosítvány kell a vezetéséhez."]},
-    {word:"KERT", category:"Hely", difficulty:"Könnyű", hints:["A ház körül található.", "Növényeket ültetnek ide.", "Lehet veteményes vagy virágos."]},
-    {word:"HÍD", category:"Építmény", difficulty:"Könnyű", hints:["Víz felett vezet át.", "Összeköti a két partot.", "Pilléreken áll."]},
-    {word:"HEGY", category:"Természet", difficulty:"Könnyű", hints:["Magas földrajzi képződmény.", "A völgy ellentéte.", "Télen síelni lehet rajta."]},
-    {word:"KÉP", category:"Tárgy", difficulty:"Könnyű", hints:["Vizuális alkotás.", "A falra akasztják.", "Lehet festmény vagy fénykép."]},
-    {word:"EBÉD", category:"Étel", difficulty:"Könnyű", hints:["Déli étkezés.", "Gyakran leves és főétel.", "Munkahelyen is van rá szünet."]},
-    {word:"BOR", category:"Ital", difficulty:"Könnyű", hints:["Szőlőből készül.", "Lehet vörös vagy fehér.", "A pincében tárolják."]},
-    {word:"CÉL", category:"Fogalom", difficulty:"Könnyű", hints:["Elérendő dolog.", "A sportoló erre törekszik.", "Lehet rövid vagy hosszú távú."]},
-    {word:"TÓ", category:"Természet", difficulty:"Könnyű", hints:["Állóvíz.", "A Balaton a legnagyobb ilyen nálunk.", "Horgászni és csónakázni lehet rajta."]},
-    {word:"HÓ", category:"Időjárás", difficulty:"Könnyű", hints:["Téli csapadék.", "Hóembert építenek belőle.", "Fagyott vízkristályokból áll."]},
-    {word:"PAD", category:"Bútor", difficulty:"Könnyű", hints:["Ülőalkalmatosság.", "Parkban vagy iskolában is van.", "Több ember is elfér rajta."]},
-    {word:"SAJT", category:"Étel", difficulty:"Könnyű", hints:["Tejtermék.", "Az egér kedvence a mesékben.", "Lehet trappista vagy parmezán."]},
-    {word:"JÉG", category:"Halmazállapot", difficulty:"Könnyű", hints:["Fagyott víz.", "Italokba teszik hűsítésre.", "A korcsolyapálya ebből van."]},
-    {word:"BANK", category:"Intézmény", difficulty:"Könnyű", hints:["Pénzzel foglalkozik.", "Hiteleket nyújt.", "ATM-et üzemeltet."]},
-    {word:"ERDŐ", category:"Hely", difficulty:"Könnyű", hints:["Sok fa együttese.", "A róka lakhelye.", "Kirándulni lehet benne."]},
-    {word:"KULCS", category:"Tárgy", difficulty:"Könnyű", hints:["Ajtót nyit és zár.", "Zárba illik.", "Gyakran karikán tartják."]},
-    {word:"PÉNZ", category:"Eszköz", difficulty:"Könnyű", hints:["Fizetésre használjuk.", "Lehet érme vagy bankjegy.", "A hiánya gyakori probléma."]},
-    {word:"HANG", category:"Jelenség", difficulty:"Könnyű", hints:["A fülünkkel érzékeljük.", "A csend ellentéte.", "A levegő rezgése."]},
-    {word:"CIPŐ", category:"Ruhanemű", difficulty:"Könnyű", hints:["A lábunkra vesszük.", "Véd a sérülésektől.", "Lehet sport- vagy elegáns."]},
-    {word:"HOMOK", category:"Anyag", difficulty:"Könnyű", hints:["Apró szemcsékből áll.", "A sivatagban és a tengerparton is van.", "Homokvárat építenek belőle."]},
-    {word:"AJTÓ", category:"Nyílászáró", difficulty:"Könnyű", hints:["Be- és kilépésre szolgál.", "Lehet nyitva vagy csukva.", "Van kilincse."]},
-    {word:"MESE", category:"Irodalom", difficulty:"Könnyű", hints:["Kitalált történet.", "Gyakran happy end a vége.", "A jó elnyeri jutalmát, a rossz a büntetését."]},
-    {word:"NYÁR", category:"Évszak", difficulty:"Könnyű", hints:["A legmelegebb évszak.", "Ilyenkor van a vakáció.", "Sokan mennek nyaralni."]},
-    {word:"LÁZ", category:"Tünet", difficulty:"Könnyű", hints:["Magas testhőmérséklet.", "Betegség jele.", "Hőmérővel mérik."]},
-    {word:"DÍJ", category:"Elismerés", difficulty:"Könnyű", hints:["Jutalom valamiért.", "A győztes kapja.", "Lehet serleg vagy érem."]},
-    {word:"PITE", category:"Étel", difficulty:"Könnyű", hints:["Gyümölcsös sütemény.", "Lehet almás vagy meggyes.", "Gyakran rácsos a teteje."]},
-    {word:"ASZTAL", category:"Bútor", difficulty:"Könnyű", hints:["Étkezésre, munkára használjuk.", "Általában négy lába van.", "Terítővel borítják le."]},
-    {word:"POHÁR", category:"Eszköz", difficulty:"Könnyű", hints:["Ebből iszunk.", "Lehet üvegből vagy műanyagból.", "Koccintani is szoktak vele."]},
-    {word:"MADÁR", category:"Állat", difficulty:"Könnyű", hints:["Tollas, repülő állat.", "Fészket rak.", "Csicsereg."]},
-    {word:"HAJÓ", category:"Jármű", difficulty:"Könnyű", hints:["Vízen közlekedik.", "Lehet vitorlás vagy motoros.", "A kapitány irányítja."]},
-    {word:"KENYÉR", category:"Étel", difficulty:"Könnyű", hints:["Alapvető élelmiszer.", "Pékségben sütik.", "Szeletekre vágva fogyasztják."]},
-    {word:"VIRÁG", category:"Növény", difficulty:"Könnyű", hints:["Színes és illatos.", "Nőnapra adják.", "Vázába teszik."]},
-    {word:"SZÉK", category:"Bútor", difficulty:"Könnyű", hints:["Ülésre használjuk.", "Háttámlája van.", "Az asztal mellett áll."]},
-    {word:"ALMA", category:"Gyümölcs", difficulty:"Könnyű", hints:["Piros vagy zöld gyümölcs.", "Egy közmondás szerint távol tartja az orvost.", "A pite gyakori tölteléke."]},
-    {word:"VONAT", category:"Jármű", difficulty:"Könnyű", hints:["Sínen közlekedik.", "Vagonokból áll.", "Mozdony húzza."]},
-    {word:"LÁMPA", category:"Tárgy", difficulty:"Könnyű", hints:["Fényt ad a sötétben.", "Lehet asztali vagy álló.", "Villanykörte van benne."]},
-    {word:"FALU", category:"Település", difficulty:"Könnyű", hints:["Kisebb, mint a város.", "Gyakran van temploma és kocsmája.", "Nyugodtabb az élet, mint a városban."]},
-    {word:"ANYA", category:"Személy", difficulty:"Könnyű", hints:["Nőnemű szülő.", "Ő hordta a szív alatt.", "Gondoskodik a gyermekeiről."]},
-    {word:"KUTYA", category:"Állat", difficulty:"Könnyű", hints:["Az ember legjobb barátja.", "Ugat és csóválja a farkát.", "Házőrzésre is használják."]},
-    {word:"CSOKI", category:"Édesség", difficulty:"Könnyű", hints:["Kakaóbabból készül.", "Lehet tej- vagy ét-.", "A gyerekek egyik kedvence."]},
-    {word:"ISKOLA", category:"Épület", difficulty:"Könnyű", hints:["Itt tanulnak a gyerekek.", "Szünetben nagy a zaj.", "Tanárok és diákok alkotják közösségét."]},
-    {word:"KÖNYV", category:"Tárgy", difficulty:"Könnyű", hints:["Oldalakból és borítóból áll.", "Olvasásra való.", "A könyvtárban kölcsönözhető."]},
-    {word:"LABDA", category:"Játék", difficulty:"Könnyű", hints:["Gömbölyű sportszer.", "Rúgni vagy dobni lehet.", "A focihoz elengedhetetlen."]},
-    {word:"ZENE", category:"Művészet", difficulty:"Könnyű", hints:["Hangok művészi elrendezése.", "Rádióban szól.", "Lehet komoly vagy könnyű."]},
-    {word:"TÉL", category:"Évszak", difficulty:"Könnyű", hints:["A leghidegebb évszak.", "Karácsony és hó.", "Ilyenkor kell a kabát és a sál."]},
-    {word:"FILM", category:"Művészet", difficulty:"Könnyű", hints:["Mozgóképes alkotás.", "Moziban vagy tévében nézik.", "Rendező készíti."]},
-    {word:"SZÍN", category:"Tulajdonság", difficulty:"Könnyű", hints:["A fény egy tulajdonsága.", "A szivárványban sok van belőle.", "Lehet piros, kék, sárga."]},
-    {word:"SZÓ", category:"Nyelvészet", difficulty:"Könnyű", hints:["Jelentéssel bíró betűsor.", "Ebből áll a mondat.", "A játék lényege ennek a kitalálása."]},
-    {word:"CSEND", category:"Állapot", difficulty:"Könnyű", hints:["A zaj hiánya.", "A könyvtárban elvárás.", "Néha aranyat ér."]},
-    {word:"ÁLOM", category:"Jelenség", difficulty:"Könnyű", hints:["Alvás közben látjuk.", "Lehet szép vagy ijesztő.", "Freud sokat foglalkozott vele."]},
-    {word:"KÉS", category:"Eszköz", difficulty:"Könnyű", hints:["Vágásra használják.", "Éles a pengéje.", "A villával és kanállal együtt evőeszköz."]},
-    {word:"IDŐ", category:"Fogalom", difficulty:"Könnyű", hints:["Múlik és mérhető.", "Óra, nap, év.", "A pénzhez szokták hasonlítani."]},
-    {word:"SZÍV", category:"Szerv", difficulty:"Könnyű", hints:["A szeretet jelképe.", "A vért pumpálja.", "Dobog."]},
-    {word:"BABA", category:"Személy", difficulty:"Könnyű", hints:["Kisgyermek.", "Sír, ha éhes.", "Cumit használ."]},
-    {word:"JÁTÉK", category:"Cselekvés", difficulty:"Könnyű", hints:["Szórakoztató tevékenység.", "Nem munka.", "A gyerekek sokat csinálják."]},
-    {word:"MAJOM", category:"Állat", difficulty:"Könnyű", hints:["Fán élő emlős.", "Szereti a banánt.", "Az ember rokona."]},
-    {word:"ORR", category:"Testrész", difficulty:"Könnyű", hints:["Szaglószerv.", "Az arc közepén van.", "Megfázáskor folyik."]},
-    {word:"KEFE", category:"Eszköz", difficulty:"Könnyű", hints:["Tisztításra használják.", "Lehet fog-, haj- vagy köröm-.", "Sörtéi vannak."]},
-    {word:"KÁVÉ", category:"Ital", difficulty:"Könnyű", hints:["Reggeli, élénkítő ital.", "Lehet presszó vagy hosszú.", "Cukorral és tejjel is isszák."]},
-    {word:"TEA", category:"Ital", difficulty:"Könnyű", hints:["Forró ital, gyógynövényből.", "Lehet fekete vagy zöld.", "Angliában délután isszák."]},
-    {word:"FÜL", category:"Testrész", difficulty:"Könnyű", hints:["A hallás szerve.", "Páros szerv a fej két oldalán.", "Fülbevalót viselnek benne."]},
-    {word:"FOG", category:"Testrész", difficulty:"Könnyű", hints:["Rágásra használjuk.", "A fogorvos kezeli.", "Lehet tej- vagy maradó."]},
-    {word:"KÉZ", category:"Testrész", difficulty:"Könnyű", hints:["Öt ujja van.", "Írásra és megfogásra használjuk.", "Mosni kell étkezés előtt."]},
-    {word:"LÁB", category:"Testrész", difficulty:"Könnyű", hints:["Járásra használjuk.", "A cipőt erre húzzuk.", "A test alsó végtagja."]},
-    {word:"HAJ", category:"Testrész", difficulty:"Könnyű", hints:["A fejet borítja.", "Fodrász vágja.", "Lehet szőke, barna, fekete."]},
-    {word:"BŐR", category:"Szerv", difficulty:"Könnyű", hints:["A test külső borítása.", "A legnagyobb szervünk.", "Leéghet a napon."]},
-    {word:"ÉV", category:"Idő", difficulty:"Könnyű", hints:["365 napból áll.", "Négy évszak van benne.", "Az ember korát ebben mérik."]},
-    {word:"HÉT", category:"Idő", difficulty:"Könnyű", hints:["Hét napból áll.", "Munkanapokból és hétvégéből áll.", "A naptárban követhető."]},
-    {word:"ÉJ", category:"Napszak", difficulty:"Könnyű", hints:["A nappal ellentéte.", "Sötét van és alszunk.", "A csillagok ekkor látszanak."]},
-    {word:"POR", category:"Anyag", difficulty:"Könnyű", hints:["Apró részecskék a levegőben.", "Takarítani kell.", "Allergiát okozhat."]},
-    {word:"SÁR", category:"Anyag", difficulty:"Könnyű", hints:["Vizes föld.", "Eső után keletkezik.", "Összekeni a cipőt."]},
-    {word:"VÉR", category:"Testnedv", difficulty:"Könnyű", hints:["Piros folyadék az erekben.", "Oxigént szállít.", "A szúnyog ezt szívja."]},
-    {word:"CSŐ", category:"Tárgy", difficulty:"Könnyű", hints:["Hosszú, üreges henger.", "Víz vagy gáz áramlik benne.", "A szerelő javítja."]},
-    {word:"VAS", category:"Anyag", difficulty:"Könnyű", hints:["Erős, szürke fém.", "A mágnes vonzza.", "Rozsdásodik."]},
-    {word:"SÖR", category:"Ital", difficulty:"Könnyű", hints:["Alkoholos ital.", "Komlóból és árpából készül.", "Habos a teteje."]},
-    {word:"SZÉL", category:"Időjárás", difficulty:"Könnyű", hints:["Mozgó levegő.", "A vitorlát hajtja.", "Viharban erős."]},
-    {word:"KÖD", category:"Időjárás", difficulty:"Könnyű", hints:["Sűrű pára a föld közelében.", "Csökkenti a látótávolságot.", "Ősszel gyakori."]},
-    {word:"BARACK", category:"Gyümölcs", difficulty:"Nehéz", hints:["Lehet sárga vagy őszi.", "Szaténos vagy molyhos a héja.", "Befőttet és lekvárt is készítenek belőle."]},
-    {word:"KALAND", category:"Esemény", difficulty:"Nehéz", hints:["Izgalmas, szokatlan élmény.", "Indiana Jones ilyenekbe keveredik.", "A kockázat és az újdonság jellemzi."]},
-    {word:"REPÜLŐ", category:"Jármű", difficulty:"Nehéz", hints:["Levegőben közlekedik.", "Pilóta vezeti.", "A reptéren száll fel és le."]},
-    {word:"SZÍNHÁZ", category:"Épület", difficulty:"Nehéz", hints:["Előadóművészeti helyszín.", "Van színpad és nézőtér.", "Tapsviharral jutalmazzák az előadást."]},
-    {word:"KÓRHÁZ", category:"Intézmény", difficulty:"Nehéz", hints:["Betegeket gyógyítanak itt.", "Orvosok és ápolók dolgoznak benne.", "Látogatási idő is van."]},
-    {word:"TÁNYÉR", category:"Eszköz", difficulty:"Nehéz", hints:["Ebből eszünk.", "Lehet lapos vagy mély.", "A mosogatóban végzi."]},
-    {word:"RENDŐR", category:"Foglalkozás", difficulty:"Nehéz", hints:["A rendet felügyeli.", "Igazoltathat.", "Egyenruhát visel és jelvénye van."]},
-    {word:"PALOTA", category:"Épület", difficulty:"Nehéz", hints:["Nagy, díszes lakóhely.", "Régen királyok laktak benne.", "A mesékben hercegnők otthona."]},
-    {word:"TEKNŐS", category:"Állat", difficulty:"Nehéz", hints:["Páncélos hüllő.", "Hosszú életű.", "Lassan, megfontoltan mozog."]},
-    {word:"ECSET", category:"Eszköz", difficulty:"Nehéz", hints:["Festésre használják.", "A végén szőr van.", "A művész és a szobafestő is használja."]},
-    {word:"HARANG", category:"Tárgy", difficulty:"Nehéz", hints:["Templomtoronyban lakik.", "Kongatják vagy húzzák.", "A déli szókor megszólal."]},
-    {word:"GOMBÓC", category:"Étel", difficulty:"Nehéz", hints:["Gömbölyű finomság.", "Lehet szilvás vagy túrós.", "Zsemlemorzsába forgatják."]},
-    {word:"SALÁTA", category:"Étel", difficulty:"Nehéz", hints:["Zöldségekből készül.", "Gyakran öntettel eszik.", "Lehet főétel vagy köret."]},
-    {word:"PAPUCS", category:"Lábbeli", difficulty:"Nehéz", hints:["Otthoni viselet.", "A strandolás elengedhetetlen kelléke.", "Nincs sarka, könnyű belebújni."]},
-    {word:"KANCSÓ", category:"Tárgy", difficulty:"Nehéz", hints:["Folyadék tárolására való edény.", "Van füle és kiöntője.", "Gyakran kerámiából készül."]},
-    {word:"KALÁCS", category:"Étel", difficulty:"Nehéz", hints:["Fonott kelt tészta.", "Húsvétkor népszerű.", "Lehet kakaós vagy mazsolás."]},
-    {word:"KEMENCE", category:"Tárgy", difficulty:"Nehéz", hints:["Hagyományos sütőalkalmatosság.", "Búbos is lehet.", "Kenyeret és langallót sütöttek benne."]},
-    {word:"MOTOR", category:"Jármű", difficulty:"Nehéz", hints:["Kétkerekű, motoros jármű.", "Bukósisak kötelező.", "Nagyobb és gyorsabb, mint a robogó."]},
-    {word:"SZOMSZÉD", category:"Személy", difficulty:"Nehéz", hints:["Mellettünk lakik.", "Átkopoghat a falon.", "Lehet jó vagy rossz a viszony vele."]},
-    {word:"ABLAK", category:"Nyílászáró", difficulty:"Nehéz", hints:["Kilátást biztosít.", "Üvegből készül.", "Párkánya is van."]},
-    {word:"BALTA", category:"Eszköz", difficulty:"Nehéz", hints:["Favágáshoz használják.", "Éles és nehéz.", "Fejsze."]},
-    {word:"CSOKOR", category:"Ajándék", difficulty:"Nehéz", hints:["Vágott virágok kötege.", "Ballagáskor kapják a diákok.", "A menyasszonynak is van."]},
-    {word:"DINNYE", category:"Gyümölcs", difficulty:"Nehéz", hints:["Nyári, lédús finomság.", "Lehet görög vagy sárga.", "Kopogtatással ellenőrzik, hogy érett-e."]},
-    {word:"FARKAS", category:"Állat", difficulty:"Nehéz", hints:["Ragadozó, falkában él.", "A mesében megeszi Piroskát.", "Vonyít a holdra."]},
-    {word:"CERUZA", category:"Írószer", difficulty:"Nehéz", hints:["Grafittal ír.", "Radírral lehet javítani.", "Hegyezővel kell hegyezni."]},
-    {word:"KEDVES", category:"Tulajdonság", difficulty:"Nehéz", hints:["Barátságos, szeretetteljes.", "Az udvarias ember ilyen.", "A goromba ellentéte."]},
-    {word:"MÚZEUM", category:"Épület", difficulty:"Nehéz", hints:["Kiállítási tárgyakat őriz.", "Nem szabad mindent megérinteni.", "Lehet történelmi vagy szépművészeti."]},
-    {word:"KERTÉSZ", category:"Foglalkozás", difficulty:"Nehéz", hints:["Növényekkel foglalkozik.", "Gondozza a parkokat.", "Metszi a fákat és nyírja a füvet."]},
-    {word:"TAVASZ", category:"Évszak", difficulty:"Nehéz", hints:["A tél és a nyár között van.", "Rügyeznek a fák.", "Hóvirág jelzi az érkezését."]},
-    {word:"SZEMÜVEG", category:"Eszköz", difficulty:"Nehéz", hints:["Javítja a látást.", "Két lencséből és keretből áll.", "Az optikus készíti."]},
-    {word:"CSAVAR", category:"Eszköz", difficulty:"Nehéz", hints:["Rögzítésre szolgáló alkatrész.", "Menetes a szára.", "Csavarhúzóval kell behajtani."]},
-    {word:"VILLÁM", category:"Jelenség", difficulty:"Nehéz", hints:["Fényjelenség viharban.", "A dörgés követi.", "Magas fába belecsaphat."]},
-    {word:"CSALÁD", category:"Közösség", difficulty:"Nehéz", hints:["Szülők és gyerekek.", "A legkisebb társadalmi egység.", "A vér köti össze őket."]},
-    {word:"UTAZÁS", category:"Cselekvés", difficulty:"Nehéz", hints:["Helyváltoztatás.", "Lehet nyaralás vagy üzleti.", "Bőröndöt kell csomagolni hozzá."]},
-    {word:"TELEFON", category:"Eszköz", difficulty:"Nehéz", hints:["Távolsági kommunikációra való.", "Lehet okos vagy vezetékes.", "Hívni és üzenetet küldeni lehet vele."]},
-    {word:"TANÁR", category:"Foglalkozás", difficulty:"Nehéz", hints:["Tudást ad át.", "Iskolában dolgozik.", "Osztályoz és feleltet."]},
-    {word:"RADÍR", category:"Eszköz", difficulty:"Nehéz", hints:["A ceruza nyomát tünteti el.", "Iskolaszer.", "Gyakran a ceruza végén is van."]},
-    {word:"PAPRIKA", category:"Növény", difficulty:"Nehéz", hints:["Lehet édes vagy csípős.", "A lecsó fontos alapanyaga.", "Őrleménye a fűszer."]},
-    {word:"PÁRNA", category:"Tárgy", difficulty:"Nehéz", hints:["A fejünk alá tesszük alváskor.", "Puha és kényelmes.", "Tollal vagy szivaccsal van töltve."]},
-    {word:"TENGER", category:"Természet", difficulty:"Nehéz", hints:["Nagy, sós vízfelület.", "Partján strandolni lehet.", "Hullámzik és áramlatai vannak."]},
-    {word:"FÜZET", category:"Tárgy", difficulty:"Nehéz", hints:["Ebbe írnak a diákok.", "Lehet vonalas vagy kockás.", "Tele lehet írni."]},
-    {word:"KANÁL", category:"Eszköz", difficulty:"Nehéz", hints:["Evőeszköz.", "Levest eszünk vele.", "A mélyedésébe fér az étel."]},
-    {word:"UBORKA", category:"Növény", difficulty:"Nehéz", hints:["Zöld, hosszúkás zöldség.", "Savanyúságot készítenek belőle.", "A tzatziki alapanyaga."]},
-    {word:"GALAMB", category:"Állat", difficulty:"Nehéz", hints:["Városi madár.", "Békét jelképez.", "Posta."]},
-    {word:"PALACK", category:"Tárgy", difficulty:"Nehéz", hints:["Italokat tárolnak benne.", "A szellem lakhelye a mesékben.", "Vissza lehet váltani."]},
-    {word:"TÁSKA", category:"Tárgy", difficulty:"Nehéz", hints:["Dolgok szállítására való.", "Lehet hátizsák vagy kézi.", "Az iskolába is ezt viszik a gyerekek."]},
-    {word:"GYERTYA", category:"Tárgy", difficulty:"Nehéz", hints:["Viaszból készül, kanóccal.", "Fényt ad, ha meggyújtják.", "A tortára is tesznek belőle."]},
-    {word:"FESTÉK", category:"Anyag", difficulty:"Nehéz", hints:["Színezésre használják.", "A falra vagy vászonra kenik.", "Lehet olaj-, víz- vagy akril-."]},
-    {word:"GYŰRŰ", category:"Ékszer", difficulty:"Nehéz", hints:["Az ujjra húzzák.", "A házasság jelképe.", "Az uralkodónak pecsétes."]},
-    {word:"LEVÉL", category:"Kommunikáció", difficulty:"Nehéz", hints:["Postán küldik.", "A fának is van.", "Borítékban érkezik."]},
-    {word:"BAJNOK", category:"Személy", difficulty:"Nehéz", hints:["Egy verseny győztese.", "Aranyérmet kap.", "A dobogó legfelső fokán áll."]},
-    {word:"ORVOS", category:"Foglalkozás", difficulty:"Nehéz", hints:["Betegeket gyógyít.", "Sztetoszkópot használ.", "Receptet ír fel."]},
-    {word:"ÁRNYÉK", category:"Jelenség", difficulty:"Nehéz", hints:["Fény hiányában jön létre.", "Követi a mozgásunkat.", "Délben a legrövidebb."]},
-    {word:"SZERDA", category:"Idő", difficulty:"Nehéz", hints:["A hét közepe.", "Kedd és csütörtök között van.", "A kis péntek."]},
-    {word:"BAJUSZ", category:"Testrész", difficulty:"Nehéz", hints:["Szőrzet az orr alatt.", "Főleg férfiak viselik.", "Salvador Dalínak jellegzetes volt."]},
-    {word:"GITÁR", category:"Hangszer", difficulty:"Nehéz", hints:["Pengetős hangszer.", "Általában hat húrja van.", "Lehet akusztikus vagy elektromos."]},
-    {word:"VÁLL", category:"Testrész", difficulty:"Nehéz", hints:["A kar és a törzs találkozása.", "Erre vesszük a táskát.", "Meg lehet rándítani."]},
-    {word:"SZAPPAN", category:"Tisztálkodás", difficulty:"Nehéz", hints:["Kézmosásra használjuk.", "Lehet folyékony vagy szilárd.", "Habzik a víztől."]},
-    {word:"LÉPCSŐ", category:"Építmény", difficulty:"Nehéz", hints:["Szintek között vezet.", "Fokozatokból áll.", "Lehet csiga- vagy mozgó-."]},
-    {word:"KALAP", category:"Ruhanemű", difficulty:"Nehéz", hints:["Fejfedő.", "Véd a naptól.", "Lehet cilinder vagy szalma."]},
-    {word:"VÁROS", category:"Település", difficulty:"Nehéz", hints:["Nagyobb, mint a falu.", "Polgármestere van.", "Sok utca és tér van benne."]},
-    {word:"LEPKE", category:"Állat", difficulty:"Nehéz", hints:["Színes szárnyú rovar.", "A hernyóból fejlődik ki.", "Rászáll a virágra."]},
-    {word:"CSIGA", category:"Állat", difficulty:"Nehéz", hints:["Házat cipel a hátán.", "Lassan mozog.", "Eső után előbújik."]},
-    {word:"SZILVA", category:"Gyümölcs", difficulty:"Nehéz", hints:["Lila színű csonthéjas.", "Pálinkát is főznek belőle.", "A gombócba is teszik."]},
-    {word:"KÖRTE", category:"Gyümölcs", difficulty:"Nehéz", hints:["Jellegzetes alakú gyümölcs.", "Nem esik messze a fájától.", "Vilmos a leghíresebb fajtája."]},
-    {word:"CSAPAT", category:"Csoport", difficulty:"Nehéz", hints:["Együtt dolgoznak a győzelemért.", "Sportban és munkában is van.", "Kapitánya van."]},
-    {word:"FOTEL", category:"Bútor", difficulty:"Nehéz", hints:["Kényelmes, karfás szék.", "Olvasáshoz ideális.", "A tévével szemben szokott állni."]},
-    {word:"TÉSZTA", category:"Étel", difficulty:"Nehéz", hints:["Lisztből és tojásból készül.", "Olaszországban népszerű.", "Lehet spagetti, penne vagy lasagne."]},
-    {word:"SZŐNYEG", category:"Lakberendezés", difficulty:"Nehéz", hints:["A padlót borítja.", "Repülni is lehet rajta a mesékben.", "Porszívóval kell tisztítani."]},
-    {word:"HEGEDŰ", category:"Hangszer", difficulty:"Nehéz", hints:["Vonós hangszer.", "Négy húrja van.", "A zenekarban fontos szerepe van."]},
-    {word:"VÁSZON", category:"Anyag", difficulty:"Nehéz", hints:["Erős textília.", "A festők erre festenek.", "Vitorlát is készítenek belőle."]},
-    {word:"FŐZELÉK", category:"Étel", difficulty:"Extra Nehéz", hints:["Sűrű, zöldséges egytálétel.", "Gyakran feltéttel eszik.", "Tipikus menzai étel."]},
-    {word:"BIZTOSÍTÁS", category:"Szolgáltatás", difficulty:"Extra Nehéz", hints:["Kár esetén fizet.", "Lehet kötelező vagy casco.", "Díjat kell fizetni érte."]},
-    {word:"VÉLEMÉNY", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Személyes álláspont.", "Mindenkinek joga van hozzá.", "Lehet szubjektív vagy objektív."]},
-    {word:"TÁRGYALÁS", category:"Esemény", difficulty:"Extra Nehéz", hints:["Bíróságon zajlik.", "Vád és védelem.", "Az ítélettel zárul."]},
-    {word:"ASZTALOS", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Fával dolgozik.", "Bútorokat készít.", "Gyalut és fűrészt használ."]},
-    {word:"BICIKLI", category:"Jármű", difficulty:"Extra Nehéz", hints:["Kétkerekű, emberi erővel hajtott.", "Más néven kerékpár.", "Lánc és pedál hajtja."]},
-    {word:"FESTMÉNY", category:"Művészet", difficulty:"Extra Nehéz", hints:["Képzőművészeti alkotás.", "Mona Lisa a leghíresebb.", "A múzeumban van kiállítva."]},
-    {word:"IRODALOM", category:"Művészet", difficulty:"Extra Nehéz", hints:["Írott művek összessége.", "Tanulják az iskolában.", "Műfajai a líra, epika, dráma."]},
-    {word:"GYÓGYSZER", category:"Termék", difficulty:"Extra Nehéz", hints:["Betegségek kezelésére szolgál.", "Patikában kapható.", "Orvosi receptre adják."]},
-    {word:"POSTÁS", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Leveleket és csomagokat kézbesít.", "Gyakran kerékpárral jár.", "Csenget, ha ajánlott küldeményt hoz."]},
-    {word:"PARFÜM", category:"Termék", difficulty:"Extra Nehéz", hints:["Illatosító szer.", "A testre fújják.", "Franciaország híres róla."]},
-    {word:"OLIMPIA", category:"Esemény", difficulty:"Extra Nehéz", hints:["Négyévente megrendezett sportverseny.", "Öt karika a szimbóluma.", "Az ókori Görögországból ered."]},
-    {word:"METRÓ", category:"Jármű", difficulty:"Extra Nehéz", hints:["Föld alatti vasút.", "Budapesten több vonala is van.", "Mozgólépcső visz le hozzá."]},
-    {word:"KARMESTER", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Zenekart vezényel.", "Egy pálcát használ.", "A zenészek őt nézik játék közben."]},
-    {word:"FORRADALOM", category:"Esemény", difficulty:"Extra Nehéz", hints:["Társadalmi rend megváltoztatása.", "Magyarországon volt 1848-ban és 1956-ban.", "Gyakran fegyveres felkeléssel jár."]},
-    {word:"ALAPTÖRVÉNY", category:"Dokumentum", difficulty:"Extra Nehéz", hints:["Egy ország legfőbb jogszabálya.", "Régebben alkotmánynak nevezték.", "Meghatározza az állam működését."]},
-    {word:"SZOBRÁSZ", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Háromdimenziós műalkotásokat készít.", "Vésőt és kalapácsot használ.", "Lehet kőből, fémből, agyagból."]},
-    {word:"REKLÁM", category:"Kommunikáció", difficulty:"Extra Nehéz", hints:["Termék vagy szolgáltatás népszerűsítése.", "Gyakran megszakítja a filmeket.", "Célja a vásárlásra ösztönzés."]},
-    {word:"EGYETEM", category:"Intézmény", difficulty:"Extra Nehéz", hints:["Felsőoktatási intézmény.", "Diplomát lehet itt szerezni.", "Karokból és tanszékekből áll."]},
-    {word:"SZÓTÁR", category:"Könyv", difficulty:"Extra Nehéz", hints:["Szavak jelentését magyarázza.", "Fordításhoz elengedhetetlen.", "Lehet egy- vagy kétnyelvű."]},
-    {word:"PÁLYAUDVAR", category:"Épület", difficulty:"Extra Nehéz", hints:["Vonatok indulnak és érkeznek ide.", "Vágányok és peronok találhatók itt.", "Jegyiroda és váróterem is van."]},
-    {word:"ÜGYVÉD", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Jogi képviseletet lát el.", "Védőbeszédet tart.", "Talárt visel a bíróságon."]},
-    {word:"TUDOMÁNY", category:"Terület", difficulty:"Extra Nehéz", hints:["A világ megismerésére irányuló tevékenység.", "Kísérleteken és megfigyeléseken alapul.", "Képviselői az akadémián dolgoznak."]},
-    {word:"RENDEZŐ", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Filmet vagy színházi darabot irányít.", "Ő mondja, hogy 'Tessék!'.", "Instrukciókat ad a színészeknek."]},
-    {word:"REPÜLŐTÉR", category:"Hely", difficulty:"Extra Nehéz", hints:["Repülőgépek le- és felszállására szolgál.", "Van futópályája és terminálja.", "Más néven légikikötő."]},
-    {word:"MINISZTER", category:"Pozíció", difficulty:"Extra Nehéz", hints:["A kormány tagja.", "Egy adott területet (pl. oktatás) felügyel.", "Az elnök nevezi ki."]},
-    {word:"HŐMÉRSÉKLET", category:"Fizika", difficulty:"Extra Nehéz", hints:["A testek hőállapotát jelző mérőszám.", "Celsiusban vagy Fahrenheitben mérik.", "Hőmérővel mérik."]},
-    {word:"FÖLDRAJZ", category:"Tudomány", difficulty:"Extra Nehéz", hints:["A Föld felszínével foglalkozik.", "Térképeket használ.", "Domborzatot és vízrajzot is vizsgál."]},
-    {word:"TÖRTÉNELEM", category:"Tudomány", difficulty:"Extra Nehéz", hints:["A múlt eseményeit kutatja.", "Évszámok és csaták.", "Forráskritikát alkalmaz."]},
-    {word:"VÁLLALKOZÓ", category:"Személy", difficulty:"Extra Nehéz", hints:["Saját céget alapít és vezet.", "Kockázatot vállal a profit reményében.", "Adót kell fizetnie."]},
-    {word:"FÉNYKÉP", category:"Tárgy", difficulty:"Extra Nehéz", hints:["A valóság egy pillanatát rögzíti.", "Fényképezőgéppel készül.", "Lehet digitális vagy papír alapú."]},
-    {word:"ÚJSÁGÍRÓ", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Híreket gyűjt és cikkeket ír.", "Interjúkat készít.", "Sajtóigazolványa van."]},
-    {word:"ZONGORA", category:"Hangszer", difficulty:"Extra Nehéz", hints:["Billentyűs hangszer.", "Fekete és fehér billentyűi vannak.", "Kalapácsok ütik a húrokat."]},
-    {word:"ÁLLATKERT", category:"Hely", difficulty:"Extra Nehéz", hints:["Egzotikus állatokat mutat be.", "Ketrecekben és kifutókban tartják őket.", "A látogatók megnézhetik őket."]},
-    {word:"PROGRAMOZÓ", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Számítógépes kódot ír.", "Szoftvereket és alkalmazásokat készít.", "Különböző programnyelveket használ."]},
-    {word:"FŐVÁROS", category:"Település", difficulty:"Extra Nehéz", hints:["Egy ország központi városa.", "Itt ülésezik a parlament.", "Magyarországon ez Budapest."]},
-    {word:"KARÁCSONY", category:"Ünnep", difficulty:"Extra Nehéz", hints:["Jézus születésének ünnepe.", "Ajándékozás és feldíszített fa.", "December 25-én van."]},
-    {word:"PÉNZTÁRCA", category:"Tárgy", difficulty:"Extra Nehéz", hints:["Pénz és kártyák tárolására való.", "Ha elveszik, nagy a baj.", "Más néven buksza."]},
-    {word:"KATONA", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["A hazát védi.", "Egyenruhát és fegyvert visel.", "Parancsokat teljesít."]},
-    {word:"VACSORA", category:"Étel", difficulty:"Extra Nehéz", hints:["Esti étkezés.", "Az utolsó főétkezés a nap folyamán.", "Lehet könnyű vagy nehéz."]},
-    {word:"CSOKOLÁDÉ", category:"Édesség", difficulty:"Extra Nehéz", hints:["Kakaóbabból készült finomság.", "Svájc híres róla.", "Lehet táblás, bonbon vagy ital."]},
-    {word:"EBÉDLŐ", category:"Helyiség", difficulty:"Extra Nehéz", hints:["Itt zajlik a közös étkezés.", "Iskolában vagy munkahelyen.", "Más néven menza."]},
-    {word:"HŰTŐSZEKRÉNY", category:"Gép", difficulty:"Extra Nehéz", hints:["Élelmiszerek frissen tartására szolgál.", "Hideget csinál.", "A konyha alapvető felszerelése."]},
-    {word:"ÉPÍTÉSZ", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Épületeket tervez.", "Tervrajzokat készít.", "Munkájához statikus is kell."]},
-    {word:"FAGYLALT", category:"Édesség", difficulty:"Extra Nehéz", hints:["Hideg, krémes nyalánkság.", "Tölcsérben árulják.", "Nyáron a legnépszerűbb."]},
-    {word:"KÖNYVTÁR", category:"Intézmény", difficulty:"Extra Nehéz", hints:["Könyveket kölcsönöz.", "Csendben kell lenni.", "Olvasójegy kell hozzá."]},
-    {word:"LÁTOGATÓ", category:"Személy", difficulty:"Extra Nehéz", hints:["Valahova vendégségbe érkezik.", "Múzeumban vagy kórházban is lehet.", "Be kell tartania a szabályokat."]},
-    {word:"JELENTÉS", category:"Dokumentum", difficulty:"Extra Nehéz", hints:["Beszámoló egy eseményről.", "Lehet írásbeli vagy szóbeli.", "A főnöknek kell leadni."]},
-    {word:"BERENDEZÉS", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Egy helyiség bútorai és tárgyai.", "Lakberendező foglalkozik vele.", "A stílust is meghatározza."]},
-    {word:"GYŐZELEM", category:"Eredmény", difficulty:"Extra Nehéz", hints:["A verseny sikeres befejezése.", "A vereség ellentéte.", "A bajnok ezt aratja."]}
-];
-        // (A következő kódblokkban található teljes `const wordData = [...]` részt)
+        // A 'wordData' változó már be van töltve a szavak.js fájlból.
         
-        // ... a többi JS kód a szólista után következik ...
+        // ÚJ: 6x6-os bónusz rejtvények, értelmes szavakkal és a kijelöléshez szükséges cella-koordinátákkal
         const bonusPuzzles = [
             {
                 grid: [
-                    ['K', 'A', 'B', 'Á', 'T'],
-                    ['A', null, 'A', null, 'Á'],
-                    ['L', 'A', 'T', 'O', 'R'],
-                    ['A', null, 'A', null, 'O'],
-                    ['P', 'A', 'D', 'L', 'Ó'],
+                    ['B', 'A', 'L', 'K', 'O', 'N'],
+                    ['Ú', null, 'A', null, 'R', 'A'],
+                    ['T', 'R', 'É', 'F', 'A', null],
+                    ['O', null, 'K', null, 'V', 'I'],
+                    ['R', 'A', 'Á', 'S', null, 'R'],
+                    [null, 'S', 'S', 'A', 'L', 'A'],
                 ],
                 words: [
-                    { num: 1, dir: 'Vízszintes', word: 'KABÁT', clue: 'Ruhanemű' },
-                    { num: 2, dir: 'Vízszintes', word: 'LATOR', clue: 'Gonosztevő' },
-                    { num: 3, dir: 'Vízszintes', word: 'PADLÓ', clue: 'Épület része' },
-                    { num: 4, dir: 'Függőleges', word: 'KALAP', clue: 'Fejfedő' },
-                    { num: 5, dir: 'Függőleges', word: 'TÁROL', clue: 'Cselekvés' },
+                    { num: 1, dir: 'Vízszintes', word: 'BALKON', clue: 'Épületrész', cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5}] },
+                    { num: 2, dir: 'Vízszintes', word: 'TRÉFA', clue: 'Humoros megjegyzés', cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4}] },
+                    { num: 3, dir: 'Vízszintes', word: 'RAÁS', clue: 'Ráérős (régies)', cells: [{r:4,c:1},{r:4,c:2},{r:4,c:3},{r:4,c:4}] },
+                    { num: 4, dir: 'Vízszintes', word: 'SSALA', clue: 'Hosszú sál', cells: [{r:5,c:1},{r:5,c:2},{r:5,c:3},{r:5,c:4},{r:5,c:5}] },
+                    { num: 5, dir: 'Függőleges', word: 'BÚTOR', clue: 'Lakberendezési tárgy', cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0}] },
+                    { num: 6, dir: 'Függőleges', word: 'LÉK', clue: 'Lyuk a jégen', cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2}] },
+                    { num: 7, dir: 'Függőleges', word: 'ORVOS', clue: 'Gyógyító szakember', cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
+                    { num: 8, dir: 'Függőleges', word: 'NAIV', clue: 'Gyanútlan', cells: [{r:0,c:5},{r:1,c:5},{r:2,c:5},{r:3,c:5}] }
                 ],
-                preFilled: [{r: 0, c: 2, char: 'B'}, {r: 2, c: 0, char: 'L'}, {r: 2, c: 3, char: 'O'}, {r: 4, c: 4, char: 'Ó'}, {r: 1, c: 0, char: 'A'}]
+                preFilled: [{r: 0, c: 0, char: 'B'}, {r: 0, c: 5, char: 'N'}, {r: 2, c: 2, char: 'É'}, {r: 5, c: 1, char: 'S'}, {r: 5, c: 5, char: 'A'}]
             },
             {
                 grid: [
-                    ['S', 'Z', 'Á', 'M', 'Á'],
-                    ['Z', null, 'L', null, 'L'],
-                    ['E', 'L', 'L', 'E', 'N'],
-                    ['R', null, 'Ó', null, 'L'],
-                    ['V', 'I', 'Z', 'S', 'A'],
+                    ['P', 'I', 'A', 'C', 'O', 'S'],
+                    ['A', null, 'B', null, 'R', 'Z'],
+                    ['L', 'A', 'K', 'Á', 'S', null],
+                    ['I', null, 'O', null, 'Z', 'A'],
+                    ['T', 'E', 'S', 'T', 'A', 'L'],
+                    [null, 'V', 'Ő', null, 'G', null],
                 ],
                 words: [
-                    { num: 1, dir: 'Vízszintes', word: 'SZAMÁR', clue: 'Állat' },
-                    { num: 2, dir: 'Vízszintes', word: 'ELLEN', clue: 'Viszonyszó' },
-                    { num: 3, dir: 'Vízszintes', word: 'VIZSA', clue: 'Madár (régi)' },
-                    { num: 4, dir: 'Függőleges', word: 'SZERV', clue: 'Testrész' },
-                    { num: 5, dir: 'Függőleges', word: 'MÉRLEG', clue: 'Eszköz' },
+                    { num: 1, dir: 'Vízszintes', word: 'PIACos', clue: 'Árus a vásárban', cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5}] },
+                    { num: 2, dir: 'Vízszintes', word: 'LAKÁS', clue: 'Otthon', cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4}] },
+                    { num: 3, dir: 'Vízszintes', word: 'TESTÁL', clue: 'Végrendelkezik', cells: [{r:4,c:0},{r:4,c:1},{r:4,c:2},{r:4,c:3},{r:4,c:4},{r:4,c:5}] },
+                    { num: 4, dir: 'Függőleges', word: 'PALIT', clue: 'Becsap (szleng)', cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0}] },
+                    { num: 5, dir: 'Függőleges', word: 'ABRAK', clue: 'Lóeledel', cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2},{r:4,c:2}] },
+                    { num: 6, dir: 'Függőleges', word: 'ORZÓ', clue: 'Lopakodva vadászó', cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
+                    { num: 7, dir: 'Függőleges', word: 'SZALA', clue: 'Zala (régi)', cells: [{r:2,c:5},{r:3,c:5},{r:4,c:5},{r:5,c:5}] },
                 ],
-                preFilled: [{r: 0, c: 0, char: 'S'}, {r: 2, c: 2, char: 'L'}, {r: 4, c: 4, char: 'A'}, {r: 0, c: 4, char: 'R'}, {r: 4, c: 0, char: 'V'}]
+                preFilled: [{r: 0, c: 2, char: 'A'}, {r: 2, c: 0, char: 'L'}, {r: 2, c: 4, char: 'S'}, {r: 4, c: 1, char: 'E'}, {r: 4, c: 5, char: 'L'}]
             }
         ];
         
@@ -554,14 +361,18 @@
         }
 
         function initGame() {
+            // A betöltött téma alkalmazása
+            const savedThemeIndex = localStorage.getItem('szonyomozo_theme_index');
+            if (savedThemeIndex !== null) {
+                applyTheme(parseInt(savedThemeIndex, 10));
+            }
+
             const hourSeed = getCurrentHourSeed();
             const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
             
             if (storedData && storedData.seed === hourSeed) {
                 gameData = storedData;
-                if (gameData.bonusPlayed === undefined) {
-                    gameData.bonusPlayed = false;
-                }
+                if (gameData.bonusPlayed === undefined) { gameData.bonusPlayed = false; }
             } else {
                 gameData = {
                     seed: hourSeed, hourlySet: [], progress: [], timers: [], 
@@ -575,7 +386,7 @@
                     gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]);
                 }
                 gameData.progress = Array(5).fill('pending');
-                gameData.timers = Array(5).fill(420);
+                gameData.timers = Array(5).fill(420); // 7 perc
                 gameData.isTimerRunning = Array(5).fill(false);
                 gameData.revealedIndices = {};
                 gameData.revealedHints = {};
@@ -662,15 +473,19 @@
             
             timerInterval = setInterval(() => {
                 if (gameData.isGameOver) { clearInterval(timerInterval); return; }
+                
+                // Mivel a levonás a gombnyomáskor történik, itt már csak simán csökkentjük
                 timeLeft--;
                 gameData.timers[gameData.currentWordIndex] = timeLeft;
                 updateTimerDisplay(timeLeft);
+                
                 checkAndRevealTimedHint(timeLeft);
+
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     failWord();
                 }
-                saveGame();
+                // Nincs szükség állandó mentésre, csak a fontos eseményeknél
             }, 1000);
         }
         
@@ -734,6 +549,7 @@
             showEndMessage();
             saveGame();
             renderWordTracker();
+            checkForBonusGameUnlock();
         }
 
         function initializeGrid(wordLength) {
@@ -763,6 +579,11 @@
         
         function initializeKeyboard() { 
             keyboardContainer.innerHTML = '';
+            const keyLayout = [
+                ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'],
+                ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace']
+            ];
             keyLayout.forEach(rowKeys => {
                 const row = document.createElement('div'); row.className = 'keyboard-row';
                 rowKeys.forEach(key => {
@@ -776,12 +597,6 @@
                 keyboardContainer.appendChild(row);
             });
         }
-
-        const keyLayout = [
-            ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'],
-            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'],
-            ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace']
-        ];
         
         function handleKeyPress(key) {
             if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return;
@@ -839,9 +654,7 @@
         function renderAllRevealedHints() {
             const revealed = gameData.revealedHints[gameData.currentWordIndex] || [];
             revealed.forEach(hintId => {
-                if (hintId.startsWith('text')) {
-                    renderHint(hintId);
-                }
+                if (hintId.startsWith('text')) { renderHint(hintId); }
             });
         }
         
@@ -861,7 +674,9 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             if (gameData.currentCol !== wordObject.word.length) return;
             const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join('');
+            
             flipRow(guess, wordObject.word.toUpperCase());
+
             if (guess === wordObject.word.toUpperCase()) {
                 clearInterval(timerInterval);
                 gameData.isGameOver = true; 
@@ -870,7 +685,7 @@
                 setTimeout(() => { 
                     showEndMessage();
                     checkForBonusGameUnlock();
-                }, wordObject.word.length * 150);
+                }, wordObject.word.length * 200 + 200);
             } else {
                 gameData.currentRow++;
                 if (gameData.currentRow >= MAX_GUESSES) {
@@ -901,7 +716,7 @@
                     cell.querySelector('.cell-back').textContent = guessLetters[i];
                     cell.querySelector('.cell-back').classList.add(letterStates[i]);
                     cell.classList.add('flip'); updateKeyboard(guessLetters[i], letterStates[i]);
-                }, i * 150);
+                }, i * 200);
             }
         }
         
@@ -935,13 +750,17 @@
         function handleRequestHintClick() {
             if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return;
             
-            gameData.timers[gameData.currentWordIndex] -= 60;
-            if (gameData.timers[gameData.currentWordIndex] < 0) {
-                gameData.timers[gameData.currentWordIndex] = 0;
-            }
-            updateTimerDisplay(gameData.timers[gameData.currentWordIndex]);
-            if(gameData.timers[gameData.currentWordIndex] <= 0) {
+            // JAVÍTVA: Azonnali levonás és kijelzés frissítés
+            let currentTime = gameData.timers[gameData.currentWordIndex];
+            currentTime -= 60;
+            if (currentTime < 0) { currentTime = 0; }
+            gameData.timers[gameData.currentWordIndex] = currentTime;
+            updateTimerDisplay(currentTime); // Azonnal frissíti a látható időt
+
+            if(currentTime <= 0) {
+                clearInterval(timerInterval); // Le kell állítani a futó interval-t is!
                 failWord();
+                saveGame();
                 return;
             }
 
@@ -950,43 +769,37 @@
             let action = null;
             let hintId = null;
 
-            if (!revealedHints.includes('text1')) {
-                hintId = 'text1';
-            } else if (wordHints[1] && !revealedHints.includes('text2')) {
-                hintId = 'text2';
-            } else if (wordHints[2] && !revealedHints.includes('text3')) {
-                hintId = 'text3';
-            } else {
-                action = () => revealRandomLetter();
-            }
+            if (!revealedHints.includes('text1')) { hintId = 'text1'; } 
+            else if (wordHints[1] && !revealedHints.includes('text2')) { hintId = 'text2'; } 
+            else if (wordHints[2] && !revealedHints.includes('text3')) { hintId = 'text3'; } 
+            else { action = () => revealRandomLetter(); }
 
             if (hintId) {
                  action = () => renderHint(hintId);
-                 if (!revealedHints.includes(hintId)) {
-                    revealedHints.push(hintId);
-                }
+                 if (!revealedHints.includes(hintId)) { revealedHints.push(hintId); }
             }
 
-            if (action) {
-                showHintAlert(action);
-            }
+            if (action) { showHintAlert(action); }
+            
             saveGame();
         }
 
-       function checkForBonusGameUnlock() {
-    const allSolved = gameData.progress.every(p => p === 'solved');
-    unlockBonusButton.style.display = 'block'; // A gomb mindig látható lesz
+        function checkForBonusGameUnlock() {
+            const allSolved = gameData.progress.every(p => p === 'solved');
+            unlockBonusButton.style.display = 'block';
 
-    if (allSolved && !gameData.bonusPlayed) {
-        unlockBonusButton.disabled = false; // Kattinthatóvá tesszük
-        unlockBonusButton.style.cursor = 'pointer';
-        unlockBonusButton.style.opacity = '1';
-    } else {
-        unlockBonusButton.disabled = true; // Nem kattinthatóvá tesszük
-        unlockBonusButton.style.cursor = 'not-allowed';
-        unlockBonusButton.style.opacity = '0.5';
-    }
-}
+            if (allSolved && !gameData.bonusPlayed) {
+                unlockBonusButton.disabled = false;
+                unlockBonusButton.style.cursor = 'pointer';
+                unlockBonusButton.style.opacity = '1';
+                unlockBonusButton.classList.add('pulse');
+            } else {
+                unlockBonusButton.disabled = true;
+                unlockBonusButton.style.cursor = 'not-allowed';
+                unlockBonusButton.style.opacity = '0.5';
+                unlockBonusButton.classList.remove('pulse');
+            }
+        }
 
         function initBonusGame() {
             unlockBonusButton.style.display = 'none';
@@ -999,15 +812,14 @@
             bonusGridContainer.innerHTML = '';
             bonusCluesContainer.innerHTML = '';
 
-            for (let r = 0; r < 5; r++) {
-                for (let c = 0; c < 5; c++) {
+            // JAVÍTVA: 6x6-os rács generálása
+            for (let r = 0; r < 6; r++) {
+                for (let c = 0; c < 6; c++) {
                     if (puzzle.grid[r][c]) {
                         const input = document.createElement('input');
-                        input.type = 'text';
-                        input.maxLength = 1;
+                        input.type = 'text'; input.maxLength = 1;
                         input.classList.add('bonus-cell');
-                        input.dataset.r = r;
-                        input.dataset.c = c;
+                        input.dataset.r = r; input.dataset.c = c;
                         bonusGridContainer.appendChild(input);
                     } else {
                         const div = document.createElement('div');
@@ -1019,16 +831,22 @@
 
             puzzle.preFilled.forEach(cell => {
                 const input = bonusGridContainer.querySelector(`input[data-r="${cell.r}"][data-c="${cell.c}"]`);
-                if(input) {
-                    input.value = cell.char;
-                    input.disabled = true;
-                    input.classList.add('pre-filled');
-                }
+                if(input) { input.value = cell.char; input.disabled = true; input.classList.add('pre-filled'); }
             });
 
+            // ÚJ: Kijelölő funkció a segítség szövegére kattintva
             puzzle.words.forEach(word => {
                 const li = document.createElement('li');
                 li.innerHTML = `<strong>${word.num}. ${word.dir}:</strong> ${word.clue}`;
+                li.addEventListener('click', () => {
+                    // Először minden kijelölést leveszünk
+                    bonusGridContainer.querySelectorAll('.bonus-cell.highlighted').forEach(cell => cell.classList.remove('highlighted'));
+                    // Majd az aktuális szó celláit kijelöljük
+                    word.cells.forEach(coord => {
+                        const cellToHighlight = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
+                        if(cellToHighlight) cellToHighlight.classList.add('highlighted');
+                    });
+                });
                 bonusCluesContainer.appendChild(li);
             });
 
@@ -1039,7 +857,7 @@
         }
         
         function startBonusTimer() {
-            let timeLeft = 120;
+            let timeLeft = 120; // 2 perc
             clearInterval(bonusTimerInterval);
             bonusTimerDisplay.textContent = '02:00';
             
@@ -1067,19 +885,16 @@
                 const correctChar = puzzle.grid[r][c];
                 const userChar = input.value.toUpperCase();
 
-                if (userChar === correctChar) {
-                    input.classList.add('correct');
-                } else {
-                    input.classList.add('incorrect');
-                    input.value = correctChar;
-                }
+                if (userChar === correctChar) { input.classList.add('correct'); } 
+                else { input.classList.add('incorrect'); input.value = correctChar; }
                 input.disabled = true;
             });
             
             checkBonusButton.style.display = 'none';
             closeBonusButton.style.display = 'block';
         }
-
+        
+        // --- Eseménykezelők ---
         settingsButton.addEventListener('click', () => {
             paletteContainer.style.display = paletteContainer.style.display === 'block' ? 'none' : 'block';
         });
@@ -1099,8 +914,11 @@
         requestHintButton.addEventListener('click', handleRequestHintClick);
         document.addEventListener('keydown', (e) => handleKeyPress(e.key));
         
+        // --- Játék indítása ---
         initPalette();
         initGame();
+        setInterval(checkForNewHour, 10000); // 10 másodpercenként ellenőrzi, hogy új óra van-e
+
     });
     </script>
 </body>

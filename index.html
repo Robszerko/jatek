@@ -123,7 +123,8 @@
                 <span id="word-info"></span>
                 <span id="difficulty-display"></span> 
             </div>
-            <span id="timer-display">07:00</span>
+            <!-- MÓDOSÍTÁS: A kezdőidő 3 percre állítva -->
+            <span id="timer-display">03:00</span>
             <button id="start-timer-button">Óra Indul</button>
         </div>
         <main id="grid-container"></main>
@@ -143,7 +144,7 @@
             <h3>Játékszabályok</h3>
             <ul>
                 <li><strong>Pontgyűjtés:</strong> Oldd meg a szavakat és gyűjts pontokat! A pontszámod éjfélkor nullázódik.</li>
-                <li><strong>Alapjáték:</strong> 5 szó óránként. A megfejtett szóért a hossza alapján kapsz pontot.</li>
+                <li><strong>Alapjáték:</strong> 5 szó óránként, 3 perced van szavanként. A megfejtett szóért a hossza alapján kapsz pontot.</li>
                 <li><strong>Segítségek:</strong> A segítségkérés <span class="rules-penalty">pontokba kerül</span> a szó nehézsége alapján. A játék rákérdez a vásárlás előtt.</li>
                 <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót hibátlanul megfejted, egy <strong>Szerencsekerék</strong> bónusz játék oldható fel, ahol további pontokat szerezhetsz!</li>
             </ul>
@@ -223,7 +224,8 @@
                 let tempWordIndices = Array.from(Array(wordData.length).keys());
                 for (let i = 0; i < 5; i++) { const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * tempWordIndices.length); gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]); }
                 gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false}));
-                gameData.timers = Array(5).fill(420); gameData.isTimerRunning = Array(5).fill(false);
+                gameData.timers = Array(5).fill(180); // MÓDOSÍTÁS: 3 perc = 180 másodperc
+                gameData.isTimerRunning = Array(5).fill(false);
                 for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], textUsedCount: 0 }; }
                 gameData.currentWordIndex = 0;
             }
@@ -237,7 +239,7 @@
             const wordObject = wordData[gameData.hourlySet[indexInSet]];
             const { word, category, difficulty } = wordObject;
             wordInfoDisplay.textContent = `${category} | ${word.length} betűs`;
-            difficultyDisplay.className = 'difficulty-display'; // JAVÍTVA: Először reseteljük az osztályokat
+            difficultyDisplay.className = 'difficulty-display';
             difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(' ', '-')}`);
             difficultyDisplay.textContent = difficulty;
             updateTimerDisplay(gameData.timers[indexInSet]);
@@ -277,6 +279,7 @@
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
         function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index; const status = gameData.progress[index].status; if (status === 'solved') item.classList.add('solved'); if (status === 'failed') item.classList.add('failed'); if (index === gameData.currentWordIndex) item.classList.add('active'); if (status === 'pending') { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex) loadWord(index); }); } wordTrackerContainer.appendChild(item); }); }
         function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); timerDisplay.textContent = `${minutes}:${seconds}`; }
+        // JAVÍTVA: Az időzítőnek szüksége van a kezdőértékre
         function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); failWord(); } }, 1000); }
         function showHintAlert(callback) { gameEndMessageEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!</strong>`; setTimeout(() => { if (gameData.isGameOver) { showEndMessage(); return; } gameEndMessageEl.innerHTML = ''; callback(); }, 2000); }
         function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); hintsData.textUsedCount++; updateTextHintButtonLabel(); if (hintsData.textUsedCount >= 3) { requestTextHintButton.disabled = true; } const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (wordObject.hints && wordObject.hints[hintIndex]) { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex; hintDisplayArea.appendChild(p); } saveGame(); }

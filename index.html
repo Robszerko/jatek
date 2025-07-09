@@ -9,30 +9,118 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- Alap Téma (Klasszikus) --- */
         :root {
             --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
             --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
             --border-color-active: #8d6e63; --correct-color: #81b29a; --present-color: #f2cc8f;
-            --absent-color: #9e9e9e; --key-bg: '#dcd3b8'; --key-text: #3d405b;
+            --absent-color: #9e9e9e; --key-bg: #dcd3b8; --key-text: #3d405b;
             --key-shadow: 0 3px 0 #bcaaa4; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
             --difficulty-easy: #388e3c; --difficulty-hard: #f57c00; --difficulty-extra: #d32f2f;
         }
-        body { background-color: var(--bg-gradient-end); background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 40%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); background-blend-mode: overlay; color: var(--text-color); font-family: var(--font-main); display: flex; justify-content: center; align-items: flex-start; padding: 15px; box-sizing: border-box; -webkit-user-select: none; user-select: none; touch-action: manipulation; transition: background 0.5s ease; position: relative; z-index: 1; }
-        #game-container { background-color: var(--container-bg); border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative; }
-        header, #word-tracker, #info-bar, #grid-container, #hint-controls, #keyboard-container, #rules-container { width: 100%; }
+
+        /* --- További Színtémák --- */
+        .theme-forest { --bg-gradient-start: #2d6a4f; --bg-gradient-end: #1b4332; --container-bg: rgba(247, 246, 242, 0.95); --text-color: #081c15; --title-color: #74c69d; --border-color-idle: #b7e4c7; --border-color-active: #95d5b2; --correct-color: #52b788; --present-color: #ffd60a; --absent-color: #9e9e9e; --key-bg: #d8f3dc; --key-text: #1b4332; --key-shadow: 0 3px 0 #b7e4c7; }
+        .theme-ocean { --bg-gradient-start: #0077b6; --bg-gradient-end: #023e8a; --container-bg: rgba(237, 246, 249, 0.95); --text-color: #03045e; --title-color: #00b4d8; --border-color-idle: #ade8f4; --border-color-active: #90e0ef; --correct-color: #48cae4; --present-color: #ffc300; --absent-color: #adb5bd; --key-bg: #caf0f8; --key-text: #023e8a; --key-shadow: 0 3px 0 #ade8f4; }
+        .theme-sunset { --bg-gradient-start: #f77f00; --bg-gradient-end: #d62828; --container-bg: rgba(255, 250, 240, 0.95); --text-color: #800f2f; --title-color: #fcbf49; --border-color-idle: #eae2b7; --border-color-active: #f77f00; --correct-color: #70e000; --present-color: #fcbf49; --absent-color: #bc6c25; --key-bg: #fff1e6; --key-text: #d62828; --key-shadow: 0 3px 0 #eae2b7; }
+        .theme-night { --bg-gradient-start: #232526; --bg-gradient-end: #000000; --container-bg: rgba(42, 42, 42, 0.95); --text-color: #e0e0e0; --title-color: #7f5af0; --border-color-idle: #6c757d; --border-color-active: #9a9a9a; --correct-color: #2cb67d; --present-color: #ffc107; --absent-color: #495057; --key-bg: #343a40; --key-text: #f8f9fa; --key-shadow: 0 3px 0 #495057; }
+        .theme-rose { --bg-gradient-start: #c9184a; --bg-gradient-end: #8c0f32; --container-bg: rgba(255, 240, 243, 0.95); --text-color: #590d22; --title-color: #ff758f; --border-color-idle: #ffb3c1; --border-color-active: #ff8fa3; --correct-color: #a9def9; --present-color: #fcf6bd; --absent-color: #c9ada7; --key-bg: #ffe5ec; --key-text: #8c0f32; --key-shadow: 0 3px 0 #ffb3c1; }
+        .theme-vintage { --bg-gradient-start: #a27b5c; --bg-gradient-end: #3f2f25; --container-bg: rgba(243, 235, 226, 0.95); --text-color: #3f2f25; --title-color: #7b553c; --border-color-idle: #dcd0c0; --border-color-active: #c0b2a4; --correct-color: #8c7a6b; --present-color: #e6b8a2; --absent-color: #9c8978; --key-bg: #efebe5; --key-text: #3f2f25; --key-shadow: 0 3px 0 #dcd0c0; }
+        .theme-meadow { --bg-gradient-start: #7cb518; --bg-gradient-end: #5c8001; --container-bg: rgba(248, 255, 242, 0.95); --text-color: #436129; --title-color: #aacc00; --border-color-idle: #d4e09b; --border-color-active: #b5c77e; --correct-color: #9ef01a; --present-color: #f7d622; --absent-color: #90a955; --key-bg: #f2f7e5; --key-text: #436129; --key-shadow: 0 3px 0 #d4e09b; }
+        .theme-royal { --bg-gradient-start: #5a189a; --bg-gradient-end: #3c096c; --container-bg: rgba(243, 237, 247, 0.95); --text-color: #3c096c; --title-color: #9d4edd; --border-color-idle: #d8b4fe; --border-color-active: #c792fe; --correct-color: #7b2cbf; --present-color: #fca311; --absent-color: #b1a7a6; --key-bg: #e9d8fd; --key-text: #3c096c; --key-shadow: 0 3px 0 #d8b4fe; }
+        .theme-desert { --bg-gradient-start: #edc4b3; --bg-gradient-end: #c49a88; --container-bg: rgba(250, 245, 239, 0.95); --text-color: #705446; --title-color: #a4755f; --border-color-idle: #e3d5ca; --border-color-active: #d4bdae; --correct-color: #a0937d; --present-color: #c89f9c; --absent-color: #bcaea3; --key-bg: #f8f1e9; --key-text: #705446; --key-shadow: 0 3px 0 #e3d5ca; }
+        .theme-hacker { --bg-gradient-start: #0c0c0c; --bg-gradient-end: #000000; --container-bg: rgba(10, 25, 10, 0.9); --text-color: #00ff00; --title-color: #00ff00; --border-color-idle: #008000; --border-color-active: #32cd32; --correct-color: #32cd32; --present-color: #adff2f; --absent-color: #556b2f; --key-bg: #111; --key-text: #00ff00; --key-shadow: 0 3px 0 #008000; font-family: 'Roboto Mono', monospace; }
+
+        body {
+            background-color: var(--bg-gradient-end);
+            background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 40%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--text-color);
+            font-family: var(--font-main);
+            display: flex; justify-content: center; align-items: flex-start; padding: 15px; box-sizing: border-box;
+            -webkit-user-select: none; user-select: none; touch-action: manipulation;
+            /* Gördülékeny színváltás */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #game-container {
+            background-color: var(--container-bg);
+            border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;
+            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative;
+            transition: background-color 0.3s ease;
+        }
         header { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; position: relative; }
         #header-main { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
         #logo-container { display: flex; align-items: center; position: relative; }
         #logo-svg { width: clamp(80px, 20vw, 100px); height: auto; z-index: 1; }
-        header h1 { font-family: var(--font-title); color: var(--title-color); font-size: clamp(2rem, 9vw, 3rem); margin: 0; letter-spacing: 0.05em; margin-left: -2px; z-index: 0; }
-        #daily-score-display { font-family: var(--font-main); font-size: 1.1rem; font-weight: 700; color: var(--title-color); background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; border: 2px solid var(--border-color-idle); margin-top: 10px; }
+        #logo-svg text, #logo-svg circle, #logo-svg line { transition: fill 0.3s ease, stroke 0.3s ease; }
+        #h1-container { position: relative; }
+        header h1 {
+            font-family: var(--font-title); color: var(--title-color); font-size: clamp(2rem, 9vw, 3rem); margin: 0;
+            letter-spacing: 0.05em; margin-left: -2px; z-index: 0; transition: color 0.3s ease;
+        }
+        #copyright-notice { font-size: 0.7rem; color: var(--text-color); opacity: 0.7; margin-top: 2px; transition: color 0.3s ease, opacity 0.3s ease; }
+
+        /* Téma választó gomb és paletta */
+        #theme-toggle-button {
+            position: absolute;
+            top: -0.2em;
+            right: -0.8em;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s ease;
+        }
+        #theme-toggle-button:hover { transform: scale(1.2) rotate(15deg); }
+        #theme-toggle-button svg { fill: var(--title-color); transition: fill 0.3s ease; }
+        #theme-picker {
+            position: absolute;
+            top: 40px;
+            right: -15px;
+            background-color: var(--container-bg);
+            border: 2px solid var(--border-color-idle);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 150px;
+            z-index: 20;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .theme-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--border-color-idle);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .theme-swatch:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 5px var(--title-color);
+        }
+        .theme-swatch.active {
+            border: 3px solid var(--title-color);
+            box-shadow: 0 0 8px var(--title-color);
+        }
+        
+        #daily-score-display { font-family: var(--font-main); font-size: 1.1rem; font-weight: 700; color: var(--title-color); background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; border: 2px solid var(--border-color-idle); margin-top: 10px; transition: color 0.3s ease, border-color 0.3s ease; }
         #word-tracker { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-        .tracker-item { flex: 1; min-width: 60px; padding: 10px 5px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color-idle); font-weight: 500; cursor: pointer; transition: all 0.2s ease; position: relative; }
-        .tracker-item.active { background-color: var(--title-color); color: white; border-color: var(--title-color); }
-        .tracker-item.solved { background-color: var(--correct-color); border-color: var(--correct-color); color: white; cursor: not-allowed; }
-        .tracker-item.failed { background-color: #e53935; border-color: #e53935; color: white; cursor: not-allowed; }
-        #info-bar { padding: 12px; background: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; text-align: center; font-size: clamp(0.9rem, 2.5vw, 1rem); font-weight: 500; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
-        #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); }
+        .tracker-item { flex: 1; min-width: 60px; padding: 10px 5px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color-idle); font-weight: 500; cursor: pointer; transition: all 0.3s ease; position: relative; }
+        #info-bar { padding: 12px; background: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; text-align: center; font-size: clamp(0.9rem, 2.5vw, 1rem); font-weight: 500; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; transition: border-color 0.3s ease, color 0.3s ease; }
+        #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); transition: color 0.3s ease; }
+        
+        .cell-front { border: 3px solid var(--border-color-idle); transition: border-color 0.2s ease; }
+        .grid-cell.filled .cell-front:not(.cell-revealed) { border-color: var(--border-color-active); animation: pop 0.2s; }
+
+        .key { background-color: var(--key-bg); color: var(--key-text); box-shadow: var(--key-shadow); transition: all 0.1s ease-in-out, background-color 0.3s ease, color 0.3s ease; }
+        #rules-container, #hint-display-container { transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; color: var(--text-color); }
+        .overlay-content { transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        /* A többi CSS szabály változatlan maradt a helytakarékosság érdekében */
+        body { background-blend-mode: overlay; }
+        #game-container, header, #word-tracker, #info-bar, #grid-container, #hint-controls, #keyboard-container, #rules-container { width: 100%; }
         #start-timer-button { background-color: var(--difficulty-easy); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; box-shadow: 0 3px 0 #2e7d32; }
         #start-timer-button:disabled { background-color: var(--absent-color); box-shadow: none; cursor: not-allowed; }
         #word-info-container { display: flex; flex-direction: column; align-items: center; }
@@ -44,13 +132,11 @@
         .cell-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .grid-cell.flip .cell-inner { transform: rotateX(180deg); }
         .cell-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: bold; text-transform: uppercase; box-sizing: border-box; border-radius: 8px; }
-        .cell-front { border: 3px solid var(--border-color-idle); }
         .cell-revealed { border-color: var(--correct-color); background-color: rgba(129, 178, 154, 0.2); }
-        .grid-cell.filled .cell-front:not(.cell-revealed) { border-color: var(--border-color-active); animation: pop 0.2s; }
         .cell-back { color: white; transform: rotateX(180deg); border: 3px solid transparent; }
         .cell-back.correct { background-color: var(--correct-color); border-color: var(--correct-color);} .cell-back.present { background-color: var(--present-color); border-color: var(--present-color);} .cell-back.absent  { background-color: var(--absent-color); border-color: var(--absent-color);}
         @keyframes pop { 50% { transform: scale(1.1); } }
-        #hint-display-container { background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; min-height: 40px; font-weight: 500; color: #5d4037; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }
+        #hint-display-container { background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; min-height: 40px; font-weight: 500; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }
         #hint-display-area p { margin: 0; font-style: italic; line-height: 1.5; } #hint-display-area p strong { color: var(--title-color); font-style: normal; }
         .hint-alert { color: var(--correct-color); font-weight: 900; font-style: normal; animation: flash 1s infinite; font-size: 1.8rem; letter-spacing: 2px; }
         @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
@@ -63,11 +149,11 @@
         #keyboard-container { display: flex; flex-direction: column; gap: 12px; }
         #keyboard-container.disabled { pointer-events: none; opacity: 0.6; }
         .keyboard-row { display: flex; justify-content: center; gap: 6px; }
-        .key { font-family: var(--font-main); font-weight: 500; background-color: var(--key-bg); color: var(--key-text); border: none; border-radius: 8px; height: 60px; flex: 1; cursor: pointer; text-transform: uppercase; font-size: clamp(1rem, 3vw, 1.4rem); display: flex; justify-content: center; align-items: center; transition: all 0.1s ease-in-out; box-shadow: var(--key-shadow); }
+        .key { font-family: var(--font-main); font-weight: 500; border: none; border-radius: 8px; height: 60px; flex: 1; cursor: pointer; text-transform: uppercase; font-size: clamp(1rem, 3vw, 1.4rem); display: flex; justify-content: center; align-items: center; }
         .key:active, .key.active-press { transform: translateY(2px); box-shadow: none; }
         .key.large { flex: 1.5; font-size: 0.9rem; }
         .key.correct, .key.correct:hover { background-color: var(--correct-color); color: white; } .key.present, .key.present:hover { background-color: var(--present-color); color: white; } .key.absent, .key.absent:hover { background-color: var(--absent-color); color: white; opacity: 0.7; }
-        #rules-container { margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color-idle); color: var(--text-color); font-size: clamp(0.8rem, 2.2vw, 0.9rem); line-height: 1.7; }
+        #rules-container { margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color-idle); line-height: 1.7; }
         #rules-container h3 { font-family: var(--font-title); color: var(--title-color); text-align: center; font-size: 1.5rem; margin: 0 0 15px 0; }
         #rules-container ul { list-style-type: '🕵️ '; padding-left: 20px; text-align: left; margin: 0; }
         #rules-container li { margin-bottom: 12px; padding-left: 8px; }
@@ -75,13 +161,11 @@
         #unlock-bonus-button { background-color: var(--difficulty-extra); color: white; border: 2px solid white; border-radius: 10px; padding: 15px 30px; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; cursor: pointer; margin: 10px 0 20px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
         #unlock-bonus-button.pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
-        
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s; }
         .overlay.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
-        .overlay-content { background-color: var(--container-bg); color: var(--text-color); padding: clamp(20px, 4vw, 30px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95vw; width: auto; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .overlay-content { color: var(--text-color); padding: clamp(20px, 4vw, 30px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95vw; width: auto; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background-color: var(--container-bg); }
         .overlay-content h2 { font-family: var(--font-title); color: var(--title-color); margin: 0 0 10px 0; font-size: clamp(1.5rem, 6vw, 2.2rem); }
-        #refresh-button, #close-wheel-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 15px; transition: transform 0.2s ease; }
-
+        #refresh-button, #close-wheel-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 15px; transition: transform 0.2s ease, background-color 0.3s ease; }
         #wheel-game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         #wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 20px auto; }
         #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #e53935; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
@@ -109,15 +193,22 @@
         @keyframes power-up { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
     </style>
 </head>
-<body>
+<body class="theme-classic"> <!-- Alap téma beállítása -->
     <div id="game-container">
         <header>
             <div id="header-main">
                 <div id="logo-container">
-                    <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" /><stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" /></linearGradient></defs><circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="#ffffff"/><line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/><text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text></svg>
+                    <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" /><stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" /></linearGradient></defs><circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="var(--container-bg)"/><line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/><text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text></svg>
+                </div>
+                <div id="h1-container">
                     <h1>Nyomozó</h1>
+                    <div id="copyright-notice">© copyright by: Robi</div>
+                    <div id="theme-toggle-button" title="Színtéma választása">
+                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
+                    </div>
                 </div>
             </div>
+            <div id="theme-picker" style="display: none;"></div>
             <div id="daily-score-display">Mai pontszám: <span>0</span></div>
         </header>
         
@@ -146,7 +237,7 @@
         <div id="keyboard-container"></div>
         
         <div id="rules-container">
-            <h3>Játékszabályok</h3>
+             <h3>Játékszabályok</h3>
             <ul>
                 <li><strong>Kezdés:</strong> Minden nap <span class="rules-correct">200 ponttal</span> indulsz. A cél, hogy ezt minél jobban gyarapítsd éjfélig, amikor a pontszám nullázódik.</li>
                 <li><strong>Alapjáték:</strong> Óránként 5 új szót kapsz, amik legalább 6 óráig nem ismétlődnek. Minden szó megfejtésére 3 perced van. Egy helyes megfejtésért a szó hosszának 100-szorosa a jutalom.</li>
@@ -253,7 +344,7 @@
             { category: "Irodalom", puzzle: "JÓKAI MÓR AZ ARANY EMBER" },
             { category: "Tudomány", puzzle: "ALBERT EINSTEIN RELATIVITÁSELMÉLETE" },
             { category: "Mindennapi élet", puzzle: "A BLUETOOTH CSATLAKOZTATÁSA SIKERTELEN" },
-            { category: "Dalszöveg", puzzle: "AZÉRT VANNAK A JÓBARÁTOK HOGY SEGGÉBE RÚGJÁK EGYMÁST" }
+            { category: "Dalszöveg", puzzle: "AZÉRT VANNAK A JÓBARÁTOK HOGY MAJD EGYSZER MINDENT MEGBOCSÁSSANAK" }
         ];
 
         // --- KONSTANSOK ÉS VÁLTOZÓK ---
@@ -261,12 +352,30 @@
         const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
         
         // DOM Elemek
+        const body = document.body;
         const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const hintDisplayArea = document.getElementById('hint-display-area'); const gameEndMessageEl = document.getElementById('game-end-message'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const timerDisplay = document.getElementById('timer-display'); const startTimerButton = document.getElementById('start-timer-button'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
         const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const buyVowelButton = document.getElementById('buy-vowel-button'); const solveButton = document.getElementById('solve-button'); const wordInfoDisplay = document.getElementById('word-info'); const difficultyDisplay = document.getElementById('difficulty-display');
         const wheelRoundDisplay = document.getElementById('wheel-round-display');
         const wheelDecisionControls = document.getElementById('wheel-decision-controls');
         const cashOutButton = document.getElementById('cash-out-button');
         const nextRoundButton = document.getElementById('next-round-button');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const themePicker = document.getElementById('theme-picker');
+        
+        // Színtémák
+        const themes = [
+            { name: "Klasszikus", className: "theme-classic", color: "#3d405b" },
+            { name: "Erdei", className: "theme-forest", color: "#2d6a4f" },
+            { name: "Óceán", className: "theme-ocean", color: "#0077b6" },
+            { name: "Naplemente", className: "theme-sunset", color: "#f77f00" },
+            { name: "Éjszakai", className: "theme-night", color: "#232526" },
+            { name: "Rózsa", className: "theme-rose", color: "#c9184a" },
+            { name: "Vintage", className: "theme-vintage", color: "#a27b5c" },
+            { name: "Rét", className: "theme-meadow", color: "#7cb518" },
+            { name: "Királyi", className: "theme-royal", color: "#5a189a" },
+            { name: "Sivatag", className: "theme-desert", color: "#edc4b3" },
+            { name: "Hacker", className: "theme-hacker", color: "#00ff00" }
+        ];
 
         const KEY_LAYOUT = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
         const wheelSegmentsR1 = [ { label: '500', value: 500, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '750', value: 750, color: '#b39ddb' }, { label: '1000', value: 1000, color: '#f2cc8f' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '2000', value: 2000, color: '#e07a5f' }];
@@ -276,7 +385,51 @@
 
         let wheelState = {};
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ"; const CONSONANTS = "BCDFGHJKLMNPQRSTVXYZ";
-
+        
+        // --- TÉMA VÁLASZTÓ LOGIKA ---
+        function populateThemePicker() {
+            themes.forEach(theme => {
+                const swatch = document.createElement('div');
+                swatch.className = 'theme-swatch';
+                swatch.title = theme.name;
+                swatch.style.backgroundColor = theme.color;
+                swatch.dataset.theme = theme.className;
+                themePicker.appendChild(swatch);
+            });
+        }
+        function applyTheme(themeClassName) {
+            body.className = ''; // Törli az összes meglévő classt a bodyról
+            body.classList.add(themeClassName);
+            
+            // Aktív állapot frissítése a palettán
+            document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+            const activeSwatch = document.querySelector(`.theme-swatch[data-theme="${themeClassName}"]`);
+            if(activeSwatch) activeSwatch.classList.add('active');
+        }
+        function saveTheme(themeClassName) {
+            localStorage.setItem('szonyomozo_theme', themeClassName);
+        }
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('szonyomozo_theme') || 'theme-classic';
+            applyTheme(savedTheme);
+        }
+        themeToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themePicker.style.display = themePicker.style.display === 'flex' ? 'none' : 'flex';
+        });
+        themePicker.addEventListener('click', (e) => {
+            if (e.target.classList.contains('theme-swatch')) {
+                const themeClassName = e.target.dataset.theme;
+                applyTheme(themeClassName);
+                saveTheme(themeClassName);
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!themePicker.contains(e.target) && !themeToggleButton.contains(e.target)) {
+                themePicker.style.display = 'none';
+            }
+        });
+        
         // --- SZERENCSEKERÉK FÜGGVÉNYEK ---
         function drawWheel(round) { wheel.innerHTML = ''; const segments = wheelSegmentSets[round]; const numSegments = segments.length; const angleStep = 360 / numSegments; const radius = 50; for (let i = 0; i < numSegments; i++) { const segment = segments[i]; const startAngle = i * angleStep; const endAngle = (i + 1) * angleStep; const start = polarToCartesian(radius, radius, radius, endAngle); const end = polarToCartesian(radius, radius, radius, startAngle); const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"; const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", d); path.setAttribute("fill", segment.color); wheel.appendChild(path); const textAngle = startAngle + angleStep / 2; const textPos = polarToCartesian(radius, radius, radius * 0.7, textAngle); const text = document.createElementNS("http://www.w3.org/2000/svg", "text"); text.setAttribute("x", textPos.x); text.setAttribute("y", textPos.y); text.setAttribute("text-anchor", "middle"); text.setAttribute("dominant-baseline", "middle"); text.setAttribute("font-size", "7"); text.setAttribute("font-weight", "bold"); text.setAttribute("fill", "white"); text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`); text.textContent = segment.label; wheel.appendChild(text); } }
         function polarToCartesian(cx, cy, r, angle) { const rad = (angle - 90) * Math.PI / 180.0; return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) }; }
@@ -288,7 +441,7 @@
         function handleSpinResult(result) { wheelState.isSpinning = false; if (result === 'bankrupt') { loseGame("CSŐD!", wheelState.puzzle.puzzle); } else if (result === 'half') { wheelState.totalWinnings = Math.floor(wheelState.totalWinnings / 2); updateWheelPlayerScore(); alert(`FELEZŐ! Jelenlegi nyereményed megfeleződött: ${wheelState.totalWinnings} pont.`); updateUIForGameState('start_round'); } else { wheelState.spinResult = result; updateUIForGameState('guess_consonant'); } }
         function guessLetter(letter) { letter = letter.toUpperCase(); if (wheelState.guessedLetters.includes(letter)) { alert("Ezt a betűt már kérted!"); return; } if (VOWELS.includes(letter)) { if (wheelState.totalWinnings < 250) { alert("Nincs elég pontod magánhangzót venni! (250 pont)"); return; } wheelState.totalWinnings -= 250; } wheelState.guessedLetters.push(letter); let foundCount = 0; document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); if (foundCount > 0) { if (CONSONANTS.includes(letter)) { let pointsEarned = foundCount * wheelState.spinResult; wheelState.roundScore += pointsEarned; wheelState.totalWinnings += pointsEarned; } } else { alert(`Sajnos a(z) "${letter}" betű nem szerepel a feladványban.`); } updateWheelPlayerScore(); updateUIForGameState('start_round'); checkWheelWin(); }
         function solve() { const solution = prompt("Kérlek, add meg a teljes megfejtést:"); if (solution && solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { alert(`Helyes megfejtés!`); document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); updateUIForGameState('puzzle_solved'); } else { loseGame("Sajnos ez nem a helyes megfejtés.", wheelState.puzzle.puzzle); } }
-        function loseGame(reason, correctAnswer) { let message = `${reason} Elvesztetted a bónusz játékban gyűjtött pontokat és a tétedet is!`; if(correctAnswer) { message += `\n\nA helyes megfejtés: ${correctAnswer}`; } alert(message); wheelState.totalWinnings = 0; wheelState.initialStake = 0; updateUIForGameState('game_over'); }
+        function loseGame(reason, correctAnswer) { let message = `${reason} Elvesztetted a bónusz játékban gyűjtött pontokat és a tétedet is!`; if(correctAnswer) { message += `\n\nA helyes megfejtés: "${correctAnswer}"`; } alert(message); wheelState.totalWinnings = 0; wheelState.initialStake = 0; updateUIForGameState('game_over'); }
         function cashOut() { alert(`Gratulálunk! ${wheelState.totalWinnings} pontot nyertél, ami a téteddel együtt hozzáadódik a napi pontszámodhoz.`); addPointsToDailyScore(wheelState.totalWinnings + wheelState.initialStake); updateUIForGameState('game_over'); }
         function updateWheelPlayerScore() { playerScoreEl.textContent = wheelState.totalWinnings; }
         function updateUIForGameState(state) { spinButton.style.display = 'none'; buyVowelButton.style.display = 'none'; solveButton.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; buyVowelButton.disabled = true; solveButton.disabled = true; if (state === 'start_round') { spinButton.style.display = 'inline-block'; buyVowelButton.style.display = 'inline-block'; solveButton.style.display = 'inline-block'; spinButton.disabled = false; if (wheelState.totalWinnings >= 250) buyVowelButton.disabled = false; solveButton.disabled = false; } else if (state === 'spinning') { } else if (state === 'guess_consonant') { const letter = prompt(`Pörgetés: ${wheelState.spinResult}\nMelyik mássalhangzót kéred?`); if (letter && CONSONANTS.includes(letter.toUpperCase())) { guessLetter(letter); } else { alert("Érvénytelen mássalhangzó. Újra pörgethetsz."); updateUIForGameState('start_round'); } } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; nextRoundButton.style.display = 'inline-block'; } else { cashOut(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
@@ -349,6 +502,8 @@
         requestLetterHintButton.addEventListener('click', () => { if(spendPointsForHint()) { showHintAlert(() => { gameData.revealedHints[gameData.currentWordIndex].textUsedCount++; updateTextHintButtonLabel(); revealRandomLetter(); }); } });
         
         // --- INDÍTÁS ---
+        populateThemePicker();
+        loadTheme();
         initGame();
         setInterval(checkForNewHour, 10000);
     });

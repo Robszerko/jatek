@@ -210,10 +210,29 @@
         </div>
     </div>
 
-    <script src="szavak.js"></script>
-    <script src="szerencsekerek_feladvanyok.js"></script>
-    
     <script>
+    // --- HIÁNYZÓ FÁJLOK PÓTLÁSA (JAVÍTÁS) ---
+    // A 'szavak.js' helyettesítése minta adatokkal
+    const wordData = [
+        { word: "ASZTAL", category: "Bútor", difficulty: "Könnyű", hints: ["Négy lába van, de nem állat.", "Enni szoktunk rajta.", "A székek körülötte állnak."] },
+        { word: "GITÁR", category: "Hangszer", difficulty: "Könnyű", hints: ["Hat húrja van.", "Pengetni kell.", "Lehet akusztikus vagy elektromos."] },
+        { word: "FELHŐ", category: "Természet", difficulty: "Könnyű", hints: ["Vízpárából áll.", "Fehér vagy szürke az égen.", "Esőt hozhat."] },
+        { word: "ISKOLA", category: "Helyszín", difficulty: "Könnyű", hints: ["Gyerekek járnak ide tanulni.", "Vannak tantermek és tanárok.", "Szünetben az udvaron játszanak."] },
+        { word: "KUTYA", category: "Állat", difficulty: "Könnyű", hints: ["Az ember legjobb barátja.", "Ugatni szokott.", "Szereti, ha sétáltatják."] },
+        { word: "PROGRAMOZÓ", category: "Foglalkozás", difficulty: "Nehéz", hints: ["Számítógéppel dolgozik.", "Kódokat ír.", "Logikai gondolkodást igényel."] },
+        { word: "CSillagászat", category: "Tudomány", difficulty: "Nehéz", hints: ["Az égitestekkel foglalkozik.", "Távcsövet használ.", "Galaxisokat, bolygókat vizsgál."] },
+        { word: "FOTOSZINTÉZIS", category: "Biológia", difficulty: "Extra Nehéz", hints: ["Növények végzik.", "Fényenergiát alakít át.", "Szén-dioxidot használ fel."] }
+    ];
+
+    // A 'szerencsekerek_feladvanyok.js' helyettesítése minta adatokkal
+    const wheelPuzzles = [
+        { category: "Közmondás", puzzle: "ADDIG JÁR A KORSÓ A KÚTRA AMÍG EL NEM TÖRIK" },
+        { category: "Filmcím", puzzle: "A GYŰRŰK URA" },
+        { category: "Híres Ember", puzzle: "PETŐFI SÁNDOR" },
+        { category: "Ország", puzzle: "MAGYARORSZÁG" }
+    ];
+    // --- JAVÍTÁS VÉGE ---
+
     document.addEventListener('DOMContentLoaded', () => {
         const MAX_GUESSES = 6; let gameData = {}; let timerInterval;
         const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const hintDisplayArea = document.getElementById('hint-display-area'); const gameEndMessageEl = document.getElementById('game-end-message'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const timerDisplay = document.getElementById('timer-display'); const startTimerButton = document.getElementById('start-timer-button'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');

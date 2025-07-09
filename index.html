@@ -10,7 +10,6 @@
     
     <style>
         :root {
-            /* Alapértelmezett Nyomozó Téma */
             --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
             --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
             --border-color-active: #8d6e63; --correct-color: #81b29a; --present-color: #f2cc8f;
@@ -18,40 +17,16 @@
             --key-shadow: 0 3px 0 #bcaaa4; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
             --difficulty-easy: #388e3c; --difficulty-hard: #f57c00; --difficulty-extra: #d32f2f;
         }
-
         body {
-            background-color: var(--bg-gradient-end);
-            background-image: 
-                radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 40%),
-                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            background-blend-mode: overlay;
-            color: var(--text-color); font-family: var(--font-main); display: flex;
-            justify-content: center; align-items: flex-start; padding: 15px;
-            box-sizing: border-box; -webkit-user-select: none; user-select: none; touch-action: manipulation;
-            transition: background 0.5s ease;
-            position: relative; z-index: 1;
+            background-color: var(--bg-gradient-end); background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 40%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-blend-mode: overlay; color: var(--text-color); font-family: var(--font-main); display: flex; justify-content: center; align-items: flex-start; padding: 15px; box-sizing: border-box; -webkit-user-select: none; user-select: none; touch-action: manipulation; transition: background 0.5s ease; position: relative; z-index: 1;
         }
-
         body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background-image: 
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7,7H5A2,2 0 0,0 3,9V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V9A2,2 0 0,0 19,7H17L16,5H8L7,7M12,18A5,5 0 0,1 7,13A5,5 0 0,1 12,8A5,5 0 0,1 17,13A5,5 0 0,1 12,18M12,10A3,3 0 0,0 9,13A3,3 0 0,0 12,16A3,3 0 0,0 15,13A3,3 0 0,0 12,10Z" /></svg>'),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.3,13.5C17.3,13.5 14.5,12.2 12.8,11.4C10.9,10.5 10.3,9.2 10.3,7.9C10.3,6.6 10.9,5.5 12,5.5C13.1,5.5 13.7,6.6 13.7,7.9C13.7,8.2 13.8,8.5 14.1,8.5C14.4,8.5 14.7,8.2 14.7,7.9C14.7,6 13.5,4.5 12,4.5C10.5,4.5 9.3,6 9.3,7.9C9.3,9.8 10.2,11.5 12.3,12.5C14.3,13.5 18.3,15 18.3,15L17.3,13.5M20.5,18.2C20.5,17.7 20.1,17.3 19.6,17.3H5.4C4.9,17.3 4.5,17.7 4.5,18.2C4.5,18.7 4.9,19.1 5.4,19.1H19.6C20.1,19.1 20.5,18.7 20.5,18.2Z" /></svg>');
-            background-repeat: no-repeat;
-            background-position: bottom 5% left 5%, top 10% right 8%;
-            background-size: 200px, 120px; opacity: 0.06;
-            transform: rotate(-15deg) translateX(-10%);
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7,7H5A2,2 0 0,0 3,9V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V9A2,2 0 0,0 19,7H17L16,5H8L7,7M12,18A5,5 0 0,1 7,13A5,5 0 0,1 12,8A5,5 0 0,1 17,13A5,5 0 0,1 12,18M12,10A3,3 0 0,0 9,13A3,3 0 0,0 12,16A3,3 0 0,0 15,13A3,3 0 0,0 12,10Z" /></svg>'), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.3,13.5C17.3,13.5 14.5,12.2 12.8,11.4C10.9,10.5 10.3,9.2 10.3,7.9C10.3,6.6 10.9,5.5 12,5.5C13.1,5.5 13.7,6.6 13.7,7.9C13.7,8.2 13.8,8.5 14.1,8.5C14.4,8.5 14.7,8.2 14.7,7.9C14.7,6 13.5,4.5 12,4.5C10.5,4.5 9.3,6 9.3,7.9C9.3,9.8 10.2,11.5 12.3,12.5C14.3,13.5 18.3,15 18.3,15L17.3,13.5M20.5,18.2C20.5,17.7 20.1,17.3 19.6,17.3H5.4C4.9,17.3 4.5,17.7 4.5,18.2C4.5,18.7 4.9,19.1 5.4,19.1H19.6C20.1,19.1 20.5,18.7 20.5,18.2Z" /></svg>');
+            background-repeat: no-repeat; background-position: bottom 5% left 5%, top 10% right 8%; background-size: 200px, 120px; opacity: 0.06; transform: rotate(-15deg) translateX(-10%);
         }
-
-        #game-container {
-            background-color: var(--container-bg); border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column;
-            align-items: center; width: 100%; max-width: 600px;
-            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh;
-            position: relative;
-        }
-        header, #word-tracker, #info-bar, #grid-container, #hint-container, #keyboard-container, #rules-container { width: 100%; }
+        #game-container { background-color: var(--container-bg); border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative; }
+        header, #word-tracker, #info-bar, #grid-container, #hint-controls, #keyboard-container, #rules-container { width: 100%; }
         header { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; position: relative; }
         #header-main { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
         #logo-container { display: flex; align-items: center; position: relative; }
@@ -96,14 +71,19 @@
         .cell-back.present { background-color: var(--present-color); border-color: var(--present-color);}
         .cell-back.absent  { background-color: var(--absent-color); border-color: var(--absent-color);}
         @keyframes pop { 50% { transform: scale(1.1); } }
-        #hint-container { background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; min-height: 40px; font-weight: 500; color: #5d4037; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }
+        #hint-display-container { background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; min-height: 40px; font-weight: 500; color: #5d4037; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }
         #hint-display-area p { margin: 0; font-style: italic; line-height: 1.5; }
         #hint-display-area p strong { color: var(--title-color); font-style: normal; }
         .hint-alert { color: var(--correct-color); font-weight: 900; font-style: normal; animation: flash 1s infinite; font-size: 1.8rem; letter-spacing: 2px; }
         @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
-        #request-hint-button { background-color: var(--present-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; margin-bottom: 25px; box-shadow: 0 3px 0 #d0a457; font-size: 1rem; }
-        #request-hint-button:hover:not(:disabled) { background-color: #eabf6f; transform: translateY(-2px); }
-        #request-hint-button:disabled { background-color: var(--absent-color); cursor: not-allowed; box-shadow: none; }
+        /* ÚJ: Segítség gombok konténere */
+        #hint-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .hint-button { color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; flex-grow: 1; max-width: 200px; }
+        .hint-button#request-text-hint-button { background-color: var(--present-color); box-shadow: 0 3px 0 #d0a457; }
+        .hint-button#request-letter-hint-button { background-color: var(--correct-color); box-shadow: 0 3px 0 #6a9982; }
+        .hint-button:hover:not(:disabled) { transform: translateY(-2px); }
+        .hint-button:disabled { background-color: var(--absent-color); cursor: not-allowed; box-shadow: none; }
+
         #keyboard-container { display: flex; flex-direction: column; gap: 12px; }
         .keyboard-row { display: flex; justify-content: center; gap: 6px; }
         .key { font-family: var(--font-main); font-weight: 500; background-color: var(--key-bg); color: var(--key-text); border: none; border-radius: 8px; height: 60px; flex: 1; cursor: pointer; text-transform: uppercase; font-size: clamp(1rem, 3vw, 1.4rem); display: flex; justify-content: center; align-items: center; transition: all 0.1s ease-in-out; box-shadow: var(--key-shadow); }
@@ -122,41 +102,38 @@
         .rules-present { color: var(--present-color); font-weight: 700; }
         .rules-absent { color: var(--absent-color); font-weight: 700; }
         .rules-penalty { color: #d32f2f; font-weight: 700; }
-        #new-set-overlay, #bonus-game-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s; }
+        #new-set-overlay, #bonus-game-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s; }
         #new-set-overlay.visible, #bonus-game-overlay.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
-        .overlay-content { background-color: var(--container-bg); color: var(--text-color); padding: clamp(20px, 5vw, 40px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95%; width: fit-content; }
+        .overlay-content { background-color: var(--container-bg); color: var(--text-color); padding: clamp(20px, 5vw, 40px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95%; width: fit-content; max-height: 90vh; overflow-y: auto;}
         .overlay-content h2 { font-family: var(--font-title); color: var(--title-color); margin: 0 0 15px 0; font-size: clamp(1.5rem, 6vw, 2.2rem); }
-        #refresh-button, #check-bonus-button, #close-bonus-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: transform 0.2s ease; }
-        #refresh-button:hover, #check-bonus-button:hover, #close-bonus-button:hover { transform: scale(1.05); }
+        #refresh-button, #close-bonus-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: transform 0.2s ease; }
+        #refresh-button:hover, #close-bonus-button:hover { transform: scale(1.05); }
 
-        #unlock-bonus-button {
-            display: none; background-color: var(--difficulty-extra); color: white;
-            border: 2px solid white; border-radius: 10px; padding: 15px 30px;
-            font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px;
-            cursor: pointer; margin: 10px 0 20px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-            animation: pulse 2s infinite;
-        }
+        #unlock-bonus-button { display: none; background-color: var(--difficulty-extra); color: white; border: 2px solid white; border-radius: 10px; padding: 15px 30px; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; cursor: pointer; margin: 10px 0 20px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
+        #unlock-bonus-button.pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
+        
+        /* Bónusz játék stílusok */
         #bonus-game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         #bonus-header { display: flex; justify-content: space-around; align-items: center; width: 100%;}
         #bonus-timer-display { font-size: 1.8rem; font-weight: 700; color: var(--title-color); }
         #bonus-grid-wrapper { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
-        #bonus-grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; } /* MÓDOSÍTVA 6x6-ra */
-        .bonus-cell { width: clamp(35px, 8vw, 45px); height: clamp(35px, 8vw, 45px); background-color: #fff; border: 2px solid var(--border-color-idle); text-align: center; font-size: 1.5rem; text-transform: uppercase; font-family: var(--font-main); font-weight: 700; color: var(--text-color); border-radius: 5px; padding: 0; transition: all 0.2s ease;}
+        #bonus-grid-container { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+        .bonus-cell { width: clamp(30px, 8vw, 40px); height: clamp(30px, 8vw, 40px); background-color: #fff; border: 2px solid var(--border-color-idle); text-align: center; font-size: 1.4rem; text-transform: uppercase; font-family: var(--font-main); font-weight: 700; color: var(--text-color); border-radius: 5px; padding: 0; transition: all 0.2s ease;}
         .bonus-cell:focus { outline: 3px solid var(--title-color); }
-        .bonus-cell.highlighted { /* ÚJ: Kijelölés stílusa */
-            outline: 4px solid var(--present-color);
-            transform: scale(1.05);
-            z-index: 10;
-        }
+        .bonus-cell.highlighted { outline: 4px solid var(--present-color); transform: scale(1.05); z-index: 10; }
         .bonus-cell.pre-filled { background-color: var(--key-bg); font-weight: 900; color: var(--title-color); }
         .bonus-cell.correct { background-color: var(--correct-color); color: white; border-color: var(--correct-color); }
-        .bonus-cell.incorrect { background-color: #e53935; color: white; border-color: #e53935; }
         .empty-cell { background-color: transparent; border: none; }
-        #bonus-clues-container { text-align: left; list-style-type: none; padding: 0; margin: 0; line-height: 1.8; font-size: clamp(0.9rem, 2.5vw, 1rem); }
-        #bonus-clues-container li { cursor: pointer; padding: 4px 8px; border-radius: 5px; transition: background-color 0.2s; } /* ÚJ: kurzor és stílus */
-        #bonus-clues-container li:hover { background-color: rgba(0,0,0,0.05); } /* ÚJ: hover effektus */
+        .clue-item-wrapper { display: flex; align-items: center; gap: 8px; }
+        #bonus-clues-container { text-align: left; list-style-type: none; padding: 0; margin: 0; line-height: 1.6; font-size: clamp(0.8rem, 2vw, 0.9rem); max-height: 350px; overflow-y: auto; padding-right: 10px; }
+        #bonus-clues-container li { cursor: pointer; padding: 4px 8px; border-radius: 5px; transition: background-color 0.2s; }
+        #bonus-clues-container li:hover { background-color: rgba(0,0,0,0.05); }
+        #bonus-clues-container li.solved { text-decoration: line-through; opacity: 0.6; pointer-events: none;}
         #bonus-clues-container strong { color: var(--title-color); }
+        .bonus-submit-button { background-color: var(--title-color); color: white; border: none; padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s; }
+        .bonus-submit-button:hover:not(:disabled) { background-color: #c7684f; }
+        .bonus-submit-button:disabled { background-color: var(--absent-color); cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -164,12 +141,7 @@
         <header>
             <div id="header-main">
                 <div id="logo-container">
-                    <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" /><stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" /></linearGradient></defs>
-                        <circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="#ffffff"/>
-                        <line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/>
-                        <text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text>
-                    </svg>
+                    <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" /><stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" /></linearGradient></defs><circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="#ffffff"/><line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/><text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text></svg>
                     <h1>Nyomozó</h1>
                 </div>
                 <div id="settings-container">
@@ -194,11 +166,15 @@
         </div>
         <main id="grid-container"></main>
         
-        <div id="hint-container">
+        <div id="hint-display-container">
              <div id="hint-display-area"></div>
              <div id="game-end-message"></div>
         </div>
-        <button id="request-hint-button">Segítséget kérek (-1 perc)</button>
+        <!-- ÚJ: Segítség gombok -->
+        <div id="hint-controls">
+            <button id="request-text-hint-button" class="hint-button">Szöveges segítség (3)</button>
+            <button id="request-letter-hint-button" class="hint-button">Betű felfedése</button>
+        </div>
         
         <div id="keyboard-container"></div>
         
@@ -207,9 +183,8 @@
             <ul>
                 <li><strong>A Cél:</strong> Minden órában 5 új szót kell kitalálnod egy 500 szavas készletből. Minden szóhoz 6 próbálkozásod és 7 perced van.</li>
                 <li><strong>Színek Jelentése:</strong> A <span class="rules-correct">zöld</span> betű a helyén van. A <span class="rules-present">sárga</span> betű szerepel a szóban, de rossz helyen. A <span class="rules-absent">szürke</span> betű egyáltalán nem része a megoldásnak.</li>
-                <li><strong>Segítségek:</strong> Az idő múlásával automatikusan megjelennek a szöveges és betű-segítségek.</li>
-                <li><strong>Manuális Segítség:</strong> Ha elakadsz, a <strong>"Segítséget kérek"</strong> gombbal is felfedhetsz egy újabb segítséget. Ennek ára <span class="rules-penalty">minden kattintáskor 1 perc</span> levonás!</li>
-                <li><strong>Extra Nyomozás:</strong> Ha mind az 5 szót hibátlanul megfejted, egy <strong>bónusz keresztrejtvény</strong> oldható fel! Erre 2 perced lesz, segítség nélkül.</li>
+                <li><strong>Segítségek:</strong> Választhatsz, hogy <span class="rules-present">szöveges segítséget</span> (max. 3) vagy <span class="rules-correct">betű felfedést</span> kérsz. Minden segítségkérés ára <span class="rules-penalty">1 perc</span> levonás!</li>
+                <li><strong>Extra Nyomozás:</strong> Ha mind az 5 szót hibátlanul megfejted, egy <strong>8x8-as bónusz keresztrejtvény</strong> oldható fel! Erre 5 perced lesz.</li>
             </ul>
         </div>
     </div>
@@ -227,70 +202,74 @@
             <div id="bonus-game-container">
                 <div id="bonus-header">
                     <h2>Extra Nyomozás</h2>
-                    <div id="bonus-timer-display">02:00</div>
+                    <div id="bonus-timer-display">05:00</div>
                 </div>
                 <div id="bonus-grid-wrapper">
                     <div id="bonus-grid-container"></div>
                     <ul id="bonus-clues-container"></ul>
                 </div>
-                <button id="check-bonus-button">Megfejtés</button>
                 <button id="close-bonus-button" style="display: none;">Bezárás</button>
             </div>
         </div>
     </div>
 
-    <!-- A szavakat mostantól a 'szavak.js' fájlból töltjük be. -->
-    <!-- Ennek a fájlnak a HTML mellett kell lennie. -->
     <script src="szavak.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const palettes = [ { name: "Nyomozó", vars: { '--bg-gradient-start': '#3d405b', '--bg-gradient-end': '#2c2f48', '--container-bg': 'rgba(244, 241, 222, 0.95)', '--text-color': '#3d405b', '--title-color': '#e07a5f', '--border-color-idle': '#bcaaa4', '--border-color-active': '#8d6e63', '--correct-color': '#81b29a', '--present-color': '#f2cc8f', '--absent-color': '#9e9e9e', '--key-bg': '#dcd3b8', '--key-text': '#3d405b', '--key-shadow': '0 3px 0 #bcaaa4', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#f57c00', '--difficulty-extra': '#d32f2f' } }, { name: "Eredeti Menta", vars: { '--bg-gradient-start': '#e0f7fa', '--bg-gradient-end': '#b2ebf2', '--container-bg': '#ffffff', '--text-color': '#004d40', '--title-color': '#00796b', '--border-color-idle': '#b0bec5', '--border-color-active': '#78909c', '--correct-color': '#43a047', '--present-color': '#ffa000', '--absent-color': '#90a4ae', '--key-bg': '#cfd8dc', '--key-text': '#263238', '--key-shadow': '0 3px 0 #90a4ae', '--difficulty-easy': '#43a047', '--difficulty-hard': '#ffa000', '--difficulty-extra': '#e53935' } }, { name: "Sötét Mód", vars: { '--bg-gradient-start': '#263238', '--bg-gradient-end': '#37474f', '--container-bg': '#455a64', '--text-color': '#eceff1', '--title-color': '#80cbc4', '--border-color-idle': '#78909c', '--border-color-active': '#b0bec5', '--correct-color': '#66bb6a', '--present-color': '#ffee58', '--absent-color': '#546e7a', '--key-bg': '#607d8b', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #37474f', '--difficulty-easy': '#66bb6a', '--difficulty-hard': '#ffee58', '--difficulty-extra': '#ef5350' } }, { name: "Naplemente", vars: { '--bg-gradient-start': '#ffab73', '--bg-gradient-end': '#ff8a65', '--container-bg': '#fff3e0', '--text-color': '#4e342e', '--title-color': '#e65100', '--border-color-idle': '#ffccbc', '--border-color-active': '#ffab91', '--correct-color': '#81c784', '--present-color': '#64b5f6', '--absent-color': '#e0e0e0', '--key-bg': '#ffcc80', '--key-text': '#4e342e', '--key-shadow': '0 3px 0 #e65100', '--difficulty-easy': '#81c784', '--difficulty-hard': '#e65100', '--difficulty-extra': '#b71c1c' } }, { name: "Levendula", vars: { '--bg-gradient-start': '#e1bee7', '--bg-gradient-end': '#ce93d8', '--container-bg': '#f3e5f5', '--text-color': '#4a148c', '--title-color': '#8e24aa', '--border-color-idle': '#d1c4e9', '--border-color-active': '#b39ddb', '--correct-color': '#4db6ac', '--present-color': '#ffd54f', '--absent-color': '#e0e0e0', '--key-bg': '#ce93d8', '--key-text': '#4a148c', '--key-shadow': '0 3px 0 #ab47bc', '--difficulty-easy': '#4db6ac', '--difficulty-hard': '#fbc02d', '--difficulty-extra': '#e91e63' } }, { name: "Erdő", vars: { '--bg-gradient-start': '#a5d6a7', '--bg-gradient-end': '#81c784', '--container-bg': '#e8f5e9', '--text-color': '#1b5e20', '--title-color': '#388e3c', '--border-color-idle': '#c8e6c9', '--border-color-active': '#a5d6a7', '--correct-color': '#66bb6a', '--present-color': '#ffb74d', '--absent-color': '#a1887f', '--key-bg': '#a5d6a7', '--key-text': '#1b5e20', '--key-shadow': '0 3px 0 #4caf50', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#ffb74d', '--difficulty-extra': '#e57373' } }, ];
         
-        // A 'wordData' változó már be van töltve a szavak.js fájlból.
-        
-        // ÚJ: 6x6-os bónusz rejtvények, értelmes szavakkal és a kijelöléshez szükséges cella-koordinátákkal
+        // ÚJ: Átdolgozott, 8x8-as bónusz rejtvények, minőségi magyar szavakkal
         const bonusPuzzles = [
             {
                 grid: [
-                    ['B', 'A', 'L', 'K', 'O', 'N'],
-                    ['Ú', null, 'A', null, 'R', 'A'],
-                    ['T', 'R', 'É', 'F', 'A', null],
-                    ['O', null, 'K', null, 'V', 'I'],
-                    ['R', 'A', 'Á', 'S', null, 'R'],
-                    [null, 'S', 'S', 'A', 'L', 'A'],
+                    ['K', 'A', 'L', 'A', 'P', 'Á', 'C', 'S'],
+                    ['A', null, 'A', null, 'A', null, 'E', null],
+                    ['T', 'A', 'S', 'K', 'Ó', null, 'R', 'É'],
+                    ['O', null, 'Z', null, 'Z', null, 'E', null],
+                    ['N', 'A', 'T', 'Ú', 'R', null, 'N', 'D'],
+                    ['A', null, 'A', null, 'A', null, 'Y', null],
+                    [null, 'S', 'Z', 'T', 'Á', 'R', null, 'Ő'],
+                    ['M', 'O', 'T', 'O', 'R', null, null, 'R'],
                 ],
                 words: [
-                    { num: 1, dir: 'Vízszintes', word: 'BALKON', clue: 'Épületrész', cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5}] },
-                    { num: 2, dir: 'Vízszintes', word: 'TRÉFA', clue: 'Humoros megjegyzés', cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4}] },
-                    { num: 3, dir: 'Vízszintes', word: 'RAÁS', clue: 'Ráérős (régies)', cells: [{r:4,c:1},{r:4,c:2},{r:4,c:3},{r:4,c:4}] },
-                    { num: 4, dir: 'Vízszintes', word: 'SSALA', clue: 'Hosszú sál', cells: [{r:5,c:1},{r:5,c:2},{r:5,c:3},{r:5,c:4},{r:5,c:5}] },
-                    { num: 5, dir: 'Függőleges', word: 'BÚTOR', clue: 'Lakberendezési tárgy', cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0}] },
-                    { num: 6, dir: 'Függőleges', word: 'LÉK', clue: 'Lyuk a jégen', cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2}] },
-                    { num: 7, dir: 'Függőleges', word: 'ORVOS', clue: 'Gyógyító szakember', cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
-                    { num: 8, dir: 'Függőleges', word: 'NAIV', clue: 'Gyanútlan', cells: [{r:0,c:5},{r:1,c:5},{r:2,c:5},{r:3,c:5}] }
+                    { word: "KALAPÁCS", clue: "Ütőszerszám", cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5},{r:0,c:6},{r:0,c:7}] },
+                    { word: "TASKÓ", clue: "Régi táska", cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4}] },
+                    { word: "NATÚR", clue: "Természetes, díszítetlen", cells: [{r:4,c:0},{r:4,c:1},{r:4,c:2},{r:4,c:3},{r:4,c:4}] },
+                    { word: "SZTÁR", clue: "Híres személy", cells: [{r:6,c:1},{r:6,c:2},{r:6,c:3},{r:6,c:4},{r:6,c:5}] },
+                    { word: "MOTOR", clue: "Gépi erőforrás", cells: [{r:7,c:0},{r:7,c:1},{r:7,c:2},{r:7,c:3},{r:7,c:4}] },
+                    { word: "KATONA", clue: "Hadsereg tagja", cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0},{r:5,c:0}] },
+                    { word: "LAZA", clue: "Nem feszes", cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2}] },
+                    { word: "POZŐR", clue: "Színlelő személy", cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
+                    { word: "SZERÉNY", clue: "Visszafogott", cells: [{r:0,c:6},{r:1,c:6},{r:2,c:6},{r:3,c:6},{r:4,c:6},{r:5,c:6},{r:6,c:6}] },
+                    { word: "SÉRTŐDŐR", clue: "Könnyen megsértődik", cells: [{r:0,c:7},{r:1,c:7},{r:2,c:7},{r:3,c:7},{r:4,c:7},{r:5,c:7},{r:6,c:7},{r:7,c:7}] }
                 ],
-                preFilled: [{r: 0, c: 0, char: 'B'}, {r: 0, c: 5, char: 'N'}, {r: 2, c: 2, char: 'É'}, {r: 5, c: 1, char: 'S'}, {r: 5, c: 5, char: 'A'}]
+                preFilled: [{r:0,c:3,'A'},{r:2,c:1,'A'},{r:2,c:6,'R'},{r:4,c:0,'N'},{r:4,c:4,'R'},{r:7,c:2,'T'}]
             },
             {
                 grid: [
-                    ['P', 'I', 'A', 'C', 'O', 'S'],
-                    ['A', null, 'B', null, 'R', 'Z'],
-                    ['L', 'A', 'K', 'Á', 'S', null],
-                    ['I', null, 'O', null, 'Z', 'A'],
-                    ['T', 'E', 'S', 'T', 'A', 'L'],
-                    [null, 'V', 'Ő', null, 'G', null],
+                    ['P', 'Á', 'L', 'M', 'A', 'F', 'A', null],
+                    ['A', null, 'E', null, 'L', null, 'L', null],
+                    ['P', 'R', 'É', 'S', 'A', 'K', null, 'A'],
+                    ['A', null, 'V', null, 'P', null, 'K', null],
+                    ['G', 'A', 'É', 'L', null, 'A', 'A', 'T'],
+                    ['Á', null, 'L', null, 'A', null, 'B', null],
+                    ['J', null, 'D', null, 'C', 'S', 'O', 'K'],
+                    [null, 'M', 'A', 'L', 'A', 'C', null, null],
                 ],
                 words: [
-                    { num: 1, dir: 'Vízszintes', word: 'PIACos', clue: 'Árus a vásárban', cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5}] },
-                    { num: 2, dir: 'Vízszintes', word: 'LAKÁS', clue: 'Otthon', cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4}] },
-                    { num: 3, dir: 'Vízszintes', word: 'TESTÁL', clue: 'Végrendelkezik', cells: [{r:4,c:0},{r:4,c:1},{r:4,c:2},{r:4,c:3},{r:4,c:4},{r:4,c:5}] },
-                    { num: 4, dir: 'Függőleges', word: 'PALIT', clue: 'Becsap (szleng)', cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0}] },
-                    { num: 5, dir: 'Függőleges', word: 'ABRAK', clue: 'Lóeledel', cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2},{r:4,c:2}] },
-                    { num: 6, dir: 'Függőleges', word: 'ORZÓ', clue: 'Lopakodva vadászó', cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
-                    { num: 7, dir: 'Függőleges', word: 'SZALA', clue: 'Zala (régi)', cells: [{r:2,c:5},{r:3,c:5},{r:4,c:5},{r:5,c:5}] },
+                    { word: "PÁLMAFA", clue: "Trópusi növény", cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5},{r:0,c:6}] },
+                    { word: "PRÉSAK", clue: "Szerszámok", cells: [{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4},{r:2,c:5}] },
+                    { word: "GAÉL", clue: "Kelta népcsoport", cells: [{r:4,c:0},{r:4,c:1},{r:4,c:2},{r:4,c:3}] },
+                    { word: "LAKAT", clue: "Záróeszköz", cells: [{r:4,c:5},{r:4,c:6},{r:4,c:7},{r:5,c:7},{r:6,c:7}] },
+                    { word: "CSOK", clue: "Virágköteg", cells: [{r:6,c:4},{r:6,c:5},{r:6,c:6},{r:6,c:7}] },
+                    { word: "MALAC", clue: "Sertéskölyök", cells: [{r:7,c:1},{r:7,c:2},{r:7,c:3},{r:7,c:4},{r:7,c:5}] },
+                    { word: "PAPAGÁJ", clue: "Színes madár", cells: [{r:0,c:0},{r:1,c:0},{r:2,c:0},{r:3,c:0},{r:4,c:0},{r:5,c:0},{r:6,c:0}] },
+                    { word: "LEKVÁR", clue: "Gyümölcskészítmény", cells: [{r:0,c:2},{r:1,c:2},{r:2,c:2},{r:3,c:2},{r:4,c:2},{r:5,c:2},{r:6,c:2}] },
+                    { word: "ALPAC", clue: "Lámaféle", cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
+                    { word: "FALAK", clue: "Épület határolói", cells: [{r:0,c:6},{r:1,c:6},{r:2,c:6},{r:3,c:6},{r:4,c:6}] },
                 ],
-                preFilled: [{r: 0, c: 2, char: 'A'}, {r: 2, c: 0, char: 'L'}, {r: 2, c: 4, char: 'S'}, {r: 4, c: 1, char: 'E'}, {r: 4, c: 5, char: 'L'}]
+                preFilled: [{r:0,c:1,'Á'},{r:0,c:5,'F'},{r:2,c:2,'É'},{r:4,c:6,'A'},{r:6,c:0,'J'},{r:7,c:3,'L'}]
             }
         ];
         
@@ -303,7 +282,8 @@
         const keyboardContainer = document.getElementById('keyboard-container');
         const hintDisplayArea = document.getElementById('hint-display-area');
         const gameEndMessageEl = document.getElementById('game-end-message');
-        const requestHintButton = document.getElementById('request-hint-button');
+        const requestTextHintButton = document.getElementById('request-text-hint-button');
+        const requestLetterHintButton = document.getElementById('request-letter-hint-button');
         const difficultyDisplay = document.getElementById('difficulty-display');
         const wordInfoDisplay = document.getElementById('word-info');
         const nextSetInfoDisplay = document.getElementById('next-set-info');
@@ -320,18 +300,13 @@
         const bonusTimerDisplay = document.getElementById('bonus-timer-display');
         const bonusGridContainer = document.getElementById('bonus-grid-container');
         const bonusCluesContainer = document.getElementById('bonus-clues-container');
-        const checkBonusButton = document.getElementById('check-bonus-button');
         const closeBonusButton = document.getElementById('close-bonus-button');
 
         function applyTheme(paletteIndex) {
             const selectedPalette = palettes[paletteIndex];
             if (!selectedPalette) return;
-            Object.keys(selectedPalette.vars).forEach(key => {
-                document.documentElement.style.setProperty(key, selectedPalette.vars[key]);
-            });
-            document.querySelectorAll('.palette-swatch').forEach((swatch, index) => {
-                swatch.classList.toggle('active', index === paletteIndex);
-            });
+            Object.keys(selectedPalette.vars).forEach(key => { document.documentElement.style.setProperty(key, selectedPalette.vars[key]); });
+            document.querySelectorAll('.palette-swatch').forEach((swatch, index) => { swatch.classList.toggle('active', index === paletteIndex); });
             localStorage.setItem('szonyomozo_theme_index', paletteIndex);
         }
 
@@ -342,14 +317,9 @@
                 swatch.className = 'palette-swatch';
                 swatch.title = palette.name;
                 swatch.dataset.index = index;
-                const bg = palette.vars['--bg-gradient-start'] && palette.vars['--bg-gradient-end']
-                    ? `linear-gradient(135deg, ${palette.vars['--bg-gradient-start']}, ${palette.vars['--bg-gradient-end']})`
-                    : palette.vars['--bg-gradient-end'];
+                const bg = palette.vars['--bg-gradient-start'] && palette.vars['--bg-gradient-end'] ? `linear-gradient(135deg, ${palette.vars['--bg-gradient-start']}, ${palette.vars['--bg-gradient-end']})` : palette.vars['--bg-gradient-end'];
                 swatch.style.background = bg;
-                swatch.addEventListener('click', () => {
-                    applyTheme(index);
-                    paletteContainer.style.display = 'none';
-                });
+                swatch.addEventListener('click', () => { applyTheme(index); paletteContainer.style.display = 'none'; });
                 paletteGrid.appendChild(swatch);
             });
         }
@@ -361,18 +331,14 @@
         }
 
         function initGame() {
-            // A betöltött téma alkalmazása
             const savedThemeIndex = localStorage.getItem('szonyomozo_theme_index');
-            if (savedThemeIndex !== null) {
-                applyTheme(parseInt(savedThemeIndex, 10));
-            }
+            if (savedThemeIndex !== null) { applyTheme(parseInt(savedThemeIndex, 10)); }
 
             const hourSeed = getCurrentHourSeed();
             const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
             
             if (storedData && storedData.seed === hourSeed) {
                 gameData = storedData;
-                if (gameData.bonusPlayed === undefined) { gameData.bonusPlayed = false; }
             } else {
                 gameData = {
                     seed: hourSeed, hourlySet: [], progress: [], timers: [], 
@@ -386,13 +352,12 @@
                     gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]);
                 }
                 gameData.progress = Array(5).fill('pending');
-                gameData.timers = Array(5).fill(420); // 7 perc
+                gameData.timers = Array(5).fill(420);
                 gameData.isTimerRunning = Array(5).fill(false);
-                gameData.revealedIndices = {};
-                gameData.revealedHints = {};
                 for(let i=0; i<5; i++) {
                     gameData.revealedIndices[i] = [];
-                    gameData.revealedHints[i] = [];
+                    // ÚJ: Struktúra a hint-eknek
+                    gameData.revealedHints[i] = { text: [], textUsedCount: 0 };
                 }
                 gameData.currentWordIndex = 0;
             }
@@ -415,9 +380,7 @@
                 if (gameData.progress[index] === 'solved') item.classList.add('solved');
                 if (gameData.progress[index] === 'failed') item.classList.add('failed');
                 if (index === gameData.currentWordIndex) item.classList.add('active');
-                if (gameData.progress[index] === 'pending') {
-                    item.addEventListener('click', () => { if(index !== gameData.currentWordIndex) loadWord(index); });
-                }
+                if (gameData.progress[index] === 'pending') { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex) loadWord(index); }); }
                 wordTrackerContainer.appendChild(item);
             });
         }
@@ -446,18 +409,24 @@
             initializeKeyboard();
             renderWordTracker();
             
+            // JAVÍTVA: Segítség gombok állapotának beállítása
             if (gameData.isGameOver) {
                 startTimerButton.style.display = 'none';
-                requestHintButton.disabled = true;
+                requestTextHintButton.disabled = true;
+                requestLetterHintButton.disabled = true;
                 showEndMessage();
             } else if (gameData.isTimerRunning[indexInSet]) {
                 startTimerButton.style.display = 'none';
-                requestHintButton.disabled = false;
-                startTimer(gameData.timers[indexInSet]);
+                const hintsData = gameData.revealedHints[indexInSet];
+                requestTextHintButton.disabled = hintsData.textUsedCount >= 3;
+                requestLetterHintButton.disabled = false;
+                startTimer();
             } else {
                 startTimerButton.style.display = 'block';
-                requestHintButton.disabled = true;
+                requestTextHintButton.disabled = true;
+                requestLetterHintButton.disabled = true;
             }
+            updateTextHintButtonLabel();
         }
         
         function updateTimerDisplay(timeLeft) {
@@ -466,15 +435,14 @@
              const seconds = (timeLeft % 60).toString().padStart(2, '0');
              timerDisplay.textContent = `${minutes}:${seconds}`;
         }
-
-        function startTimer(duration) {
-            let timeLeft = duration;
-            updateTimerDisplay(timeLeft);
-            
+        
+        // JAVÍTVA: Az időzítő mostantól a központi gameData-ból olvassa az időt
+        function startTimer() {
+            clearInterval(timerInterval); // Biztonsági clearInterval
             timerInterval = setInterval(() => {
                 if (gameData.isGameOver) { clearInterval(timerInterval); return; }
                 
-                // Mivel a levonás a gombnyomáskor történik, itt már csak simán csökkentjük
+                let timeLeft = gameData.timers[gameData.currentWordIndex];
                 timeLeft--;
                 gameData.timers[gameData.currentWordIndex] = timeLeft;
                 updateTimerDisplay(timeLeft);
@@ -485,8 +453,26 @@
                     clearInterval(timerInterval);
                     failWord();
                 }
-                // Nincs szükség állandó mentésre, csak a fontos eseményeknél
             }, 1000);
+        }
+        
+        function deductTimeForHint() {
+            if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return false;
+
+            let currentTime = gameData.timers[gameData.currentWordIndex];
+            currentTime -= 60;
+            if (currentTime < 0) { currentTime = 0; }
+            gameData.timers[gameData.currentWordIndex] = currentTime;
+            updateTimerDisplay(currentTime); // Azonnali frissítés
+            
+            if (currentTime <= 0) {
+                clearInterval(timerInterval);
+                failWord();
+                saveGame();
+                return false; // Nem sikerült, mert lejárt az idő
+            }
+            saveGame();
+            return true; // Sikerült a levonás
         }
         
         function showHintAlert(callback) {
@@ -495,26 +481,48 @@
                 if (gameData.isGameOver) { showEndMessage(); return; }
                 gameEndMessageEl.innerHTML = '';
                 callback();
-            }, 3000);
+            }, 2000);
         }
 
         function checkAndRevealTimedHint(timeLeft) {
-            const reveal = (id, action) => {
-                const hints = gameData.revealedHints[gameData.currentWordIndex];
-                if (hints && !hints.includes(id)) {
-                    hints.push(id);
-                    showHintAlert(action);
-                    saveGame();
-                }
-            };
+            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
             const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints;
-            if (timeLeft === 360) reveal('text1', () => renderHint('text1'));
-            if (timeLeft === 240 && wordHints[1]) reveal('text2', () => renderHint('text2'));
-            if (timeLeft === 180) reveal('letter1', () => revealRandomLetter());
-            if (timeLeft === 120 && wordHints[2]) reveal('text3', () => renderHint('text3'));
-            if (timeLeft === 60) reveal('letter2', () => revealRandomLetter());
-        }
 
+            if (timeLeft === 360 && !hintsData.text.includes(0)) {
+                showHintAlert(() => revealTextHint(0));
+            }
+            if (timeLeft === 240 && wordHints[1] && !hintsData.text.includes(1)) {
+                showHintAlert(() => revealTextHint(1));
+            }
+            if (timeLeft === 180 && !gameData.revealedIndices[gameData.currentWordIndex].some(idx => idx !== undefined)) { // Csak ha még nincs betű felfedve
+                showHintAlert(revealRandomLetter);
+            }
+            if (timeLeft === 120 && wordHints[2] && !hintsData.text.includes(2)) {
+                showHintAlert(() => revealTextHint(2));
+            }
+        }
+        
+        function revealTextHint(hintIndex) {
+            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
+            if (hintsData.text.includes(hintIndex)) return;
+
+            hintsData.text.push(hintIndex);
+            hintsData.textUsedCount++;
+            updateTextHintButtonLabel();
+            if (hintsData.textUsedCount >= 3) {
+                requestTextHintButton.disabled = true;
+            }
+
+            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            if (wordObject.hints && wordObject.hints[hintIndex]) {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`;
+                p.dataset.hintId = hintIndex;
+                hintDisplayArea.appendChild(p);
+            }
+            saveGame();
+        }
+        
         function revealRandomLetter() {
             if (gameData.isGameOver) return;
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
@@ -533,10 +541,7 @@
             const letter = targetWord[indexToReveal];
             for(let i=0; i<MAX_GUESSES; i++) {
                 const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`);
-                if(cellFront) {
-                    cellFront.textContent = letter;
-                    cellFront.classList.add('cell-revealed');
-                }
+                if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); }
             }
             updateKeyboard(letter, 'correct');
             saveGame();
@@ -545,7 +550,8 @@
         function failWord() {
             gameData.isGameOver = true;
             gameData.progress[gameData.currentWordIndex] = 'failed';
-            requestHintButton.disabled = true;
+            requestTextHintButton.disabled = true;
+            requestLetterHintButton.disabled = true;
             showEndMessage();
             saveGame();
             renderWordTracker();
@@ -568,10 +574,7 @@
                 revealed.forEach(index => {
                     for(let i=0; i<MAX_GUESSES; i++) {
                         const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`);
-                        if(cellFront) {
-                            cellFront.textContent = targetWord[index];
-                            cellFront.classList.add('cell-revealed');
-                        }
+                        if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); }
                     }
                 });
             }
@@ -579,17 +582,12 @@
         
         function initializeKeyboard() { 
             keyboardContainer.innerHTML = '';
-            const keyLayout = [
-                ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'],
-                ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace']
-            ];
+            const keyLayout = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
             keyLayout.forEach(rowKeys => {
                 const row = document.createElement('div'); row.className = 'keyboard-row';
                 rowKeys.forEach(key => {
                     const button = document.createElement('button');
-                    button.textContent = key; button.className = 'key';
-                    button.dataset.key = key.toUpperCase();
+                    button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase();
                     if (key === 'Enter' || key === 'Backspace') button.classList.add('large');
                     button.addEventListener('click', () => handleKeyPress(key));
                     row.appendChild(button);
@@ -605,56 +603,30 @@
             else if (upperKey === 'BACKSPACE' || upperKey === 'DELETE') deleteLetter();
             else if (upperKey.length === 1 && "QWERTZUIOPÖÜÓASDFGHJKLÉÁŰŐÚYXCVBNMÍ".includes(upperKey)) addLetter(upperKey);
         }
-
         function addLetter(letter) {
             const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length;
             if (gameData.currentCol >= wordLength) return;
             const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol];
-            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) {
-                gameData.currentCol++;
-                if (gameData.currentCol < wordLength) addLetter(letter); 
-                return;
-            }
-            if (cell) {
-                cell.querySelector('.cell-front').textContent = letter;
-                cell.classList.add('filled');
-                gameData.currentCol++;
-            }
+            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); return; }
+            if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; }
         }
-
         function deleteLetter() {
             if (gameData.currentCol <= 0) return;
             gameData.currentCol--;
             const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol];
-
-            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) {
-                if(gameData.currentCol > 0) deleteLetter();
-                return;
-            }
-            if (cell) {
-                cell.querySelector('.cell-front').textContent = '';
-                cell.classList.remove('filled');
-            }
+            if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { if(gameData.currentCol > 0) deleteLetter(); return; }
+            if (cell) { cell.querySelector('.cell-front').textContent = ''; cell.classList.remove('filled'); }
         }
-        
-        function renderHint(hintId) {
-            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
-            const hintIndex = parseInt(hintId.replace('text', ''), 10) - 1;
-            
-            if (wordObject.hints && wordObject.hints[hintIndex]) {
-                const p = document.createElement('p');
-                p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`;
-                p.dataset.hintId = hintId;
-                if (!hintDisplayArea.querySelector(`[data-hint-id="${hintId}"]`)) {
+        function renderAllRevealedHints() {
+            const revealed = gameData.revealedHints[gameData.currentWordIndex].text || [];
+            revealed.forEach(hintIndex => {
+                const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+                if (wordObject.hints && wordObject.hints[hintIndex]) {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`;
+                    p.dataset.hintId = hintIndex;
                     hintDisplayArea.appendChild(p);
                 }
-            }
-        }
-        
-        function renderAllRevealedHints() {
-            const revealed = gameData.revealedHints[gameData.currentWordIndex] || [];
-            revealed.forEach(hintId => {
-                if (hintId.startsWith('text')) { renderHint(hintId); }
             });
         }
         
@@ -662,11 +634,8 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             const progress = gameData.progress[gameData.currentWordIndex];
             let message = '';
-            if (progress === 'solved') {
-                message = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`;
-            } else if (progress === 'failed') {
-                message = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`;
-            }
+            if (progress === 'solved') { message = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; } 
+            else if (progress === 'failed') { message = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; }
             gameEndMessageEl.innerHTML = message;
         }
 
@@ -681,19 +650,13 @@
                 clearInterval(timerInterval);
                 gameData.isGameOver = true; 
                 gameData.progress[gameData.currentWordIndex] = 'solved';
-                requestHintButton.disabled = true;
-                setTimeout(() => { 
-                    showEndMessage();
-                    checkForBonusGameUnlock();
-                }, wordObject.word.length * 200 + 200);
+                requestTextHintButton.disabled = true;
+                requestLetterHintButton.disabled = true;
+                setTimeout(() => { showEndMessage(); checkForBonusGameUnlock(); }, wordObject.word.length * 200 + 200);
             } else {
                 gameData.currentRow++;
-                if (gameData.currentRow >= MAX_GUESSES) {
-                    clearInterval(timerInterval);
-                    failWord();
-                } else {
-                    gameData.currentCol = 0;
-                }
+                if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); }
+                else { gameData.currentCol = 0; }
             }
             saveGame();
             renderWordTracker();
@@ -732,9 +695,7 @@
         function checkForNewHour() {
             if (newSetOverlay.classList.contains('visible')) return;
             const currentSeed = getCurrentHourSeed();
-            if (gameData.seed && currentSeed !== gameData.seed) {
-                newSetOverlay.classList.add('visible');
-            }
+            if (gameData.seed && currentSeed !== gameData.seed) { newSetOverlay.classList.add('visible'); }
         }
 
         function handleStartTimerClick() {
@@ -742,52 +703,43 @@
             if (gameData.isTimerRunning[currentIndex] || gameData.isGameOver) return;
             gameData.isTimerRunning[currentIndex] = true;
             startTimerButton.style.display = 'none';
-            requestHintButton.disabled = false;
-            startTimer(gameData.timers[currentIndex]);
+            const hintsData = gameData.revealedHints[currentIndex];
+            requestTextHintButton.disabled = hintsData.textUsedCount >= 3;
+            requestLetterHintButton.disabled = false;
+            startTimer();
             saveGame();
         }
         
-        function handleRequestHintClick() {
-            if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return;
-            
-            // JAVÍTVA: Azonnali levonás és kijelzés frissítés
-            let currentTime = gameData.timers[gameData.currentWordIndex];
-            currentTime -= 60;
-            if (currentTime < 0) { currentTime = 0; }
-            gameData.timers[gameData.currentWordIndex] = currentTime;
-            updateTimerDisplay(currentTime); // Azonnal frissíti a látható időt
-
-            if(currentTime <= 0) {
-                clearInterval(timerInterval); // Le kell állítani a futó interval-t is!
-                failWord();
-                saveGame();
-                return;
-            }
-
-            const revealedHints = gameData.revealedHints[gameData.currentWordIndex];
-            const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints;
-            let action = null;
-            let hintId = null;
-
-            if (!revealedHints.includes('text1')) { hintId = 'text1'; } 
-            else if (wordHints[1] && !revealedHints.includes('text2')) { hintId = 'text2'; } 
-            else if (wordHints[2] && !revealedHints.includes('text3')) { hintId = 'text3'; } 
-            else { action = () => revealRandomLetter(); }
-
-            if (hintId) {
-                 action = () => renderHint(hintId);
-                 if (!revealedHints.includes(hintId)) { revealedHints.push(hintId); }
-            }
-
-            if (action) { showHintAlert(action); }
-            
-            saveGame();
+        function updateTextHintButtonLabel() {
+            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
+            const remaining = 3 - (hintsData.textUsedCount || 0);
+            requestTextHintButton.textContent = `Szöveges segítség (${remaining})`;
         }
 
+        // --- ÚJ Segítségkérő funkciók ---
+        requestTextHintButton.addEventListener('click', () => {
+            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
+            const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints;
+            if (hintsData.textUsedCount >= 3) return;
+
+            if(deductTimeForHint()) {
+                const nextHintIndex = hintsData.text.length;
+                if(wordHints[nextHintIndex]) {
+                    showHintAlert(() => revealTextHint(nextHintIndex));
+                }
+            }
+        });
+        
+        requestLetterHintButton.addEventListener('click', () => {
+            if(deductTimeForHint()) {
+                showHintAlert(revealRandomLetter);
+            }
+        });
+
+        // --- Bónusz játék funkciók ---
         function checkForBonusGameUnlock() {
             const allSolved = gameData.progress.every(p => p === 'solved');
             unlockBonusButton.style.display = 'block';
-
             if (allSolved && !gameData.bonusPlayed) {
                 unlockBonusButton.disabled = false;
                 unlockBonusButton.style.cursor = 'pointer';
@@ -812,113 +764,132 @@
             bonusGridContainer.innerHTML = '';
             bonusCluesContainer.innerHTML = '';
 
-            // JAVÍTVA: 6x6-os rács generálása
-            for (let r = 0; r < 6; r++) {
-                for (let c = 0; c < 6; c++) {
-                    if (puzzle.grid[r][c]) {
-                        const input = document.createElement('input');
-                        input.type = 'text'; input.maxLength = 1;
-                        input.classList.add('bonus-cell');
-                        input.dataset.r = r; input.dataset.c = c;
-                        bonusGridContainer.appendChild(input);
-                    } else {
-                        const div = document.createElement('div');
-                        div.classList.add('empty-cell');
-                        bonusGridContainer.appendChild(div);
-                    }
+            for (let r = 0; r < 8; r++) { for (let c = 0; c < 8; c++) {
+                if (puzzle.grid[r][c]) {
+                    const input = document.createElement('input');
+                    input.type = 'text'; input.maxLength = 1; input.classList.add('bonus-cell');
+                    input.dataset.r = r; input.dataset.c = c;
+                    bonusGridContainer.appendChild(input);
+                } else {
+                    const div = document.createElement('div'); div.classList.add('empty-cell');
+                    bonusGridContainer.appendChild(div);
                 }
-            }
+            }}
 
             puzzle.preFilled.forEach(cell => {
                 const input = bonusGridContainer.querySelector(`input[data-r="${cell.r}"][data-c="${cell.c}"]`);
-                if(input) { input.value = cell.char; input.disabled = true; input.classList.add('pre-filled'); }
+                if(input) { input.value = cell[2]; input.disabled = true; input.classList.add('pre-filled'); }
             });
 
-            // ÚJ: Kijelölő funkció a segítség szövegére kattintva
-            puzzle.words.forEach(word => {
+            puzzle.words.forEach((wordData, index) => {
+                const clueWrapper = document.createElement('div');
+                clueWrapper.className = 'clue-item-wrapper';
+                
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${word.num}. ${word.dir}:</strong> ${word.clue}`;
+                li.innerHTML = `<strong>${index+1}.</strong> ${wordData.clue}`;
                 li.addEventListener('click', () => {
-                    // Először minden kijelölést leveszünk
                     bonusGridContainer.querySelectorAll('.bonus-cell.highlighted').forEach(cell => cell.classList.remove('highlighted'));
-                    // Majd az aktuális szó celláit kijelöljük
-                    word.cells.forEach(coord => {
+                    wordData.cells.forEach(coord => {
                         const cellToHighlight = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
                         if(cellToHighlight) cellToHighlight.classList.add('highlighted');
                     });
                 });
-                bonusCluesContainer.appendChild(li);
+
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Bevitel';
+                submitButton.className = 'bonus-submit-button';
+                submitButton.addEventListener('click', () => {
+                    checkBonusWord(wordData, submitButton, li);
+                });
+
+                clueWrapper.appendChild(li);
+                clueWrapper.appendChild(submitButton);
+                bonusCluesContainer.appendChild(clueWrapper);
             });
 
-            checkBonusButton.style.display = 'block';
             closeBonusButton.style.display = 'none';
             bonusGameOverlay.classList.add('visible');
             startBonusTimer();
         }
+
+        function checkBonusWord(wordData, button, listItem) {
+            let guess = '';
+            wordData.cells.forEach(coord => {
+                const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
+                if(input) guess += input.value.toUpperCase();
+            });
+
+            if (guess === wordData.word.toUpperCase()) {
+                wordData.cells.forEach(coord => {
+                    const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
+                    if(input) {
+                        input.classList.add('correct');
+                        input.disabled = true;
+                    }
+                });
+                button.disabled = true;
+                listItem.classList.add('solved');
+
+                // Ellenőrizzük, hogy minden szó megvan-e
+                if (document.querySelectorAll('.bonus-submit-button:disabled').length === bonusPuzzles[getCurrentHourSeed() % bonusPuzzles.length].words.length) {
+                    endBonusGame(false, true); // Győzelem
+                }
+            } else {
+                // Helytelen tipp vizuális jelzése
+                button.style.backgroundColor = '#e53935';
+                setTimeout(() => { button.style.backgroundColor = ''; }, 500);
+            }
+        }
         
         function startBonusTimer() {
-            let timeLeft = 120; // 2 perc
+            let timeLeft = 300; // 5 perc
             clearInterval(bonusTimerInterval);
-            bonusTimerDisplay.textContent = '02:00';
-            
+            bonusTimerDisplay.textContent = '05:00';
             bonusTimerInterval = setInterval(() => {
                 timeLeft--;
                 const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
                 const seconds = (timeLeft % 60).toString().padStart(2, '0');
                 bonusTimerDisplay.textContent = `${minutes}:${seconds}`;
-
                 if (timeLeft <= 0) {
                     clearInterval(bonusTimerInterval);
-                    endBonusGame(true);
+                    endBonusGame(true, false);
                 }
             }, 1000);
         }
 
-        function endBonusGame(isTimeUp = false) {
+        function endBonusGame(isTimeUp = false, isWin = false) {
             clearInterval(bonusTimerInterval);
-            const puzzleIndex = getCurrentHourSeed() % bonusPuzzles.length;
-            const puzzle = bonusPuzzles[puzzleIndex];
-            
-            bonusGridContainer.querySelectorAll('.bonus-cell:not(.pre-filled)').forEach(input => {
-                const r = parseInt(input.dataset.r);
-                const c = parseInt(input.dataset.c);
-                const correctChar = puzzle.grid[r][c];
-                const userChar = input.value.toUpperCase();
-
-                if (userChar === correctChar) { input.classList.add('correct'); } 
-                else { input.classList.add('incorrect'); input.value = correctChar; }
-                input.disabled = true;
-            });
-            
-            checkBonusButton.style.display = 'none';
+            if(isWin) {
+                bonusTimerDisplay.textContent = "Gratulálok!";
+            }
+            if (isTimeUp) {
+                const puzzle = bonusPuzzles[getCurrentHourSeed() % bonusPuzzles.length];
+                puzzle.words.forEach(wordData => {
+                     wordData.cells.forEach(coord => {
+                        const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
+                        if(input && !input.classList.contains('correct')) {
+                            input.value = puzzle.grid[coord.r][coord.c];
+                            input.style.color = '#e53935'; // Megmutatja a helyes, de nem kitalált betűket pirossal
+                        }
+                     });
+                });
+            }
+            document.querySelectorAll('.bonus-cell, .bonus-submit-button').forEach(el => el.disabled = true);
             closeBonusButton.style.display = 'block';
         }
-        
-        // --- Eseménykezelők ---
-        settingsButton.addEventListener('click', () => {
-            paletteContainer.style.display = paletteContainer.style.display === 'block' ? 'none' : 'block';
-        });
-        document.addEventListener('click', (event) => {
-            if (settingsButton && !settingsButton.contains(event.target) && paletteContainer && !paletteContainer.contains(event.target)) {
-                paletteContainer.style.display = 'none';
-            }
-        });
+
+        // --- Eseménykezelők és Indítás ---
+        settingsButton.addEventListener('click', () => { paletteContainer.style.display = paletteContainer.style.display === 'block' ? 'none' : 'block'; });
+        document.addEventListener('click', (event) => { if (settingsButton && !settingsButton.contains(event.target) && paletteContainer && !paletteContainer.contains(event.target)) { paletteContainer.style.display = 'none'; } });
         refreshButton.addEventListener('click', () => location.reload());
         unlockBonusButton.addEventListener('click', initBonusGame);
-        checkBonusButton.addEventListener('click', () => endBonusGame(false));
-        closeBonusButton.addEventListener('click', () => {
-            bonusGameOverlay.classList.remove('visible');
-        });
-
+        closeBonusButton.addEventListener('click', () => { bonusGameOverlay.classList.remove('visible'); });
         startTimerButton.addEventListener('click', handleStartTimerClick);
-        requestHintButton.addEventListener('click', handleRequestHintClick);
         document.addEventListener('keydown', (e) => handleKeyPress(e.key));
         
-        // --- Játék indítása ---
         initPalette();
         initGame();
-        setInterval(checkForNewHour, 10000); // 10 másodpercenként ellenőrzi, hogy új óra van-e
-
+        setInterval(checkForNewHour, 10000);
     });
     </script>
 </body>

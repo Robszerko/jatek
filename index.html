@@ -76,7 +76,7 @@
         #hint-display-area p strong { color: var(--title-color); font-style: normal; }
         .hint-alert { color: var(--correct-color); font-weight: 900; font-style: normal; animation: flash 1s infinite; font-size: 1.8rem; letter-spacing: 2px; }
         @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
-        /* ÚJ: Segítség gombok konténere */
+        
         #hint-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
         .hint-button { color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; flex-grow: 1; max-width: 200px; }
         .hint-button#request-text-hint-button { background-color: var(--present-color); box-shadow: 0 3px 0 #d0a457; }
@@ -113,7 +113,6 @@
         #unlock-bonus-button.pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
         
-        /* Bónusz játék stílusok */
         #bonus-game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         #bonus-header { display: flex; justify-content: space-around; align-items: center; width: 100%;}
         #bonus-timer-display { font-size: 1.8rem; font-weight: 700; color: var(--title-color); }
@@ -127,7 +126,7 @@
         .empty-cell { background-color: transparent; border: none; }
         .clue-item-wrapper { display: flex; align-items: center; gap: 8px; }
         #bonus-clues-container { text-align: left; list-style-type: none; padding: 0; margin: 0; line-height: 1.6; font-size: clamp(0.8rem, 2vw, 0.9rem); max-height: 350px; overflow-y: auto; padding-right: 10px; }
-        #bonus-clues-container li { cursor: pointer; padding: 4px 8px; border-radius: 5px; transition: background-color 0.2s; }
+        #bonus-clues-container li { flex-grow: 1; cursor: pointer; padding: 4px 8px; border-radius: 5px; transition: background-color 0.2s; }
         #bonus-clues-container li:hover { background-color: rgba(0,0,0,0.05); }
         #bonus-clues-container li.solved { text-decoration: line-through; opacity: 0.6; pointer-events: none;}
         #bonus-clues-container strong { color: var(--title-color); }
@@ -170,7 +169,6 @@
              <div id="hint-display-area"></div>
              <div id="game-end-message"></div>
         </div>
-        <!-- ÚJ: Segítség gombok -->
         <div id="hint-controls">
             <button id="request-text-hint-button" class="hint-button">Szöveges segítség (3)</button>
             <button id="request-letter-hint-button" class="hint-button">Betű felfedése</button>
@@ -219,7 +217,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const palettes = [ { name: "Nyomozó", vars: { '--bg-gradient-start': '#3d405b', '--bg-gradient-end': '#2c2f48', '--container-bg': 'rgba(244, 241, 222, 0.95)', '--text-color': '#3d405b', '--title-color': '#e07a5f', '--border-color-idle': '#bcaaa4', '--border-color-active': '#8d6e63', '--correct-color': '#81b29a', '--present-color': '#f2cc8f', '--absent-color': '#9e9e9e', '--key-bg': '#dcd3b8', '--key-text': '#3d405b', '--key-shadow': '0 3px 0 #bcaaa4', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#f57c00', '--difficulty-extra': '#d32f2f' } }, { name: "Eredeti Menta", vars: { '--bg-gradient-start': '#e0f7fa', '--bg-gradient-end': '#b2ebf2', '--container-bg': '#ffffff', '--text-color': '#004d40', '--title-color': '#00796b', '--border-color-idle': '#b0bec5', '--border-color-active': '#78909c', '--correct-color': '#43a047', '--present-color': '#ffa000', '--absent-color': '#90a4ae', '--key-bg': '#cfd8dc', '--key-text': '#263238', '--key-shadow': '0 3px 0 #90a4ae', '--difficulty-easy': '#43a047', '--difficulty-hard': '#ffa000', '--difficulty-extra': '#e53935' } }, { name: "Sötét Mód", vars: { '--bg-gradient-start': '#263238', '--bg-gradient-end': '#37474f', '--container-bg': '#455a64', '--text-color': '#eceff1', '--title-color': '#80cbc4', '--border-color-idle': '#78909c', '--border-color-active': '#b0bec5', '--correct-color': '#66bb6a', '--present-color': '#ffee58', '--absent-color': '#546e7a', '--key-bg': '#607d8b', '--key-text': '#ffffff', '--key-shadow': '0 3px 0 #37474f', '--difficulty-easy': '#66bb6a', '--difficulty-hard': '#ffee58', '--difficulty-extra': '#ef5350' } }, { name: "Naplemente", vars: { '--bg-gradient-start': '#ffab73', '--bg-gradient-end': '#ff8a65', '--container-bg': '#fff3e0', '--text-color': '#4e342e', '--title-color': '#e65100', '--border-color-idle': '#ffccbc', '--border-color-active': '#ffab91', '--correct-color': '#81c784', '--present-color': '#64b5f6', '--absent-color': '#e0e0e0', '--key-bg': '#ffcc80', '--key-text': '#4e342e', '--key-shadow': '0 3px 0 #e65100', '--difficulty-easy': '#81c784', '--difficulty-hard': '#e65100', '--difficulty-extra': '#b71c1c' } }, { name: "Levendula", vars: { '--bg-gradient-start': '#e1bee7', '--bg-gradient-end': '#ce93d8', '--container-bg': '#f3e5f5', '--text-color': '#4a148c', '--title-color': '#8e24aa', '--border-color-idle': '#d1c4e9', '--border-color-active': '#b39ddb', '--correct-color': '#4db6ac', '--present-color': '#ffd54f', '--absent-color': '#e0e0e0', '--key-bg': '#ce93d8', '--key-text': '#4a148c', '--key-shadow': '0 3px 0 #ab47bc', '--difficulty-easy': '#4db6ac', '--difficulty-hard': '#fbc02d', '--difficulty-extra': '#e91e63' } }, { name: "Erdő", vars: { '--bg-gradient-start': '#a5d6a7', '--bg-gradient-end': '#81c784', '--container-bg': '#e8f5e9', '--text-color': '#1b5e20', '--title-color': '#388e3c', '--border-color-idle': '#c8e6c9', '--border-color-active': '#a5d6a7', '--correct-color': '#66bb6a', '--present-color': '#ffb74d', '--absent-color': '#a1887f', '--key-bg': '#a5d6a7', '--key-text': '#1b5e20', '--key-shadow': '0 3px 0 #4caf50', '--difficulty-easy': '#388e3c', '--difficulty-hard': '#ffb74d', '--difficulty-extra': '#e57373' } }, ];
         
-        // ÚJ: Átdolgozott, 8x8-as bónusz rejtvények, minőségi magyar szavakkal
+        // JAVÍTVA: A hiba a preFilled tömb szintaxisában volt.
         const bonusPuzzles = [
             {
                 grid: [
@@ -244,7 +242,7 @@
                     { word: "SZERÉNY", clue: "Visszafogott", cells: [{r:0,c:6},{r:1,c:6},{r:2,c:6},{r:3,c:6},{r:4,c:6},{r:5,c:6},{r:6,c:6}] },
                     { word: "SÉRTŐDŐR", clue: "Könnyen megsértődik", cells: [{r:0,c:7},{r:1,c:7},{r:2,c:7},{r:3,c:7},{r:4,c:7},{r:5,c:7},{r:6,c:7},{r:7,c:7}] }
                 ],
-                preFilled: [{r:0,c:3,'A'},{r:2,c:1,'A'},{r:2,c:6,'R'},{r:4,c:0,'N'},{r:4,c:4,'R'},{r:7,c:2,'T'}]
+                preFilled: [{r:0,c:3, char:'A'},{r:2,c:1, char:'A'},{r:2,c:6, char:'R'},{r:4,c:0, char:'N'},{r:4,c:4, char:'R'},{r:7,c:2, char:'T'}]
             },
             {
                 grid: [
@@ -259,7 +257,7 @@
                 ],
                 words: [
                     { word: "PÁLMAFA", clue: "Trópusi növény", cells: [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:0,c:3},{r:0,c:4},{r:0,c:5},{r:0,c:6}] },
-                    { word: "PRÉSAK", clue: "Szerszámok", cells: [{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4},{r:2,c:5}] },
+                    { word: "PRÉSAK", clue: "Szerszámok", cells: [{r:2,c:0},{r:2,c:1},{r:2,c:2},{r:2,c:3},{r:2,c:4},{r:2,c:5}] },
                     { word: "GAÉL", clue: "Kelta népcsoport", cells: [{r:4,c:0},{r:4,c:1},{r:4,c:2},{r:4,c:3}] },
                     { word: "LAKAT", clue: "Záróeszköz", cells: [{r:4,c:5},{r:4,c:6},{r:4,c:7},{r:5,c:7},{r:6,c:7}] },
                     { word: "CSOK", clue: "Virágköteg", cells: [{r:6,c:4},{r:6,c:5},{r:6,c:6},{r:6,c:7}] },
@@ -269,7 +267,7 @@
                     { word: "ALPAC", clue: "Lámaféle", cells: [{r:0,c:4},{r:1,c:4},{r:2,c:4},{r:3,c:4},{r:4,c:4}] },
                     { word: "FALAK", clue: "Épület határolói", cells: [{r:0,c:6},{r:1,c:6},{r:2,c:6},{r:3,c:6},{r:4,c:6}] },
                 ],
-                preFilled: [{r:0,c:1,'Á'},{r:0,c:5,'F'},{r:2,c:2,'É'},{r:4,c:6,'A'},{r:6,c:0,'J'},{r:7,c:3,'L'}]
+                preFilled: [{r:0,c:1, char:'Á'},{r:0,c:5, char:'F'},{r:2,c:2, char:'É'},{r:4,c:6, char:'A'},{r:6,c:0, char:'J'},{r:7,c:3, char:'L'}]
             }
         ];
         
@@ -313,10 +311,7 @@
         function initPalette() {
             paletteGrid.innerHTML = '';
             palettes.forEach((palette, index) => {
-                const swatch = document.createElement('div');
-                swatch.className = 'palette-swatch';
-                swatch.title = palette.name;
-                swatch.dataset.index = index;
+                const swatch = document.createElement('div'); swatch.className = 'palette-swatch'; swatch.title = palette.name; swatch.dataset.index = index;
                 const bg = palette.vars['--bg-gradient-start'] && palette.vars['--bg-gradient-end'] ? `linear-gradient(135deg, ${palette.vars['--bg-gradient-start']}, ${palette.vars['--bg-gradient-end']})` : palette.vars['--bg-gradient-end'];
                 swatch.style.background = bg;
                 swatch.addEventListener('click', () => { applyTheme(index); paletteContainer.style.display = 'none'; });
@@ -343,8 +338,7 @@
                 gameData = {
                     seed: hourSeed, hourlySet: [], progress: [], timers: [], 
                     revealedIndices: {}, isTimerRunning: [], revealedHints: {},
-                    bonusPlayed: false,
-                    currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false
+                    bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false
                 };
                 let tempWordIndices = Array.from(Array(wordData.length).keys());
                 for (let i = 0; i < 5; i++) {
@@ -356,7 +350,6 @@
                 gameData.isTimerRunning = Array(5).fill(false);
                 for(let i=0; i<5; i++) {
                     gameData.revealedIndices[i] = [];
-                    // ÚJ: Struktúra a hint-eknek
                     gameData.revealedHints[i] = { text: [], textUsedCount: 0 };
                 }
                 gameData.currentWordIndex = 0;
@@ -368,15 +361,12 @@
             checkForBonusGameUnlock();
         }
 
-        function saveGame() {
-            localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData));
-        }
+        function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
 
         function renderWordTracker() {
             wordTrackerContainer.innerHTML = '';
             gameData.hourlySet.forEach((_, index) => {
-                const item = document.createElement('div');
-                item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index;
+                const item = document.createElement('div'); item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index;
                 if (gameData.progress[index] === 'solved') item.classList.add('solved');
                 if (gameData.progress[index] === 'failed') item.classList.add('failed');
                 if (index === gameData.currentWordIndex) item.classList.add('active');
@@ -390,8 +380,7 @@
             gameData.currentWordIndex = indexInSet;
             const wordProgress = gameData.progress[indexInSet];
             gameData.isGameOver = (wordProgress !== 'pending');
-            gameData.currentRow = 0; 
-            gameData.currentCol = 0;
+            gameData.currentRow = 0; gameData.currentCol = 0;
 
             const wordObject = wordData[gameData.hourlySet[indexInSet]];
             const { word, category, difficulty } = wordObject;
@@ -402,18 +391,13 @@
             difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(' ', '-')}`);
 
             updateTimerDisplay(gameData.timers[indexInSet]);
-            hintDisplayArea.innerHTML = '';
-            gameEndMessageEl.innerHTML = '';
+            hintDisplayArea.innerHTML = ''; gameEndMessageEl.innerHTML = '';
             renderAllRevealedHints();
-            initializeGrid(word.length);
-            initializeKeyboard();
-            renderWordTracker();
+            initializeGrid(word.length); initializeKeyboard(); renderWordTracker();
             
-            // JAVÍTVA: Segítség gombok állapotának beállítása
             if (gameData.isGameOver) {
                 startTimerButton.style.display = 'none';
-                requestTextHintButton.disabled = true;
-                requestLetterHintButton.disabled = true;
+                requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
                 showEndMessage();
             } else if (gameData.isTimerRunning[indexInSet]) {
                 startTimerButton.style.display = 'none';
@@ -423,8 +407,7 @@
                 startTimer();
             } else {
                 startTimerButton.style.display = 'block';
-                requestTextHintButton.disabled = true;
-                requestLetterHintButton.disabled = true;
+                requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
             }
             updateTextHintButtonLabel();
         }
@@ -436,83 +419,46 @@
              timerDisplay.textContent = `${minutes}:${seconds}`;
         }
         
-        // JAVÍTVA: Az időzítő mostantól a központi gameData-ból olvassa az időt
         function startTimer() {
-            clearInterval(timerInterval); // Biztonsági clearInterval
+            clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 if (gameData.isGameOver) { clearInterval(timerInterval); return; }
-                
                 let timeLeft = gameData.timers[gameData.currentWordIndex];
                 timeLeft--;
                 gameData.timers[gameData.currentWordIndex] = timeLeft;
                 updateTimerDisplay(timeLeft);
-                
-                checkAndRevealTimedHint(timeLeft);
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    failWord();
-                }
+                if (timeLeft <= 0) { clearInterval(timerInterval); failWord(); }
             }, 1000);
         }
         
         function deductTimeForHint() {
             if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return false;
-
             let currentTime = gameData.timers[gameData.currentWordIndex];
             currentTime -= 60;
             if (currentTime < 0) { currentTime = 0; }
             gameData.timers[gameData.currentWordIndex] = currentTime;
-            updateTimerDisplay(currentTime); // Azonnali frissítés
-            
-            if (currentTime <= 0) {
-                clearInterval(timerInterval);
-                failWord();
-                saveGame();
-                return false; // Nem sikerült, mert lejárt az idő
-            }
+            updateTimerDisplay(currentTime);
+            if (currentTime <= 0) { clearInterval(timerInterval); failWord(); saveGame(); return false; }
             saveGame();
-            return true; // Sikerült a levonás
+            return true;
         }
         
         function showHintAlert(callback) {
-            gameEndMessageEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!!!</strong>`;
+            gameEndMessageEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!</strong>`;
             setTimeout(() => {
                 if (gameData.isGameOver) { showEndMessage(); return; }
                 gameEndMessageEl.innerHTML = '';
                 callback();
             }, 2000);
         }
-
-        function checkAndRevealTimedHint(timeLeft) {
-            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
-            const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints;
-
-            if (timeLeft === 360 && !hintsData.text.includes(0)) {
-                showHintAlert(() => revealTextHint(0));
-            }
-            if (timeLeft === 240 && wordHints[1] && !hintsData.text.includes(1)) {
-                showHintAlert(() => revealTextHint(1));
-            }
-            if (timeLeft === 180 && !gameData.revealedIndices[gameData.currentWordIndex].some(idx => idx !== undefined)) { // Csak ha még nincs betű felfedve
-                showHintAlert(revealRandomLetter);
-            }
-            if (timeLeft === 120 && wordHints[2] && !hintsData.text.includes(2)) {
-                showHintAlert(() => revealTextHint(2));
-            }
-        }
         
         function revealTextHint(hintIndex) {
             const hintsData = gameData.revealedHints[gameData.currentWordIndex];
             if (hintsData.text.includes(hintIndex)) return;
-
             hintsData.text.push(hintIndex);
             hintsData.textUsedCount++;
             updateTextHintButtonLabel();
-            if (hintsData.textUsedCount >= 3) {
-                requestTextHintButton.disabled = true;
-            }
-
+            if (hintsData.textUsedCount >= 3) { requestTextHintButton.disabled = true; }
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             if (wordObject.hints && wordObject.hints[hintIndex]) {
                 const p = document.createElement('p');
@@ -528,34 +474,26 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             const targetWord = wordObject.word.toUpperCase();
             const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex];
-            
             const unrevealedWordIndices = [];
-            for (let i = 0; i < targetWord.length; i++) {
-                if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i);
-            }
-            if (unrevealedWordIndices.length === 0) return;
-            
+            for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); }
+            if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; }
             const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)];
             revealedIndices.push(indexToReveal);
-            
             const letter = targetWord[indexToReveal];
             for(let i=0; i<MAX_GUESSES; i++) {
                 const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`);
                 if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); }
             }
             updateKeyboard(letter, 'correct');
+            if (unrevealedWordIndices.length - 1 === 0) { requestLetterHintButton.disabled = true; }
             saveGame();
         }
         
         function failWord() {
             gameData.isGameOver = true;
             gameData.progress[gameData.currentWordIndex] = 'failed';
-            requestTextHintButton.disabled = true;
-            requestLetterHintButton.disabled = true;
-            showEndMessage();
-            saveGame();
-            renderWordTracker();
-            checkForBonusGameUnlock();
+            requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
+            showEndMessage(); saveGame(); renderWordTracker(); checkForBonusGameUnlock();
         }
 
         function initializeGrid(wordLength) {
@@ -563,9 +501,7 @@
             for (let i = 0; i < MAX_GUESSES; i++) {
                 const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`;
                 row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`;
-                for (let j = 0; j < wordLength; j++) {
-                    row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`;
-                }
+                for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; }
                 gridContainer.appendChild(row);
             }
             const revealed = gameData.revealedIndices[gameData.currentWordIndex];
@@ -586,8 +522,7 @@
             keyLayout.forEach(rowKeys => {
                 const row = document.createElement('div'); row.className = 'keyboard-row';
                 rowKeys.forEach(key => {
-                    const button = document.createElement('button');
-                    button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase();
+                    const button = document.createElement('button'); button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase();
                     if (key === 'Enter' || key === 'Backspace') button.classList.add('large');
                     button.addEventListener('click', () => handleKeyPress(key));
                     row.appendChild(button);
@@ -622,9 +557,7 @@
             revealed.forEach(hintIndex => {
                 const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
                 if (wordObject.hints && wordObject.hints[hintIndex]) {
-                    const p = document.createElement('p');
-                    p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`;
-                    p.dataset.hintId = hintIndex;
+                    const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex;
                     hintDisplayArea.appendChild(p);
                 }
             });
@@ -643,23 +576,17 @@
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             if (gameData.currentCol !== wordObject.word.length) return;
             const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join('');
-            
             flipRow(guess, wordObject.word.toUpperCase());
-
             if (guess === wordObject.word.toUpperCase()) {
-                clearInterval(timerInterval);
-                gameData.isGameOver = true; 
-                gameData.progress[gameData.currentWordIndex] = 'solved';
-                requestTextHintButton.disabled = true;
-                requestLetterHintButton.disabled = true;
+                clearInterval(timerInterval); gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex] = 'solved';
+                requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
                 setTimeout(() => { showEndMessage(); checkForBonusGameUnlock(); }, wordObject.word.length * 200 + 200);
             } else {
                 gameData.currentRow++;
                 if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); }
                 else { gameData.currentCol = 0; }
             }
-            saveGame();
-            renderWordTracker();
+            saveGame(); renderWordTracker();
         }
         
         function flipRow(guess, targetWord) {
@@ -706,8 +633,7 @@
             const hintsData = gameData.revealedHints[currentIndex];
             requestTextHintButton.disabled = hintsData.textUsedCount >= 3;
             requestLetterHintButton.disabled = false;
-            startTimer();
-            saveGame();
+            startTimer(); saveGame();
         }
         
         function updateTextHintButtonLabel() {
@@ -716,77 +642,45 @@
             requestTextHintButton.textContent = `Szöveges segítség (${remaining})`;
         }
 
-        // --- ÚJ Segítségkérő funkciók ---
         requestTextHintButton.addEventListener('click', () => {
             const hintsData = gameData.revealedHints[gameData.currentWordIndex];
             const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints;
             if (hintsData.textUsedCount >= 3) return;
-
             if(deductTimeForHint()) {
                 const nextHintIndex = hintsData.text.length;
-                if(wordHints[nextHintIndex]) {
-                    showHintAlert(() => revealTextHint(nextHintIndex));
-                }
+                if(wordHints[nextHintIndex]) { showHintAlert(() => revealTextHint(nextHintIndex)); }
             }
         });
         
-        requestLetterHintButton.addEventListener('click', () => {
-            if(deductTimeForHint()) {
-                showHintAlert(revealRandomLetter);
-            }
-        });
+        requestLetterHintButton.addEventListener('click', () => { if(deductTimeForHint()) { showHintAlert(revealRandomLetter); } });
 
-        // --- Bónusz játék funkciók ---
         function checkForBonusGameUnlock() {
             const allSolved = gameData.progress.every(p => p === 'solved');
             unlockBonusButton.style.display = 'block';
             if (allSolved && !gameData.bonusPlayed) {
-                unlockBonusButton.disabled = false;
-                unlockBonusButton.style.cursor = 'pointer';
-                unlockBonusButton.style.opacity = '1';
-                unlockBonusButton.classList.add('pulse');
+                unlockBonusButton.disabled = false; unlockBonusButton.style.cursor = 'pointer'; unlockBonusButton.style.opacity = '1'; unlockBonusButton.classList.add('pulse');
             } else {
-                unlockBonusButton.disabled = true;
-                unlockBonusButton.style.cursor = 'not-allowed';
-                unlockBonusButton.style.opacity = '0.5';
-                unlockBonusButton.classList.remove('pulse');
+                unlockBonusButton.disabled = true; unlockBonusButton.style.cursor = 'not-allowed'; unlockBonusButton.style.opacity = '0.5'; unlockBonusButton.classList.remove('pulse');
             }
         }
 
         function initBonusGame() {
-            unlockBonusButton.style.display = 'none';
-            gameData.bonusPlayed = true;
-            saveGame();
-
+            unlockBonusButton.style.display = 'none'; gameData.bonusPlayed = true; saveGame();
             const puzzleIndex = getCurrentHourSeed() % bonusPuzzles.length;
             const puzzle = bonusPuzzles[puzzleIndex];
-            
-            bonusGridContainer.innerHTML = '';
-            bonusCluesContainer.innerHTML = '';
-
+            bonusGridContainer.innerHTML = ''; bonusCluesContainer.innerHTML = '';
             for (let r = 0; r < 8; r++) { for (let c = 0; c < 8; c++) {
                 if (puzzle.grid[r][c]) {
-                    const input = document.createElement('input');
-                    input.type = 'text'; input.maxLength = 1; input.classList.add('bonus-cell');
-                    input.dataset.r = r; input.dataset.c = c;
-                    bonusGridContainer.appendChild(input);
-                } else {
-                    const div = document.createElement('div'); div.classList.add('empty-cell');
-                    bonusGridContainer.appendChild(div);
-                }
+                    const input = document.createElement('input'); input.type = 'text'; input.maxLength = 1; input.classList.add('bonus-cell'); input.dataset.r = r; input.dataset.c = c; bonusGridContainer.appendChild(input);
+                } else { const div = document.createElement('div'); div.classList.add('empty-cell'); bonusGridContainer.appendChild(div); }
             }}
-
             puzzle.preFilled.forEach(cell => {
                 const input = bonusGridContainer.querySelector(`input[data-r="${cell.r}"][data-c="${cell.c}"]`);
-                if(input) { input.value = cell[2]; input.disabled = true; input.classList.add('pre-filled'); }
+                if(input) { input.value = cell.char; input.disabled = true; input.classList.add('pre-filled'); }
             });
-
             puzzle.words.forEach((wordData, index) => {
-                const clueWrapper = document.createElement('div');
-                clueWrapper.className = 'clue-item-wrapper';
-                
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${index+1}.</strong> ${wordData.clue}`;
+                const clueWrapper = document.createElement('div'); clueWrapper.className = 'clue-item-wrapper';
+                const li = document.createElement('li'); li.innerHTML = `<strong>${index+1}.</strong> ${wordData.clue}`;
                 li.addEventListener('click', () => {
                     bonusGridContainer.querySelectorAll('.bonus-cell.highlighted').forEach(cell => cell.classList.remove('highlighted'));
                     wordData.cells.forEach(coord => {
@@ -794,22 +688,11 @@
                         if(cellToHighlight) cellToHighlight.classList.add('highlighted');
                     });
                 });
-
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Bevitel';
-                submitButton.className = 'bonus-submit-button';
-                submitButton.addEventListener('click', () => {
-                    checkBonusWord(wordData, submitButton, li);
-                });
-
-                clueWrapper.appendChild(li);
-                clueWrapper.appendChild(submitButton);
-                bonusCluesContainer.appendChild(clueWrapper);
+                const submitButton = document.createElement('button'); submitButton.textContent = 'Bevitel'; submitButton.className = 'bonus-submit-button';
+                submitButton.addEventListener('click', () => { checkBonusWord(wordData, submitButton, li); });
+                clueWrapper.appendChild(li); clueWrapper.appendChild(submitButton); bonusCluesContainer.appendChild(clueWrapper);
             });
-
-            closeBonusButton.style.display = 'none';
-            bonusGameOverlay.classList.add('visible');
-            startBonusTimer();
+            closeBonusButton.style.display = 'none'; bonusGameOverlay.classList.add('visible'); startBonusTimer();
         }
 
         function checkBonusWord(wordData, button, listItem) {
@@ -818,67 +701,49 @@
                 const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
                 if(input) guess += input.value.toUpperCase();
             });
-
             if (guess === wordData.word.toUpperCase()) {
                 wordData.cells.forEach(coord => {
                     const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
-                    if(input) {
-                        input.classList.add('correct');
-                        input.disabled = true;
-                    }
+                    if(input) { input.classList.add('correct'); input.disabled = true; }
                 });
-                button.disabled = true;
-                listItem.classList.add('solved');
-
-                // Ellenőrizzük, hogy minden szó megvan-e
+                button.disabled = true; listItem.classList.add('solved');
                 if (document.querySelectorAll('.bonus-submit-button:disabled').length === bonusPuzzles[getCurrentHourSeed() % bonusPuzzles.length].words.length) {
-                    endBonusGame(false, true); // Győzelem
+                    endBonusGame(false, true);
                 }
             } else {
-                // Helytelen tipp vizuális jelzése
                 button.style.backgroundColor = '#e53935';
                 setTimeout(() => { button.style.backgroundColor = ''; }, 500);
             }
         }
         
         function startBonusTimer() {
-            let timeLeft = 300; // 5 perc
-            clearInterval(bonusTimerInterval);
-            bonusTimerDisplay.textContent = '05:00';
+            let timeLeft = 300;
+            clearInterval(bonusTimerInterval); bonusTimerDisplay.textContent = '05:00';
             bonusTimerInterval = setInterval(() => {
                 timeLeft--;
                 const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
                 const seconds = (timeLeft % 60).toString().padStart(2, '0');
                 bonusTimerDisplay.textContent = `${minutes}:${seconds}`;
-                if (timeLeft <= 0) {
-                    clearInterval(bonusTimerInterval);
-                    endBonusGame(true, false);
-                }
+                if (timeLeft <= 0) { clearInterval(bonusTimerInterval); endBonusGame(true, false); }
             }, 1000);
         }
 
         function endBonusGame(isTimeUp = false, isWin = false) {
             clearInterval(bonusTimerInterval);
-            if(isWin) {
-                bonusTimerDisplay.textContent = "Gratulálok!";
-            }
+            if(isWin) { bonusTimerDisplay.textContent = "Gratulálok!"; }
             if (isTimeUp) {
                 const puzzle = bonusPuzzles[getCurrentHourSeed() % bonusPuzzles.length];
                 puzzle.words.forEach(wordData => {
                      wordData.cells.forEach(coord => {
                         const input = bonusGridContainer.querySelector(`input[data-r="${coord.r}"][data-c="${coord.c}"]`);
-                        if(input && !input.classList.contains('correct')) {
-                            input.value = puzzle.grid[coord.r][coord.c];
-                            input.style.color = '#e53935'; // Megmutatja a helyes, de nem kitalált betűket pirossal
-                        }
+                        if(input && !input.classList.contains('correct')) { input.value = puzzle.grid[coord.r][coord.c]; input.style.color = '#e53935'; }
                      });
                 });
             }
-            document.querySelectorAll('.bonus-cell, .bonus-submit-button').forEach(el => el.disabled = true);
+            document.querySelectorAll('.bonus-cell:not(.correct), .bonus-submit-button').forEach(el => el.disabled = true);
             closeBonusButton.style.display = 'block';
         }
-
-        // --- Eseménykezelők és Indítás ---
+        
         settingsButton.addEventListener('click', () => { paletteContainer.style.display = paletteContainer.style.display === 'block' ? 'none' : 'block'; });
         document.addEventListener('click', (event) => { if (settingsButton && !settingsButton.contains(event.target) && paletteContainer && !paletteContainer.contains(event.target)) { paletteContainer.style.display = 'none'; } });
         refreshButton.addEventListener('click', () => location.reload());

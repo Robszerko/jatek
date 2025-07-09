@@ -38,7 +38,6 @@
             font-family: var(--font-main);
             display: flex; justify-content: center; align-items: flex-start; padding: 15px; box-sizing: border-box;
             -webkit-user-select: none; user-select: none; touch-action: manipulation;
-            /* Gördülékeny színváltás */
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         #game-container {
@@ -53,30 +52,43 @@
         #logo-container { display: flex; align-items: center; position: relative; }
         #logo-svg { width: clamp(80px, 20vw, 100px); height: auto; z-index: 1; }
         #logo-svg text, #logo-svg circle, #logo-svg line { transition: fill 0.3s ease, stroke 0.3s ease; }
-        #h1-container { position: relative; }
         header h1 {
             font-family: var(--font-title); color: var(--title-color); font-size: clamp(2rem, 9vw, 3rem); margin: 0;
             letter-spacing: 0.05em; margin-left: -2px; z-index: 0; transition: color 0.3s ease;
+            display: flex; align-items: center;
         }
         #copyright-notice { font-size: 0.7rem; color: var(--text-color); opacity: 0.7; margin-top: 2px; transition: color 0.3s ease, opacity 0.3s ease; }
 
-        /* Téma választó gomb és paletta */
+        /* --- Csillag-ékezet és Téma Választó --- */
+        .h1-char { display: inline-block; position: relative; }
+        #theme-toggle-container {
+            position: relative;
+            display: inline-block;
+        }
         #theme-toggle-button {
             position: absolute;
-            top: -0.2em;
-            right: -0.8em;
-            width: 28px;
-            height: 28px;
+            top: -0.25em; /* Igazítás a betű ékezetének helyére */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1em; /* Betűmérethez igazodó méret */
+            height: 1em;
             cursor: pointer;
             z-index: 10;
             transition: transform 0.2s ease;
         }
-        #theme-toggle-button:hover { transform: scale(1.2) rotate(15deg); }
-        #theme-toggle-button svg { fill: var(--title-color); transition: fill 0.3s ease; }
+        #theme-toggle-button:hover { transform: translateX(-50%) scale(1.2) rotate(15deg); }
+        #theme-toggle-button svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--title-color);
+            transition: fill 0.3s ease;
+        }
         #theme-picker {
             position: absolute;
-            top: 40px;
-            right: -15px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 10px;
             background-color: var(--container-bg);
             border: 2px solid var(--border-color-idle);
             border-radius: 10px;
@@ -200,12 +212,17 @@
                 <div id="logo-container">
                     <svg id="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color: var(--title-color);stop-opacity:1" /><stop offset="100%" style="stop-color: var(--text-color);stop-opacity:1" /></linearGradient></defs><circle cx="50" cy="50" r="40" stroke="url(#grad1)" stroke-width="12" fill="var(--container-bg)"/><line x1="32" y1="72" x2="5" y2="95" stroke="url(#grad1)" stroke-width="16" stroke-linecap="round"/><text x="50" y="62" font-family="Fredoka One, sans-serif" font-size="38" fill="var(--text-color)" text-anchor="middle">Szó</text></svg>
                 </div>
-                <div id="h1-container">
-                    <h1>Nyomozó</h1>
+                <div style="text-align: center;">
+                    <h1>
+                        <span class="h1-char">N</span><span class="h1-char">y</span><span class="h1-char">o</span><span class="h1-char">m</span><span class="h1-char">o</span><span class="h1-char">z</span>
+                        <div id="theme-toggle-container">
+                            <span class="h1-char">o</span>
+                            <div id="theme-toggle-button" title="Színtéma választása">
+                                <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
+                            </div>
+                        </div>
+                    </h1>
                     <div id="copyright-notice">© copyright by: Robi</div>
-                    <div id="theme-toggle-button" title="Színtéma választása">
-                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                    </div>
                 </div>
             </div>
             <div id="theme-picker" style="display: none;"></div>
@@ -398,10 +415,8 @@
             });
         }
         function applyTheme(themeClassName) {
-            body.className = ''; // Törli az összes meglévő classt a bodyról
+            body.className = '';
             body.classList.add(themeClassName);
-            
-            // Aktív állapot frissítése a palettán
             document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
             const activeSwatch = document.querySelector(`.theme-swatch[data-theme="${themeClassName}"]`);
             if(activeSwatch) activeSwatch.classList.add('active');
@@ -456,7 +471,7 @@
         function getAvailableWordIndices() { let history = JSON.parse(localStorage.getItem('szonyomozo_word_history')) || []; const now = Date.now(); history = history.filter(entry => now - entry.timestamp < SIX_HOURS_IN_MS); localStorage.setItem('szonyomozo_word_history', JSON.stringify(history)); const usedIndices = new Set(history.map(entry => entry.index)); const allIndices = Array.from(Array(wordData.length).keys()); return allIndices.filter(index => !usedIndices.has(index)); }
         function addWordsToHistory(indices) { let history = JSON.parse(localStorage.getItem('szonyomozo_word_history')) || []; const now = Date.now(); indices.forEach(index => history.push({ index, timestamp: now })); localStorage.setItem('szonyomozo_word_history', JSON.stringify(history)); }
 
-        function initGame() { checkDailyReset(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: [], revealedIndices: {}, isTimerRunning: [], revealedHints: {}, bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const availableIndices = getAvailableWordIndices(); let chosenIndices = []; for (let i = 0; i < 5; i++) { if(availableIndices.length === 0) break; const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * availableIndices.length); chosenIndices.push(availableIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; addWordsToHistory(chosenIndices); gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.isTimerRunning = Array(5).fill(false); for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], textUsedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); loadWord(gameData.currentWordIndex); checkForBonusGameUnlock(); }
+        function initGame() { checkDailyReset(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: [], revealedIndices: {}, isTimerRunning: [], revealedHints: {}, bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const availableIndices = getAvailableWordIndices(); let chosenIndices = []; for (let i = 0; i < 5; i++) { if(availableIndices.length === 0) { console.warn("Elfogyott a 6 órán belül nem használt szó. Ismétlődés lehetséges."); break; } const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * availableIndices.length); chosenIndices.push(availableIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; addWordsToHistory(chosenIndices); gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.isTimerRunning = Array(5).fill(false); for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], textUsedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); loadWord(gameData.currentWordIndex); checkForBonusGameUnlock(); }
         function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; clearInterval(timerInterval); gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet].status; gameData.isGameOver = (wordProgress !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; const wordObject = wordData[gameData.hourlySet[indexInSet]]; const { word, category, difficulty } = wordObject; wordInfoDisplay.textContent = `${category} | ${word.length} betűs`; difficultyDisplay.className = 'difficulty-display'; difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(' ', '-')}`); difficultyDisplay.textContent = difficulty; updateTimerDisplay(gameData.timers[indexInSet]); hintDisplayArea.innerHTML = ''; gameEndMessageEl.innerHTML = ''; renderAllRevealedHints(); initializeGrid(word.length); initializeKeyboard(); renderWordTracker(); if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; startTimerButton.style.display = 'none'; keyboardContainer.classList.add('disabled'); showEndMessage(); } else { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); startTimerButton.style.display = 'inline-block'; startTimerButton.disabled = gameData.isTimerRunning[indexInSet]; if (gameData.isTimerRunning[indexInSet]) { startTimer(gameData.timers[indexInSet]); handleStartTimerClick(); } } updateTextHintButtonLabel(); }
         function submitGuess() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (gameData.currentCol !== wordObject.word.length) return; const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join(''); if (guess.length !== wordObject.word.length) return; flipRow(guess, wordObject.word.toUpperCase()); if (guess === wordObject.word.toUpperCase()) { if(!gameData.progress[gameData.currentWordIndex].scored) { const points = wordObject.word.length * 100; addPointsToDailyScore(points); gameEndMessageEl.innerHTML = `Helyes! +${points} pont!`; gameData.progress[gameData.currentWordIndex].scored = true; } gameData.progress[gameData.currentWordIndex].status = 'solved'; clearInterval(timerInterval); gameData.isGameOver = true; keyboardContainer.classList.add('disabled'); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; setTimeout(() => { showEndMessage(); checkForBonusGameUnlock(); saveGame(); renderWordTracker(); }, 2000); } else { gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); } else { gameData.currentCol = 0; } } saveGame(); }
         function calculateHintCost() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; let baseCost; switch (wordObject.difficulty) { case "Könnyű": baseCost = 50; break; case "Nehéz": baseCost = 75; break; case "Extra Nehéz": baseCost = 100; break; default: baseCost = 50; } const hintsUsed = gameData.revealedHints[gameData.currentWordIndex].textUsedCount; return hintsUsed >= 2 ? baseCost * 2 : baseCost; }

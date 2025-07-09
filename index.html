@@ -25,10 +25,7 @@
         #logo-container { display: flex; align-items: center; position: relative; }
         #logo-svg { width: clamp(80px, 20vw, 100px); height: auto; z-index: 1; }
         header h1 { font-family: var(--font-title); color: var(--title-color); font-size: clamp(2rem, 9vw, 3rem); margin: 0; letter-spacing: 0.05em; margin-left: -2px; z-index: 0; }
-        
-        /* ÚJ: Napi pontszám kijelző */
         #daily-score-display { font-family: var(--font-main); font-size: 1.1rem; font-weight: 700; color: var(--title-color); background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; border: 2px solid var(--border-color-idle); margin-top: 10px; }
-        
         #word-tracker { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
         .tracker-item { flex: 1; padding: 10px 5px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color-idle); font-weight: 500; cursor: pointer; transition: all 0.2s ease; position: relative; }
         .tracker-item.active { background-color: var(--title-color); color: white; border-color: var(--title-color); }
@@ -136,7 +133,7 @@
              <div id="game-end-message"></div>
         </div>
         <div id="hint-controls">
-            <button id="request-text-hint-button" class="hint-button">Szöveges segítség (3)</button>
+            <button id="request-text-hint-button" class="hint-button">Szöveges segítség</button>
             <button id="request-letter-hint-button" class="hint-button">Betű felfedése</button>
         </div>
         
@@ -147,7 +144,7 @@
             <ul>
                 <li><strong>Pontgyűjtés:</strong> Oldd meg a szavakat és gyűjts pontokat! A pontszámod éjfélkor nullázódik.</li>
                 <li><strong>Alapjáték:</strong> 5 szó óránként. A megfejtett szóért a hossza alapján kapsz pontot.</li>
-                <li><strong>Segítségek:</strong> Választhatsz, hogy <span class="rules-present">szöveges segítséget</span> (max. 3) vagy <span class="rules-correct">betű felfedést</span> kérsz. Minden segítségkérés ára <span class="rules-penalty">1 perc</span> levonás!</li>
+                <li><strong>Segítségek:</strong> A segítségkérés <span class="rules-penalty">pontokba kerül</span> a szó nehézsége alapján. A játék rákérdez a vásárlás előtt.</li>
                 <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót hibátlanul megfejted, egy <strong>Szerencsekerék</strong> bónusz játék oldható fel, ahol további pontokat szerezhetsz!</li>
             </ul>
         </div>
@@ -192,38 +189,10 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // === ÁLTALÁNOS VÁLTOZÓK ÉS ELEMEK ===
-        const MAX_GUESSES = 6;
-        let gameData = {};
-        let timerInterval;
-        
-        const gridContainer = document.getElementById('grid-container');
-        const keyboardContainer = document.getElementById('keyboard-container');
-        const hintDisplayArea = document.getElementById('hint-display-area');
-        const gameEndMessageEl = document.getElementById('game-end-message');
-        const requestTextHintButton = document.getElementById('request-text-hint-button');
-        const requestLetterHintButton = document.getElementById('request-letter-hint-button');
-        const wordTrackerContainer = document.getElementById('word-tracker');
-        const timerDisplay = document.getElementById('timer-display');
-        const startTimerButton = document.getElementById('start-timer-button');
-        const unlockBonusButton = document.getElementById('unlock-bonus-button');
-        const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span');
-        const newSetOverlay = document.getElementById('new-set-overlay');
-        const refreshButton = document.getElementById('refresh-button');
+        const MAX_GUESSES = 6; let gameData = {}; let timerInterval;
+        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const hintDisplayArea = document.getElementById('hint-display-area'); const gameEndMessageEl = document.getElementById('game-end-message'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const timerDisplay = document.getElementById('timer-display'); const startTimerButton = document.getElementById('start-timer-button'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
+        const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const buyVowelButton = document.getElementById('buy-vowel-button'); const solveButton = document.getElementById('solve-button'); const wordInfoDisplay = document.getElementById('word-info'); const difficultyDisplay = document.getElementById('difficulty-display');
 
-        const wheelGameOverlay = document.getElementById('wheel-game-overlay');
-        const closeWheelButton = document.getElementById('close-wheel-button');
-        const wheel = document.getElementById('wheel');
-        const spinButton = document.getElementById('spin-button');
-        const powerMeterBar = document.getElementById('power-meter-bar');
-        const powerMeterContainer = document.getElementById('power-meter-container');
-        const playerScoreEl = document.getElementById('player-score');
-        const puzzleBoardEl = document.getElementById('puzzle-board');
-        const puzzleCategoryEl = document.getElementById('puzzle-category');
-        const buyVowelButton = document.getElementById('buy-vowel-button');
-        const solveButton = document.getElementById('solve-button');
-
-        // === SZERENCSEKERÉK JÁTÉK LOGIKA ===
         const wheelSegments = [ { label: '1000', value: 1000, color: '#f2cc8f' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '500', value: 500, color: '#a5d6a7' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '750', value: 750, color: '#b39ddb' }, { label: 'DUPLA', value: 'double', color: '#ffd54f' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '2000', value: 2000, color: '#e07a5f' }, { label: '1250', value: 1250, color: '#b39ddb' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '500', value: 500, color: '#f2cc8f' }, { label: '1750', value: 1750, color: '#81b29a' } ];
         let wheelState = { puzzle: {}, score: 0, isSpinning: false, guessedLetters: [] };
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ"; const CONSONANTS = "BCDFGHJKLMNPQRSTVXYZ";
@@ -245,12 +214,7 @@
             }
         }
         function polarToCartesian(cx, cy, r, angle) { const rad = (angle - 90) * Math.PI / 180.0; return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) }; }
-        function initWheelGame() {
-            wheelState = { puzzle: {}, score: 0, spinResult: null, isSpinning: false, guessedLetters: [] };
-            const puzzleIndex = Math.floor(Math.random() * wheelPuzzles.length);
-            wheelState.puzzle = wheelPuzzles[puzzleIndex];
-            updateWheelPlayerScore(0, true); setupPuzzleBoard(); updateUIForGameState('start'); wheelGameOverlay.classList.add('visible');
-        }
+        function initWheelGame() { wheelState = { puzzle: {}, score: 0, spinResult: null, isSpinning: false, guessedLetters: [] }; const puzzleIndex = Math.floor(Math.random() * wheelPuzzles.length); wheelState.puzzle = wheelPuzzles[puzzleIndex]; updateWheelPlayerScore(0, true); setupPuzzleBoard(); updateUIForGameState('start'); wheelGameOverlay.classList.add('visible'); }
         function setupPuzzleBoard() {
             puzzleBoardEl.innerHTML = ''; puzzleCategoryEl.textContent = wheelState.puzzle.category;
             const words = wheelState.puzzle.puzzle.split(' ');
@@ -269,210 +233,138 @@
                 puzzleBoardEl.appendChild(row);
             });
         }
-        function handleSpinClick() {
-            if (wheelState.isSpinning) return;
-            powerMeterBar.classList.add('power-up'); powerMeterContainer.onclick = () => {
-                const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth;
-                powerMeterBar.classList.remove('power-up'); powerMeterContainer.onclick = null; spinWheel(power);
-            };
-        }
+        function handleSpinClick() { if (wheelState.isSpinning) return; powerMeterBar.classList.add('power-up'); powerMeterContainer.onclick = () => { const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); powerMeterContainer.onclick = null; spinWheel(power); }; }
         function spinWheel(power) {
             wheelState.isSpinning = true; updateUIForGameState('spinning');
             const baseRotations = 3; const randomExtra = Math.random(); const powerRotation = 2 * power;
             const totalRotation = (baseRotations + randomExtra + powerRotation) * 360;
             const currentRotation = parseFloat(wheel.dataset.rotation || 0); const newRotation = currentRotation + totalRotation;
             wheel.style.transform = `rotate(${newRotation}deg)`; wheel.dataset.rotation = newRotation;
-            setTimeout(() => {
-                const finalAngle = newRotation % 360; const segmentAngle = 360 / wheelSegments.length;
-                const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % wheelSegments.length;
-                handleSpinResult(wheelSegments[segmentIndex].value);
-            }, 4000);
+            setTimeout(() => { const finalAngle = newRotation % 360; const segmentAngle = 360 / wheelSegments.length; const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % wheelSegments.length; handleSpinResult(wheelSegments[segmentIndex].value); }, 4000);
         }
-        function handleSpinResult(result) {
-            wheelState.isSpinning = false;
-            if (result === 'bankrupt') {
-                alert("CSŐD! Elvesztetted a körben gyűjtött pontjaidat.");
-                updateWheelPlayerScore(0, true); updateUIForGameState('start');
-            } else {
-                wheelState.spinResult = result; updateUIForGameState('guess_consonant');
-            }
-        }
+        function handleSpinResult(result) { wheelState.isSpinning = false; if (result === 'bankrupt') { alert("CSŐD! Elvesztetted a körben gyűjtött pontjaidat."); updateWheelPlayerScore(0, true); updateUIForGameState('start'); } else { wheelState.spinResult = result; updateUIForGameState('guess_consonant'); } }
         function guessLetter(letter) {
             letter = letter.toUpperCase();
             if (wheelState.guessedLetters.includes(letter)) { alert("Ezt a betűt már kérted!"); return; }
-            if (VOWELS.includes(letter)) {
-                if (wheelState.score < 250) { alert("Nincs elég pontod magánhangzót venni!"); return; }
-                updateWheelPlayerScore(-250);
-            }
+            if (VOWELS.includes(letter)) { if (wheelState.score < 250) { alert("Nincs elég pontod magánhangzót venni!"); return; } updateWheelPlayerScore(-250); }
             wheelState.guessedLetters.push(letter); let foundCount = 0;
-            document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => {
-                tile.classList.add('revealed'); foundCount++;
-            });
-            if (foundCount > 0) {
-                if (CONSONANTS.includes(letter)) {
-                    let multiplier = (wheelState.spinResult === 'double') ? 2 : 1;
-                    let basePoints = (wheelState.spinResult === 'double') ? 1000 : wheelState.spinResult; // Use a base for double or the spun value
-                    let pointsEarned = foundCount * basePoints * multiplier;
-                    updateWheelPlayerScore(pointsEarned);
-                }
-            } else { alert(`Sajnos a(z) "${letter}" betű nem szerepel a feladványban.`); }
+            document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { tile.classList.add('revealed'); foundCount++; });
+            if (foundCount > 0) { if (CONSONANTS.includes(letter)) { let multiplier = (wheelState.spinResult === 'double') ? 2 : 1; let basePoints = (wheelState.spinResult === 'double') ? 1000 : wheelState.spinResult; let pointsEarned = foundCount * basePoints * multiplier; updateWheelPlayerScore(pointsEarned); } } 
+            else { alert(`Sajnos a(z) "${letter}" betű nem szerepel a feladványban.`); }
             updateUIForGameState('start');
         }
         function solve() {
             const solution = prompt("Kérlek, add meg a teljes megfejtést:");
             if (solution && solution.toUpperCase().trim() === wheelState.puzzle.puzzle.toUpperCase()) {
-                alert(`Helyes megfejtés! Nyertél ${wheelState.score} pontot!`);
-                addPointsToDailyScore(wheelState.score);
+                alert(`Helyes megfejtés! Nyertél ${wheelState.score} pontot!`); addPointsToDailyScore(wheelState.score);
                 document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed'));
                 updateUIForGameState('game_over');
-            } else {
-                alert("Sajnos ez nem a helyes megfejtés. A körben szerzett pontjaidat elvesztetted!");
-                updateWheelPlayerScore(0, true);
-                updateUIForGameState('start');
-            }
+            } else { alert("Sajnos ez nem a helyes megfejtés. A körben szerzett pontjaidat elvesztetted!"); updateWheelPlayerScore(0, true); updateUIForGameState('start'); }
         }
-        function updateWheelPlayerScore(amount, absolute = false) {
-            if (absolute) { wheelState.score = amount; } else { wheelState.score += amount; }
-            playerScoreEl.textContent = wheelState.score;
-        }
+        function updateWheelPlayerScore(amount, absolute = false) { if (absolute) { wheelState.score = amount; } else { wheelState.score += amount; } playerScoreEl.textContent = wheelState.score; }
         function updateUIForGameState(state) {
             spinButton.disabled = true; buyVowelButton.disabled = true; solveButton.disabled = true;
-            if (state === 'start') {
-                spinButton.disabled = false;
-                if (wheelState.score >= 250) buyVowelButton.disabled = false;
-                solveButton.disabled = false;
-            } else if (state === 'spinning') { } 
-            else if (state === 'guess_consonant') {
-                const letter = prompt(`Pörgetés: ${wheelState.spinResult === 'double' ? 'DUPLA' : wheelState.spinResult}\nMelyik mássalhangzót kéred?`);
-                if (letter && CONSONANTS.includes(letter.toUpperCase())) { guessLetter(letter); } 
-                else { alert("Érvénytelen mássalhangzó. Újra pörgethetsz."); updateUIForGameState('start'); }
-            } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; }
+            if (state === 'start') { spinButton.disabled = false; if (wheelState.score >= 250) buyVowelButton.disabled = false; solveButton.disabled = false; } 
+            else if (state === 'spinning') { } 
+            else if (state === 'guess_consonant') { const letter = prompt(`Pörgetés: ${wheelState.spinResult === 'double' ? 'DUPLA' : wheelState.spinResult}\nMelyik mássalhangzót kéred?`); if (letter && CONSONANTS.includes(letter.toUpperCase())) { guessLetter(letter); } else { alert("Érvénytelen mássalhangzó. Újra pörgethetsz."); updateUIForGameState('start'); } } 
+            else if (state === 'game_over') { closeWheelButton.style.display = 'block'; }
         }
         
-        // === NAPI PONTKEZELÉS ===
         function checkDailyReset() {
-            const today = new Date().toDateString();
-            let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats'));
-            if (!stats || stats.lastResetDate !== today) {
-                stats = { totalScore: 0, lastResetDate: today };
-                localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats));
-            }
+            const today = new Date().toDateString(); let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats'));
+            if (!stats || stats.lastResetDate !== today) { stats = { totalScore: 0, lastResetDate: today }; localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); }
             updateDailyScoreDisplay(stats.totalScore);
         }
-        function addPointsToDailyScore(points) {
-            let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats'));
-            stats.totalScore += points;
-            localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats));
-            updateDailyScoreDisplay(stats.totalScore);
-        }
+        function getDailyScore() { const stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); return stats ? stats.totalScore : 0; }
+        function addPointsToDailyScore(points) { let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.totalScore += points; localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateDailyScoreDisplay(stats.totalScore); }
         function updateDailyScoreDisplay(score) { dailyScoreDisplaySpan.textContent = score; }
 
-        // === FŐ JÁTÉK LOGIKA ===
         function initGame() {
             checkDailyReset();
-            const hourSeed = getCurrentHourSeed();
-            const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
-            if (storedData && storedData.seed === hourSeed) {
-                gameData = storedData;
-            } else {
+            const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
+            if (storedData && storedData.seed === hourSeed) { gameData = storedData; } 
+            else {
                 gameData = {
                     seed: hourSeed, hourlySet: [], progress: [], timers: [], 
                     revealedIndices: {}, isTimerRunning: [], revealedHints: {},
                     bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false
                 };
                 let tempWordIndices = Array.from(Array(wordData.length).keys());
-                for (let i = 0; i < 5; i++) {
-                    const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * tempWordIndices.length);
-                    gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]);
-                }
-                gameData.progress = Array(5).fill({status: 'pending', scored: false});
-                gameData.timers = Array(5).fill(420);
-                gameData.isTimerRunning = Array(5).fill(false);
+                for (let i = 0; i < 5; i++) { const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * tempWordIndices.length); gameData.hourlySet.push(tempWordIndices.splice(randomIndex, 1)[0]); }
+                gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false}));
+                gameData.timers = Array(5).fill(420); gameData.isTimerRunning = Array(5).fill(false);
                 for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], textUsedCount: 0 }; }
                 gameData.currentWordIndex = 0;
             }
             renderWordTracker(); loadWord(gameData.currentWordIndex); checkForBonusGameUnlock();
         }
-        
         function loadWord(indexInSet) {
-            clearInterval(timerInterval);
-            gameData.currentWordIndex = indexInSet;
+            clearInterval(timerInterval); gameData.currentWordIndex = indexInSet;
             const wordProgress = gameData.progress[indexInSet].status;
             gameData.isGameOver = (wordProgress !== 'pending');
             gameData.currentRow = 0; gameData.currentCol = 0;
-
             const wordObject = wordData[gameData.hourlySet[indexInSet]];
             const { word, category, difficulty } = wordObject;
             wordInfoDisplay.textContent = `${category} | ${word.length} betűs`;
-            
-            difficultyDisplay.className = 'difficulty-display';
-            difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(' ', '-')}`);
-            difficultyDisplay.textContent = difficulty;
-
+            difficultyDisplay.className = 'difficulty-display'; difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(' ', '-')}`); difficultyDisplay.textContent = difficulty;
             updateTimerDisplay(gameData.timers[indexInSet]);
             hintDisplayArea.innerHTML = ''; gameEndMessageEl.innerHTML = '';
-            renderAllRevealedHints();
-            initializeGrid(word.length); initializeKeyboard(); renderWordTracker();
-            
+            renderAllRevealedHints(); initializeGrid(word.length); initializeKeyboard(); renderWordTracker();
             if (gameData.isGameOver) {
-                startTimerButton.style.display = 'none';
-                requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
+                startTimerButton.style.display = 'none'; requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
                 showEndMessage();
             } else if (gameData.isTimerRunning[indexInSet]) {
-                startTimerButton.style.display = 'none';
-                const hintsData = gameData.revealedHints[indexInSet];
+                startTimerButton.style.display = 'none'; const hintsData = gameData.revealedHints[indexInSet];
                 requestTextHintButton.disabled = hintsData.textUsedCount >= 3;
                 requestLetterHintButton.disabled = false;
                 startTimer();
-            } else {
-                startTimerButton.style.display = 'block';
-                requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
-            }
+            } else { startTimerButton.style.display = 'block'; requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; }
             updateTextHintButtonLabel();
         }
-        
         function submitGuess() {
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
             if (gameData.currentCol !== wordObject.word.length) return;
             const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join('');
-            
             if (guess === wordObject.word.toUpperCase()) {
                 if(!gameData.progress[gameData.currentWordIndex].scored) {
-                    const points = wordObject.word.length * 100;
-                    addPointsToDailyScore(points);
-                    gameEndMessageEl.innerHTML = `Helyes! +${points} pont!`;
-                    gameData.progress[gameData.currentWordIndex].scored = true;
+                    const points = wordObject.word.length * 100; addPointsToDailyScore(points); gameEndMessageEl.innerHTML = `Helyes! +${points} pont!`; gameData.progress[gameData.currentWordIndex].scored = true;
                 }
                 gameData.progress[gameData.currentWordIndex].status = 'solved';
                 clearInterval(timerInterval); gameData.isGameOver = true;
                 requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true;
                 setTimeout(() => { showEndMessage(); checkForBonusGameUnlock(); }, 2000);
             } else {
-                gameData.currentRow++;
-                if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); }
-                else { gameData.currentCol = 0; }
+                gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); } else { gameData.currentCol = 0; }
             }
-            flipRow(guess, wordObject.word.toUpperCase()); // Flip is outside the if/else
-            saveGame(); renderWordTracker();
+            flipRow(guess, wordObject.word.toUpperCase()); saveGame(); renderWordTracker();
+        }
+        function handleHintCost() {
+            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            switch (wordObject.difficulty) {
+                case "Könnyű": return 50;
+                case "Nehéz": return 75;
+                case "Extra Nehéz": return 100;
+                default: return 50;
+            }
+        }
+        function spendPointsForHint(cost) {
+            const currentScore = getDailyScore();
+            if (currentScore < cost) {
+                alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${currentScore} pontod van.`);
+                return false;
+            }
+            if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) {
+                addPointsToDailyScore(-cost);
+                return true;
+            }
+            return false;
         }
         
         // A többi fő játék funkció (flipRow, failWord, etc.) változatlan marad
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
-        function renderWordTracker() {
-            wordTrackerContainer.innerHTML = '';
-            gameData.hourlySet.forEach((_, index) => {
-                const item = document.createElement('div'); item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index;
-                const status = gameData.progress[index].status;
-                if (status === 'solved') item.classList.add('solved');
-                if (status === 'failed') item.classList.add('failed');
-                if (index === gameData.currentWordIndex) item.classList.add('active');
-                if (status === 'pending') { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex) loadWord(index); }); }
-                wordTrackerContainer.appendChild(item);
-            });
-        }
+        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index; const status = gameData.progress[index].status; if (status === 'solved') item.classList.add('solved'); if (status === 'failed') item.classList.add('failed'); if (index === gameData.currentWordIndex) item.classList.add('active'); if (status === 'pending') { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex) loadWord(index); }); } wordTrackerContainer.appendChild(item); }); }
         function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); timerDisplay.textContent = `${minutes}:${seconds}`; }
         function startTimer() { clearInterval(timerInterval); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } let timeLeft = gameData.timers[gameData.currentWordIndex]; timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); failWord(); } }, 1000); }
-        function deductTimeForHint() { if (gameData.isGameOver || !gameData.isTimerRunning[gameData.currentWordIndex]) return false; let currentTime = gameData.timers[gameData.currentWordIndex]; currentTime -= 60; if (currentTime < 0) { currentTime = 0; } gameData.timers[gameData.currentWordIndex] = currentTime; updateTimerDisplay(currentTime); if (currentTime <= 0) { clearInterval(timerInterval); failWord(); saveGame(); return false; } saveGame(); return true; }
         function showHintAlert(callback) { gameEndMessageEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!</strong>`; setTimeout(() => { if (gameData.isGameOver) { showEndMessage(); return; } gameEndMessageEl.innerHTML = ''; callback(); }, 2000); }
         function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); hintsData.textUsedCount++; updateTextHintButtonLabel(); if (hintsData.textUsedCount >= 3) { requestTextHintButton.disabled = true; } const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (wordObject.hints && wordObject.hints[hintIndex]) { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex; hintDisplayArea.appendChild(p); } saveGame(); }
         function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex]; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; revealedIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); if (unrevealedWordIndices.length - 1 === 0) { requestLetterHintButton.disabled = true; } saveGame(); }
@@ -483,17 +375,16 @@
         function addLetter(letter) { const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length; if (gameData.currentCol >= wordLength) return; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); return; } if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; } }
         function deleteLetter() { if (gameData.currentCol <= 0) return; gameData.currentCol--; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { if(gameData.currentCol > 0) deleteLetter(); return; } if (cell) { cell.querySelector('.cell-front').textContent = ''; cell.classList.remove('filled'); } }
         function renderAllRevealedHints() { const revealed = gameData.revealedHints[gameData.currentWordIndex].text || []; revealed.forEach(hintIndex => { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (wordObject.hints && wordObject.hints[hintIndex]) { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex; hintDisplayArea.appendChild(p); } }); }
-        function showEndMessage() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const progress = gameData.progress[gameData.currentWordIndex].status; let message = ''; if (progress === 'solved' && !gameData.progress[gameData.currentWordIndex].scored) { message = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; } else if (progress === 'failed') { message = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; } gameEndMessageEl.innerHTML = message; }
+        function showEndMessage() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const progress = gameData.progress[gameData.currentWordIndex]; let message = ''; if (progress.status === 'solved' && !progress.scored) { message = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; } else if (progress.status === 'failed') { message = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; } gameEndMessageEl.innerHTML = message; }
         function flipRow(guess, targetWord) { const targetLetters = targetWord.split(''); const guessLetters = guess.split(''); const letterStates = Array(targetWord.length).fill('absent'); const usedTargetIndexes = new Set(); guessLetters.forEach((letter, index) => { if (letter === targetLetters[index]) { letterStates[index] = 'correct'; usedTargetIndexes.add(index); }}); guessLetters.forEach((letter, index) => { if (letterStates[index] !== 'correct') { const presentIndex = targetLetters.findIndex((l, i) => l === letter && !usedTargetIndexes.has(i)); if (presentIndex !== -1) { letterStates[index] = 'present'; usedTargetIndexes.add(presentIndex); } } }); const rowEl = document.getElementById(`row-${gameData.currentRow}`); for (let i = 0; i < targetWord.length; i++) { const cell = rowEl.children[i]; setTimeout(() => { cell.querySelector('.cell-back').textContent = guessLetters[i]; cell.querySelector('.cell-back').classList.add(letterStates[i]); cell.classList.add('flip'); updateKeyboard(guessLetters[i], letterStates[i]); }, i * 200); } }
         function updateKeyboard(letter, state) { const key = document.querySelector(`.key[data-key="${letter}"]`); if (!key) return; const priorities = { 'correct': 3, 'present': 2, 'absent': 1 }; const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent'; if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) { key.classList.remove('correct', 'present', 'absent'); key.classList.add(state); } }
         function checkForNewHour() { if (newSetOverlay.classList.contains('visible')) return; const currentSeed = getCurrentHourSeed(); if (gameData.seed && currentSeed !== gameData.seed) { newSetOverlay.classList.add('visible'); } }
         function handleStartTimerClick() { const currentIndex = gameData.currentWordIndex; if (gameData.isTimerRunning[currentIndex] || gameData.isGameOver) return; gameData.isTimerRunning[currentIndex] = true; startTimerButton.style.display = 'none'; const hintsData = gameData.revealedHints[currentIndex]; requestTextHintButton.disabled = hintsData.textUsedCount >= 3; requestLetterHintButton.disabled = false; startTimer(); saveGame(); }
         function updateTextHintButtonLabel() { if (!gameData.revealedHints || !gameData.revealedHints[gameData.currentWordIndex]) return; const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const remaining = 3 - (hintsData.textUsedCount || 0); requestTextHintButton.textContent = `Szöveges segítség (${remaining})`; }
-        requestTextHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints; if (hintsData.textUsedCount >= 3) return; if(deductTimeForHint()) { const nextHintIndex = hintsData.text.length; if(wordHints[nextHintIndex]) { showHintAlert(() => revealTextHint(nextHintIndex)); } } });
-        requestLetterHintButton.addEventListener('click', () => { if(deductTimeForHint()) { showHintAlert(revealRandomLetter); } });
+        requestTextHintButton.addEventListener('click', () => { const cost = handleHintCost(); if(spendPointsForHint(cost)) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const wordHints = wordData[gameData.hourlySet[gameData.currentWordIndex]].hints; if (hintsData.textUsedCount >= 3) return; const nextHintIndex = hintsData.text.length; if(wordHints[nextHintIndex]) { showHintAlert(() => revealTextHint(nextHintIndex)); } } });
+        requestLetterHintButton.addEventListener('click', () => { const cost = handleHintCost(); if(spendPointsForHint(cost)) { showHintAlert(revealRandomLetter); } });
         function checkForBonusGameUnlock() { const allSolved = gameData.progress.every(p => p.status === 'solved'); unlockBonusButton.style.display = 'block'; if (allSolved && !gameData.bonusPlayed) { unlockBonusButton.disabled = false; unlockBonusButton.style.cursor = 'pointer'; unlockBonusButton.style.opacity = '1'; unlockBonusButton.classList.add('pulse'); } else { unlockBonusButton.disabled = true; unlockBonusButton.style.cursor = 'not-allowed'; unlockBonusButton.style.opacity = '0.5'; unlockBonusButton.classList.remove('pulse'); } }
 
-        // === INICIALIZÁLÁS ÉS GLOBÁLIS ESEMÉNYKEZELŐK ===
         refreshButton.addEventListener('click', () => location.reload());
         unlockBonusButton.addEventListener('click', initWheelGame);
         spinButton.addEventListener('click', handleSpinClick);

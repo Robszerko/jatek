@@ -27,7 +27,6 @@
         .theme-vintage { --bg-gradient-start: #a27b5c; --bg-gradient-end: #3f2f25; --container-bg: rgba(243, 235, 226, 0.95); --text-color: #3f2f25; --title-color: #7b553c; --border-color-idle: #dcd0c0; --border-color-active: #c0b2a4; --correct-color: #8c7a6b; --present-color: #e6b8a2; --absent-color: #9c8978; --key-bg: #efebe5; --key-text: #3f2f25; --key-shadow: 0 3px 0 #dcd0c0; }
         .theme-meadow { --bg-gradient-start: #7cb518; --bg-gradient-end: #5c8001; --container-bg: rgba(248, 255, 242, 0.95); --text-color: #436129; --title-color: #aacc00; --border-color-idle: #d4e09b; --border-color-active: #b5c77e; --correct-color: #9ef01a; --present-color: #f7d622; --absent-color: #90a955; --key-bg: #f2f7e5; --key-text: #436129; --key-shadow: 0 3px 0 #d4e09b; }
         .theme-royal { --bg-gradient-start: #5a189a; --bg-gradient-end: #3c096c; --container-bg: rgba(243, 237, 247, 0.95); --text-color: #3c096c; --title-color: #9d4edd; --border-color-idle: #d8b4fe; --border-color-active: #c792fe; --correct-color: #7b2cbf; --present-color: #fca311; --absent-color: #b1a7a6; --key-bg: #e9d8fd; --key-text: #3c096c; --key-shadow: 0 3px 0 #d8b4fe; }
-        .theme-desert { --bg-gradient-start: #edc4b3; --bg-gradient-end: #c49a88; --container-bg: rgba(250, 245, 239, 0.95); --text-color: #705446; --title-color: #a4755f; --border-color-idle: #e3d5ca; --border-color-active: #d4bdae; --correct-color: #a0937d; --present-color: #c89f9c; --absent-color: #bcaea3; --key-bg: #f8f1e9; --key-text: #705446; --key-shadow: 0 3px 0 #e3d5ca; }
         .theme-hacker { --bg-gradient-start: #0c0c0c; --bg-gradient-end: #000000; --container-bg: rgba(10, 25, 10, 0.9); --text-color: #00ff00; --title-color: #00ff00; --border-color-idle: #008000; --border-color-active: #32cd32; --correct-color: #32cd32; --present-color: #adff2f; --absent-color: #556b2f; --key-bg: #111; --key-text: #00ff00; --key-shadow: 0 3px 0 #008000; font-family: 'Roboto Mono', monospace; }
 
         body {
@@ -83,24 +82,22 @@
         .tracker-item.failed { background-color: var(--fail-color); border-color: var(--fail-color); color: white; }
         .tracker-item .cooldown-timer { font-size: 0.8em; font-weight: bold; margin-top: 4px; }
         
-        #info-bar { width: 100%; min-height: 80px; border-radius: 10px; margin-bottom: 20px; perspective: 1000px; }
-        #info-bar-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-        #info-bar-inner.flipped { transform: rotateX(180deg); }
-        .info-bar-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; box-sizing: border-box; padding: 12px; background: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: border-color 0.3s ease, color 0.3s ease; }
-        .info-bar-back { transform: rotateX(180deg); flex-direction: column; justify-content: center; text-align: center; font-style: italic; font-weight: 500; line-height: 1.5; }
-        #hint-text-area { display: flex; flex-direction: column; gap: 5px; width: 100%; }
-        #hint-text-area p { margin: 2px 0; }
-        #hint-text-area strong { color: var(--title-color); font-style: normal; }
-        #timer-display, #timer-display-back { font-weight: 700; font-size: 1.1em; color: var(--title-color); transition: color 0.3s ease; }
-        #timer-display-back { position: absolute; top: 12px; right: 12px; }
-        #start-timer-button { background-color: var(--difficulty-easy); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; box-shadow: 0 3px 0 #2e7d32; }
-        #start-timer-button:disabled { background-color: var(--absent-color); box-shadow: none; cursor: not-allowed; }
-        #word-info-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        #info-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; min-height: 50px; margin-bottom: 5px; }
+        #info-bar.feedback-message { justify-content: center; font-size: 1.2rem; font-weight: bold; }
+        #info-bar.feedback-message strong { color: var(--title-color); }
+        
+        #game-mode-toggle { display: flex; align-items: center; cursor: pointer; background-color: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px; }
+        #game-mode-toggle span { font-weight: 700; font-size: 0.9rem; }
+        #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); margin-left: 8px; }
+        
+        #word-info-container { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
         #difficulty-display { font-weight: 700; margin-top: 4px; border-radius: 10px; padding: 3px 10px; color: white; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3); }
         .difficulty-könnyű { background-color: var(--difficulty-easy); } .difficulty-nehéz { background-color: var(--difficulty-hard); } .difficulty-extra-nehéz { background-color: var(--difficulty-extra); }
-        .hint-alert { color: var(--correct-color); font-weight: 900; font-style: normal; animation: flash 1s infinite; font-size: 1.8rem; letter-spacing: 2px; }
-        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
-
+        
+        #hint-display-area { display: none; width: 100%; padding: 15px; margin-bottom: 15px; background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; text-align: center; font-style: italic; opacity: 0; transition: opacity 0.5s ease; }
+        #hint-display-area.active { display: block; opacity: 1; }
+        #hint-display-area strong { color: var(--title-color); font-style: normal; }
+        
         #grid-container { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; width: 100%; max-width: 500px; margin: 0 auto 20px auto; aspect-ratio: 5 / 6; }
         .grid-row { display: grid; gap: 5px; }
         .grid-cell { perspective: 1000px; }
@@ -113,9 +110,6 @@
         .cell-revealed { border-color: var(--correct-color); background-color: rgba(129, 178, 154, 0.2); }
         .cell-back { color: white; transform: rotateX(180deg); border: 3px solid transparent; }
         .cell-back.correct { background-color: var(--correct-color); border-color: var(--correct-color);} .cell-back.present { background-color: var(--present-color); border-color: var(--present-color);} .cell-back.absent  { background-color: var(--absent-color); border-color: var(--absent-color);}
-
-        #game-end-message { width: 100%; background-color: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: center; min-height: 40px; font-weight: bold; font-size: 1.1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }
-        #game-end-message strong { color: var(--title-color); }
         
         #hint-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; width: 100%; }
         .hint-button { color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; flex-grow: 1; max-width: 250px; }
@@ -161,7 +155,6 @@
         #wheel-stats-container { font-size: 1.1rem; font-weight: bold; background: rgba(0,0,0,0.05); padding: 8px 15px; border-radius: 10px; border: 2px solid var(--border-color-idle); }
         #wheel-winnings-display { color: var(--difficulty-easy); }
         #puzzle-category { font-size: 1rem; font-weight: bold; background: var(--title-color); color: white; padding: 5px 15px; border-radius: 10px; }
-        /* JAVÍTÁS: Szélesebb tábla és kompaktabb csempék a jobb olvashatóságért */
         #puzzle-board { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 100%; padding: 10px; align-items: center; }
         .puzzle-tile { width: 32px; height: 42px; border-radius: 5px; perspective: 1000px; flex-shrink: 0; }
         .puzzle-tile:not(.space) { border: 2px solid #fff; }
@@ -172,6 +165,9 @@
         .tile-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; }
         .tile-front { background-color: var(--correct-color); }
         .tile-back { background-color: #fff; color: var(--text-color); font-weight: bold; font-size: 1.5rem; transform: rotateY(180deg); }
+        
+        #wheel-message-display { min-height: 2.5em; font-size: 1.1rem; font-weight: bold; color: var(--title-color); text-align: center; transition: opacity 0.3s ease; }
+
         #wheel-alphabet-panel { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 95%; margin: 10px 0; }
         .alphabet-key { width: 30px; height: 30px; border: 2px solid var(--border-color-idle); border-radius: 5px; background-color: var(--key-bg); color: var(--key-text); font-weight: bold; cursor: pointer; transition: all 0.2s; }
         .alphabet-key.guessed { background-color: var(--absent-color); color: white; opacity: 0.6; cursor: not-allowed; }
@@ -221,31 +217,12 @@
         <button id="unlock-bonus-button" disabled>🏆 Szerencsekerék 🏆</button>
         
         <div id="info-bar">
-            <div id="info-bar-inner">
-                <div class="info-bar-face info-bar-front">
-                    <div id="word-info-container">
-                        <span id="word-info"></span>
-                        <span id="difficulty-display"></span> 
-                    </div>
-                    <!-- JAVÍTÁS: A gomb az óra mellé került egy közös konténerbe a jobb elrendezésért -->
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span id="timer-display">03:00</span>
-                        <button id="start-timer-button">Óra indítása</button>
-                    </div>
-                </div>
-                <!-- JAVÍTÁS: Hátlap új struktúrával a látható órához -->
-                <div class="info-bar-face info-bar-back">
-                    <span id="timer-display-back"></span>
-                    <div id="hint-text-area">
-                        <!-- A szöveges segítségek itt jelennek meg dinamikusan -->
-                    </div>
-                </div>
-            </div>
+            <!-- Tartalom JS-ből -->
         </div>
 
         <main id="grid-container"></main>
         
-        <div id="game-end-message"></div>
+        <div id="hint-display-area"></div>
         
         <div id="hint-controls">
             <button id="request-text-hint-button" class="hint-button">Szöveges segítség</button>
@@ -260,9 +237,9 @@
              <h3>Játékszabályok</h3>
             <ul>
                 <li><strong>Alapjáték:</strong> Óránként 5 új szót kapsz, amik legalább 6 óráig nem ismétlődnek. A helyes megfejtésért pont jár.</li>
+                <li><strong>Játékmód:</strong> Dönthetsz, hogy "Relax" módban, időkorlát nélkül, vagy "Időfutam" módban, időre játszol. Az időfutam több pontot ér!</li>
                 <li><strong style="color:var(--fail-color)">Újrapróbálás:</strong> Ha nem sikerül egy szó, 15 perc múlva újra próbálkozhatsz vele, hogy esélyed legyen a bónusz játékra.</li>
                 <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót megfejted, feloldod a bónusz játékot, ahol a pontjaidat kockáztathatod a nagyobb nyereményért.</li>
-                <li><strong>Témák:</strong> A fejlécben a csillagra ⭐ kattintva válthatsz színtémát.</li>
             </ul>
         </div>
     </div>
@@ -288,6 +265,7 @@
                     <div id="puzzle-category"></div>
                     <div id="puzzle-board"></div>
                     <div id="wheel-alphabet-panel"></div>
+                    <div id="wheel-message-display"></div>
                     <div id="wheel-wrapper">
                         <div id="wheel-pointer"></div>
                         <svg id="wheel" viewBox="0 0 100 100"></svg>
@@ -337,984 +315,26 @@
         ];
 
         // --- ADATOK (szerencsekerek_feladvanyok.js tartalma) ---
-        // JAVÍTVA: Elgépelések, hiányzó adatok és kis/nagybetűk javítva az adatsorban.
         const wheelPuzzles = [
-            { category: "Közmondás", puzzle: "ADDIG JÁR A KORSÓ A KÚTRA AMÍG EL NEM TÖRIK" },
-            { category: "Film & Rendező", puzzle: "QUENTIN TARANTINO PULP FICTION" },
-            { category: "Élőlény", puzzle: "AZ EMBERI TEST LEGKISEBB CSILLÁMA" },
-            { category: "Tárgy", puzzle: "AUTOMATA NARANCSFACSARÓ GÉP" },
-            { category: "Fogalom", puzzle: "AZ IDŐ MINDENT MEGOLD" },
-            { category: "Étel & Ital", puzzle: "BÉCSI SZELET KRUMPLISALÁTÁVAL" },
-            { category: "Zene", puzzle: "QUEEN BOHEMIAN RHAPSODY" },
-            { category: "Híres Ember", puzzle: "MUNKÁCSY MIHÁLY" },
-            { category: "Földrajz", puzzle: "A MARIANNA ÁROK MÉLYSÉGE" },
-            { category: "Történelem", puzzle: "A MÁSODIK VILÁGHÁBORÚ VÉGE" },
-            { category: "Irodalom", puzzle: "JÓKAI MÓR AZ ARANY EMBER" },
-            { category: "Sport", puzzle: "PAPP LÁSZLÓ HÁROMSZOROS OLIMPIAI BAJNOK" },
-            { category: "Tudomány", puzzle: "ALBERT EINSTEIN RELATIVITÁSELMÉLETE" },
-            { category: "Márkanév", puzzle: "MERCEDES BENZ" },
-            { category: "Mindennapi élet", puzzle: "A BLUETOOTH CSATLAKOZTATÁSA SIKERTELEN" },
-            { category: "Növény", puzzle: "JAPÁN CSERESZNYEVIRÁGZÁS" },
-            { category: "Dalszöveg", puzzle: "AZÉRT VANNAK A JÓBARÁTOK" },
-            { category: "Tárgy", puzzle: "ZSEBKÉS" },
-            { category: "Fogalom", puzzle: "VÉGTELEN" },
-            { category: "Élőlény", puzzle: "KIRÁLYPINGVIN" },
-            { category: "Közmondás", puzzle: "KI KORÁN KEL ARANYAT LEL" },
-            { category: "Közmondás", puzzle: "JOBB FÉLNI MINT MEGIJEDNI" },
-            { category: "Közmondás", puzzle: "SOK LÚD DISZNÓT GYŐZ" },
-            { category: "Közmondás", puzzle: "AJÁNDÉK LÓNAK NE NÉZD A FOGÁT" },
-            { category: "Közmondás", puzzle: "NEM MIND ARANY AMI FÉNYLIK" },
-            { category: "Közmondás", puzzle: "A SZÜKSÉG TÖRVÉNYT BONT" },
-            { category: "Közmondás", puzzle: "AHÁNY HÁZ ANNYI SZOKÁS" },
-            { category: "Közmondás", puzzle: "AKI MÁSNAK VERMET ÁS MAGA ESIK BELE" },
-            { category: "Közmondás", puzzle: "LASSÚ VÍZ PARTOT MOS" },
-            { category: "Közmondás", puzzle: "AZ ALMA NEM ESIK MESSZE A FÁJÁTÓL" },
-            { category: "Közmondás", puzzle: "KICSINY A BORS DE ERŐS" },
-            { category: "Közmondás", puzzle: "A HAZUG EMBERT HAMARABB UTOLÉRIk MINT A SÁNTA KUTYÁT" },
-            { category: "Közmondás", puzzle: "EVÉS KÖZBEN JÖN MEG AZ ÉTVÁGY" },
-            { category: "Közmondás", puzzle: "JÓ PAP HOLTIG TANUL" },
-            { category: "Közmondás", puzzle: "SOK KICSI SOKRA MEGY" },
-            { category: "Közmondás", puzzle: "REND A LELKE MINDENNEK" },
-            { category: "Közmondás", puzzle: "A REST KÉTSZER FÁRAD" },
-            { category: "Közmondás", puzzle: "MADARAT TOLLÁRÓL EMBERT BARÁTJÁRÓL" },
-            { category: "Közmondás", puzzle: "MINDEN CSODA HÁROM NAPIG TART" },
-            { category: "Közmondás", puzzle: "A TÜRELEM RÓZSÁT TEREM" },
-            { category: "Közmondás", puzzle: "NEM AKARÁSNAK NYÖGÉS A VÉGE" },
-            { category: "Közmondás", puzzle: "BAGOLY MONDJA VERÉBNEK HOGY NAGYFEJŰ" },
-            { category: "Közmondás", puzzle: "JOBB ADNI MINT KAPNI" },
-            { category: "Közmondás", puzzle: "KI A KICSIT NEM BECSÜLI A NAGYOT NEM ÉRDEMLI" },
-            { category: "Közmondás", puzzle: "AMELYIK KUTYA UGAT AZ NEM HARAP" },
-            { category: "Közmondás", puzzle: "A BAJ NEM JÁR EGYEDÜL" },
-            { category: "Közmondás", puzzle: "VAKTYÚK IS TALÁL SZEMET" },
-            { category: "Közmondás", puzzle: "KIVÉTEL ERŐSÍTI A SZABÁLYT" },
-            { category: "Közmondás", puzzle: "SENKI SEM SZÜLETETT MESTERNEK" },
-            { category: "Közmondás", puzzle: "A SZERELEM VAK" },
-            { category: "Közmondás", puzzle: "HOLLÓ A HOLLÓNAK NEM VÁJJA KI A SZEMÉT" },
-            { category: "Közmondás", puzzle: "MINDEN JÓ HA A VÉGE JÓ" },
-            { category: "Közmondás", puzzle: "KÉSŐ BÁNAT EBGONDOLAT" },
-            { category: "Közmondás", puzzle: "INÁBA SZÁLLT A BÁTORSÁGA" },
-            { category: "Közmondás", puzzle: "SZÉP A KERT DE HIÁNYZIK BELŐLE A KERÍTÉS" },
-            { category: "Közmondás", puzzle: "A REMÉNY HAL MEG UTOLJÁRA" },
-            { category: "Közmondás", puzzle: "NE FESSÜK AZ ÖRDÖGÖT A FALRA" },
-            { category: "Közmondás", puzzle: "TÖBB SZEM TÖBBET LÁT" },
-            { category: "Közmondás", puzzle: "EGYSZER VOLT BUDÁN KUTYAVÁSÁR" },
-            { category: "Közmondás", puzzle: "ESŐ UTÁN KÖPÖNYEG" },
-            { category: "Közmondás", puzzle: "KÁRBA VESZETT BIZALOM" },
-            { category: "Film & Rendező", puzzle: "STEVEN SPIELBERG E T A FÖLDÖNKÍVÜLI" },
-            { category: "Film & Rendező", puzzle: "JAMES CAMERON TITANIC" },
-            { category: "Film & Rendező", puzzle: "GEORGE LUCAS CSILLAGOK HÁBORÚJA" },
-            { category: "Film & Rendező", puzzle: "PETER JACKSON A GYŰRŰK URA" },
-            { category: "Film & Rendező", puzzle: "CHRISTOPHER NOLAN EREDET" },
-            { category: "Film & Rendező", puzzle: "MARTIN SCORSESE NAGYMENŐK" },
-            { category: "Film & Rendező", puzzle: "FRANCIS FORD COPPOLA A KERESZTAPA" },
-            { category: "Film & Rendező", puzzle: "ALFRED HITCHCOCK PSZICHÓ" },
-            { category: "Film & Rendező", puzzle: "RIDLEY SCOTT GLADIÁTOR" },
-            { category: "Film & Rendező", puzzle: "SZABÓ ISTVÁN MEPHISTO" },
-            { category: "Film & Rendező", puzzle: "TIM BURTON OLLÓKEZŰ EDWARD" },
-            { category: "Film & Rendező", puzzle: "DAVID FINCHER HARCOSOK KLUBJA" },
-            { category: "Film & Rendező", puzzle: "ROBERT ZEMECKIS VISSZA A JÖVŐBE" },
-            { category: "Film & Rendező", puzzle: "LANA WACHOWSKI MÁTRIX" },
-            { category: "Film & Rendező", puzzle: "STANLEY KUBRICK RAGYOGÁS" },
-            { category: "Film & Rendező", puzzle: "MILOS FORMAN AMADEUS" },
-            { category: "Film & Rendező", puzzle: "JANKOVICS MARCELL FEHÉRLÓFIA" },
-            { category: "Film & Rendező", puzzle: "MUNDRUCZÓ KORNÉL FEHÉR ISTEN" },
-            { category: "Film & Rendező", puzzle: "NEMES JELES LÁSZLÓ SAUL FIA" },
-            { category: "Film & Rendező", puzzle: "BEREMÉNYI GÉZA ELDORÁDÓ" },
-            { category: "Film & Rendező", puzzle: "DENIS VILLENEUVE DŰNE" },
-            { category: "Film & Rendező", puzzle: "WES ANDERSON A GRAND BUDAPEST HOTEL" },
-            { category: "Film & Rendező", puzzle: "CHAPLIN A DIKTÁTOR" },
-            { category: "Film & Rendező", puzzle: "TAR BÉLA SÁTÁNTANGÓ" },
-            { category: "Film & Rendező", puzzle: "FABRI ZOLTÁN A PÁL UTCAI FIÚK" },
-            { category: "Film & Rendező", puzzle: "MÉSZÁROS MÁRTA NAPLÓ GYERMEKEIMNEK" },
-            { category: "Film & Rendező", puzzle: "JAMES GUNN A GALAXIS ŐRZŐI" },
-            { category: "Film & Rendező", puzzle: "BACSÓ PÉTER A TANÚ" },
-            { category: "Film & Rendező", puzzle: "SOPSITS ÁRPÁD A WHISKYIS" },
-            { category: "Film & Rendező", puzzle: "CLINT EASTWOOD MILLIÓ DOLLÁROS BÉBI" },
-            { category: "Film & Rendező", puzzle: "FRANK DARABONT A REMÉNY RABJAI" },
-            { category: "Irodalom", puzzle: "MOLNÁR FERENC A PÁL UTCAI FIÚK" },
-            { category: "Irodalom", puzzle: "ARANY JÁNOS TOLDI" },
-            { category: "Irodalom", puzzle: "PETŐFI SÁNDOR JÁNOS VITÉZ" },
-            { category: "Irodalom", puzzle: "GÁRDONYI GÉZA EGRI CSILLAGOK" },
-            { category: "Irodalom", puzzle: "MADÁCH IMRE AZ EMBER TRAGÉDIÁJA" },
-            { category: "Irodalom", puzzle: "MIKSZÁTH KÁLMÁN SZENT PÉTER ESERNYŐJE" },
-            { category: "Irodalom", puzzle: "ÖRKÉNY ISTVÁN EGYPERCES NOVELLÁK" },
-            { category: "Irodalom", puzzle: "KOSZTOLÁNYI DEZSŐ ÉDES ANNA" },
-            { category: "Irodalom", puzzle: "MÓRICZ ZSIGMOND LÉGY JÓ MINDHALÁLIG" },
-            { category: "Irodalom", puzzle: "FEKETE ISTVÁN VUK" },
-            { category: "Irodalom", puzzle: "WILLIAM SHAKESPEARE RÓMEÓ ÉS JÚLIA" },
-            { category: "Irodalom", puzzle: "J K ROWLING HARRY POTTER ÉS A BÖLCSEK KÖVE" },
-            { category: "Irodalom", puzzle: "GEORGE ORWELL EZER KILENCSZÁZ NYOLCVAN NÉGY" },
-            { category: "Irodalom", puzzle: "J R R TOLKIEN A GYŰRŰK URA" },
-            { category: "Irodalom", puzzle: "LEV TOLSZTOJ HÁBORÚ ÉS BÉKE" },
-            { category: "Irodalom", puzzle: "REJTŐ JENŐ A PISZKOS FRED A KAPITÁNY" },
-            { category: "Irodalom", puzzle: "ANTOINE DE SAINT EXUPÉRY A KIS HERCEG" },
-            { category: "Irodalom", puzzle: "FRANZ KAFKA AZ ÁTVÁLTOZÁS" },
-            { category: "Irodalom", puzzle: "ALBERT CAMUS A KÖZÖNY" },
-            { category: "Irodalom", puzzle: "SZABÓ MAGDA AZ AJTÓ" },
-            { category: "Irodalom", puzzle: "KARINTHY FRIGYES ÍGY ÍRTOK TI" },
-            { category: "Irodalom", puzzle: "DANIEL DEFOE ROBINSON CRUSOE" },
-            { category: "Irodalom", puzzle: "JULES VERNE NYOLCVAN NAP ALATT A FÖLD KÖRÜL" },
-            { category: "Irodalom", puzzle: "CERVANTES DON QUIJOTE" },
-            { category: "Irodalom", puzzle: "HOMÉROSZ ODÜSSZEIA" },
-            { category: "Irodalom", puzzle: "ADY ENDRE VÉRNŐS ASSZONYOK" },
-            { category: "Irodalom", puzzle: "BABITS MIHÁLY JÓNÁS KÖNYVE" },
-            { category: "Irodalom", puzzle: "JÓZSEF ATTILA TISZTA SZÍVVEL" },
-            { category: "Irodalom", puzzle: "KERTÉSZ IMRE SORSTALANSÁG" },
-            { category: "Irodalom", puzzle: "VÖRÖSMARTY MIHÁLY CSONGOR ÉS TÜNDE" },
-            { category: "Irodalom", puzzle: "GABRIEL GARCÍA MÁRQUEZ SZÁZ ÉV MAGÁNY" },
-            { category: "Zene", puzzle: "LGT A KICSI A NAGY AZ ARTÚR ÉS AZ INDIÁN" },
-            { category: "Zene", puzzle: "MICHAEL JACKSON THRILLER" },
-            { category: "Zene", puzzle: "THE BEATLES HEY JUDE" },
-            { category: "Zene", puzzle: "NIRVANA SMELLS LIKE TEEN SPIRIT" },
-            { category: "Zene", puzzle: "ABBA DANCING QUEEN" },
-            { category: "Zene", puzzle: "TANKCSAPDA MENNYORSZÁG TOURIST" },
-            { category: "Zene", puzzle: "EDDA MŰVEK KÖR" },
-            { category: "Zene", puzzle: "KISPÁL ÉS A BORZ CSILLAG VAGY FEKETE LYUK" },
-            { category: "Zene", puzzle: "METALLICA ENTER SANDMAN" },
-            { category: "Zene", puzzle: "HALOTT PÉNZ HELLO LÁNYOK" },
-            { category: "Zene", puzzle: "BEETHOVEN ÖRÖMÓDA" },
-            { category: "Zene", puzzle: "MOZART EGY KIS ÉJI ZENE" },
-            { category: "Zene", puzzle: "LISZT FERENC MAGYAR RAPSZÓDIÁK" },
-            { category: "Zene", puzzle: "FRANK SINATRA MY WAY" },
-            { category: "Zene", puzzle: "ELVIS PRESLEY JAILHOUSE ROCK" },
-            { category: "Zene", puzzle: "BOB MARLEY NO WOMAN NO CRY" },
-            { category: "Zene", puzzle: "CSEH TAMÁS BUDAPEST" },
-            { category: "Zene", puzzle: "REPUBLIC SZÁLLJ EL KISMADÁR" },
-            { category: "Zene", puzzle: "ADELE ROLLING IN THE DEEP" },
-            { category: "Zene", puzzle: "U2 WITH OR WITHOUT YOU" },
-            { category: "Zene", puzzle: "PÉTERFY BORI & LOVE BAND HAJOLJ BELE A HAJAMBA" },
-            { category: "Zene", puzzle: "VIVALDI A NÉGY ÉVSZAK" },
-            { category: "Zene", puzzle: "JOHANN SEBASTIAN BACH TOCCATA ÉS FÚGA" },
-            { category: "Zene", puzzle: "QUIMBY MOST MÚLIK PONTOSAN" },
-            { category: "Zene", puzzle: "AC DC HIGHWAY TO HELL" },
-            { category: "Zene", puzzle: "LED ZEPPELIN STAIRWAY TO HEAVEN" },
-            { category: "Zene", puzzle: "PIRAMIS SZÁLLJ FEL MAGASRA" },
-            { category: "Zene", puzzle: "KONCZ ZSUZSA HA ÉN RÓZSA VOLNÉK" },
-            { category: "Zene", puzzle: "CARAMEL LÉLEKJEL" },
-            { category: "Híres Ember", puzzle: "PETŐFI SÁNDOR" },
-            { category: "Híres Ember", puzzle: "KOSSUTH LAJOS" },
-            { category: "Híres Ember", puzzle: "SZÉCHENYI ISTVÁN" },
-            { category: "Híres Ember", puzzle: "SEMMELWEIS IGNÁC" },
-            { category: "Híres Ember", puzzle: "PUSKÁS FERENC" },
-            { category: "Híres Ember", puzzle: "ERKEL FERENC" },
-            { category: "Híres Ember", puzzle: "LEONARDO DA VINCI" },
-            { category: "Híres Ember", puzzle: "MARIE CURIE" },
-            { category: "Híres Ember", puzzle: "GALILEO GALILEI" },
-            { category: "Híres Ember", puzzle: "ISAAC NEWTON" },
-            { category: "Híres Ember", puzzle: "NEUMANN JÁNOS" },
-            { category: "Híres Ember", puzzle: "BARTÓK BÉLA" },
-            { category: "Híres Ember", puzzle: "KODÁLY ZOLTÁN" },
-            { category: "Híres Ember", puzzle: "HOSSZÚ KATINKA" },
-            { category: "Híres Ember", puzzle: "EGERVÁRI KRISTÓF" },
-            { category: "Híres Ember", puzzle: "TERÉZ ANYA" },
-            { category: "Híres Ember", puzzle: "NELSON MANDELA" },
-            { category: "Híres Ember", puzzle: "MARTIN LUTHER KING" },
-            { category: "Híres Ember", puzzle: "MAHATMA GANDHI" },
-            { category: "Híres Ember", puzzle: "RUBIK ERNŐ" },
-            { category: "Híres Ember", puzzle: "GEORGE WASHINGTON" },
-            { category: "Híres Ember", puzzle: "NAPÓLEON BONAPARTE" },
-            { category: "Híres Ember", puzzle: "JULIUS CAESAR" },
-            { category: "Híres Ember", puzzle: "KLEOPÁTRA" },
-            { category: "Híres Ember", puzzle: "CSOKONAI VITÉZ MIHÁLY" },
-            { category: "Híres Ember", puzzle: "LATINOVITS ZOLTÁN" },
-            { category: "Híres Ember", puzzle: "BODROGI GYULA" },
-            { category: "Híres Ember", puzzle: "POLGÁR JUDIT" },
-            { category: "Híres Ember", puzzle: "STEVE JOBS" },
-            { category: "Híres Ember", puzzle: "BILL GATES" },
-            { category: "Híres Ember", puzzle: "ELON MUSK" },
-            { category: "Földrajz", puzzle: "A DUNA EURÓPA MÁSODIK LEGHOSSZABB FOLYÓJA" },
-            { category: "Földrajz", puzzle: "BUDAPEST MAGYARORSZÁG FŐVÁROSA" },
-            { category: "Földrajz", puzzle: "MOUNT EVEREST A VILÁG LEGMAGASABB HEGYE" },
-            { category: "Földrajz", puzzle: "AZ AMAZONAS ESŐERDŐ" },
-            { category: "Földrajz", puzzle: "A SZAHARA A LEGNAGYOBB FORRÓ SIVATAG" },
-            { category: "Földrajz", puzzle: "A KÍNAI NAGY FAL" },
-            { category: "Földrajz", puzzle: "A NIAGARA VÍZESÉS" },
-            { category: "Földrajz", puzzle: "AZ EGRI VÁR" },
-            { category: "Földrajz", puzzle: "A BALATON KÖZÉP EURÓPA LEGNAGYOBB TAVA" },
-            { category: "Földrajz", puzzle: "A PÁRIZSI EIFFEL TORONY" },
-            { category: "Földrajz", puzzle: "A RÓMAI COLOSSEUM" },
-            { category: "Földrajz", puzzle: "A GÍZAI NAGY PIRAMIS" },
-            { category: "Földrajz", puzzle: "A CSENDES ÓCEÁN" },
-            { category: "Földrajz", puzzle: "MADAGASZKÁR SZIGETE" },
-            { category: "Földrajz", puzzle: "A NAGY KORALLZÁTONY AUSZTRÁLIÁBAN" },
-            { category: "Földrajz", puzzle: "TOKIO JAPÁN FŐVÁROSA" },
-            { category: "Földrajz", puzzle: "A DÉLI SARK" },
-            { category: "Földrajz", puzzle: "A KÁRPÁTOK VONULATA" },
-            { category: "Földrajz", puzzle: "A TISZA FOLYÓ" },
-            { category: "Földrajz", puzzle: "A FÖLDKÖZI TENGER" },
-            { category: "Földrajz", puzzle: "A SZIBÉRIAI TAJGA" },
-            { category: "Földrajz", puzzle: "A GRAND CANYON AZ EGYESÜLT ÁLLAMOKBAN" },
-            { category: "Földrajz", puzzle: "AZ INDIAI ÓCEÁN" },
-            { category: "Földrajz", puzzle: "A VIKTÓRIA VÍZESÉS" },
-            { category: "Földrajz", puzzle: "A SZENTENDREI SZIGET" },
-            { category: "Földrajz", puzzle: "AGGTELEKI CSEPPKŐBARLANG" },
-            { category: "Földrajz", puzzle: "A VELENCEI KARNEVÁL" },
-            { category: "Földrajz", puzzle: "A SZUEZI CSATORNA" },
-            { category: "Földrajz", puzzle: "AZ ANDOK HEGYSÉG" },
-            { category: "Földrajz", puzzle: "MOSZKVA OROSZORSZÁG FŐVÁROSA" },
-            { category: "Történelem", puzzle: "A MAGYAR HONFOGLALÁS" },
-            { category: "Történelem", puzzle: "AZ 1848-AS FORRADALOM ÉS SZABADSÁGHARC" },
-            { category: "Történelem", puzzle: "A RÓMAI BIRODALOM BUKÁSA" },
-            { category: "Történelem", puzzle: "A BERLINI FAL LEOMBLASA" },
-            { category: "Történelem", puzzle: "A MUHACSI CSATA" },
-            { category: "Történelem", puzzle: "AZ ELSŐ VILÁGHÁBORÚ" },
-            { category: "Történelem", puzzle: "A KÖZÉPKOR" },
-            { category: "Történelem", puzzle: "A REFORMÁCIÓ" },
-            { category: "Történelem", puzzle: "AZ AMERIKAI FÜGGETLENSÉGI HÁBORÚ" },
-            { category: "Történelem", puzzle: "A FRANCIA FORRADALOM" },
-            { category: "Történelem", puzzle: "A TATÁRJÁRÁS" },
-            { category: "Történelem", puzzle: "A TRIANONI BÉKESZERZŐDÉS" },
-            { category: "Történelem", puzzle: "A HIDEGHÁBORÚ" },
-            { category: "Történelem", puzzle: "A VIKING KOR" },
-            { category: "Történelem", puzzle: "AZ ÓKORI EGYIPTOM" },
-            { category: "Történelem", puzzle: "A VASKOR" },
-            { category: "Történelem", puzzle: "A KIEGYEZÉS" },
-            { category: "Történelem", puzzle: "A RÁKÓCZI SZABADSÁGHARC" },
-            { category: "Történelem", puzzle: "A NÁNDORFEHÉRVÁRI DIADAL" },
-            { category: "Történelem", puzzle: "AZ ARANYBULLA" },
-            { category: "Történelem", puzzle: "A HOLOKAUSZT" },
-            { category: "Történelem", puzzle: "A SZOVJETUNIÓ FELBOMLÁSA" },
-            { category: "Történelem", puzzle: "A HOLDFÖLDRE SZÁLLÁS" },
-            { category: "Történelem", puzzle: "A RENESZÁNSZ KORA" },
-            { category: "Történelem", puzzle: "AZ APOLLÓ TIZENEGY KÜLDETÉS" },
-            { category: "Tudomány", puzzle: "A DNS KETTŐS SPIRÁL SZERKEZETE" },
-            { category: "Tudomány", puzzle: "ISAAC NEWTON GRAVITÁCIÓS TÖRVÉNYE" },
-            { category: "Tudomány", puzzle: "A FÉNY SEBESSÉGE VÁKUUMBAN" },
-            { category: "Tudomány", puzzle: "SZENT GYÖRGYI ALBERT ÉS A C VITAMIN" },
-            { category: "Tudomány", puzzle: "CHARLES DARWIN EVOLÚCIÓELMÉLETE" },
-            { category: "Tudomány", puzzle: "A PITAGORASZ TÉTEL" },
-            { category: "Tudomány", puzzle: "A VÍZ FORRÁSPONTJA" },
-            { category: "Tudomány", puzzle: "A PERIÓDUSOS RENDSZER" },
-            { category: "Tudomány", puzzle: "FEKETE LYUK A TÉRIDŐ GÖRBÜLETE" },
-            { category: "Tudomány", puzzle: "A FOTOSZINTÉZIS FOLYAMATA" },
-            { category: "Tudomány", puzzle: "KOPERNIKUSZ HELIOCENTRIKUS VILÁGKÉPE" },
-            { category: "Tudomány", puzzle: "A HANGTERJEDÉS SEBESSÉGE" },
-            { category: "Tudomány", puzzle: "AZ ATOMMAG HASADÁSA" },
-            { category: "Tudomány", puzzle: "A NAPELEMEK MŰKÖDÉSI ELVE" },
-            { category: "Tudomány", puzzle: "GREGOR MENDEL ÉS A GENETIKA" },
-            { category: "Tudomány", puzzle: "A NAGY BUMM ELMÉLETE" },
-            { category: "Tudomány", puzzle: "ALEXANDER FLEMING ÉS A PENICILLIN" },
-            { category: "Tudomány", puzzle: "A MÁGNESES MEZŐ" },
-            { category: "Tudomány", puzzle: "A HORMONRENDSZER MŰKÖDÉSE" },
-            { category: "Tudomány", puzzle: "AZ INTERNET FELTALÁLÁSA" },
-            { category: "Tudomány", puzzle: "ARCHIMÉDESZ TÖRVÉNYE" },
-            { category: "Tudomány", puzzle: "A LÉZER TECHNOLÓGIA" },
-            { category: "Tudomány", puzzle: "AZ EMBERI GENOM PROJEKT" },
-            { category: "Tudomány", puzzle: "A KVANTUMMECHANIKA" },
-            { category: "Étel & Ital", puzzle: "GULYÁSLEVES CSIPETKÉVEL" },
-            { category: "Étel & Ital", puzzle: "TÖLTÖTT KÁPOSZTA TEJFÖLLEL" },
-            { category: "Étel & Ital", puzzle: "PIZZA MARGHERITA" },
-            { category: "Étel & Ital", puzzle: "ESZPRESSZÓ KÁVÉ" },
-            { category: "Étel & Ital", puzzle: "TOKAJI ASZÚ" },
-            { category: "Étel & Ital", puzzle: "HALÁSZLÉ GYUFA TÉSZTÁVAL" },
-            { category: "Étel & Ital", puzzle: "CSIRKEPAPRIKÁS NOKEDLIVEL" },
-            { category: "Étel & Ital", puzzle: "RÁNTOTT SAJT TARTÁRMÁRTÁSSAL" },
-            { category: "Étel & Ital", puzzle: "SOMLÓI GALUSKA" },
-            { category: "Étel & Ital", puzzle: "DOBOSTORTA" },
-            { category: "Étel & Ital", puzzle: "KÜRTŐSKALÁCS" },
-            { category: "Étel & Ital", puzzle: "PALACSINTA KAKAÓVAL" },
-            { category: "Étel & Ital", puzzle: "LÁNGOS SAJTTAL ÉS TEJFÖLLEL" },
-            { category: "Étel & Ital", puzzle: "LECSÓ KOLBÁSSZAL" },
-            { category: "Étel & Ital", puzzle: "SPAGETTI BOLOGNESE" },
-            { category: "Étel & Ital", puzzle: "HAMBURGER HASÁBBURGONYÁVAL" },
-            { category: "Étel & Ital", puzzle: "PÖRKÖLT TARHONYÁVAL" },
-            { category: "Étel & Ital", puzzle: "EGRI BIKAVÉR" },
-            { category: "Étel & Ital", puzzle: "FRÖCCS" },
-            { category: "Étel & Ital", puzzle: "TÚRÓGOMBÓC" },
-            { category: "Étel & Ital", puzzle: "MÁKOS GUBA" },
-            { category: "Étel & Ital", puzzle: "SZUSI ÉS SZASIMI" },
-            { category: "Étel & Ital", puzzle: "GÖRÖG SALÁTA" },
-            { category: "Étel & Ital", puzzle: "GYROS PITÁBAN" },
-            { category: "Étel & Ital", puzzle: "SZILVÁS GOMBÓC" },
-            { category: "Étel & Ital", puzzle: "BEJGLI" },
-            { category: "Étel & Ital", puzzle: "PÁLINKA" },
-            { category: "Étel & Ital", puzzle: "ZSERBÓ SZELET" },
-            { category: "Élőlény", puzzle: "KÉK BÁLNA A LEGNAGYOBB EMLŐS" },
-            { category: "Élőlény", puzzle: "NAGY FEHÉR CÁPA" },
-            { category: "Élőlény", puzzle: "GÍMSZARVAS" },
-            { category: "Élőlény", puzzle: "FEHÉR GÓLYA" },
-            { category: "Élőlény", puzzle: "MAGYAR VIZSLA" },
-            { category: "Élőlény", puzzle: "AFRIKAI OROSZLÁN" },
-            { category: "Élőlény", puzzle: "PULI KUTYA" },
-            { category: "Élőlény", puzzle: "SZIBÉRIAI TIGRIS" },
-            { category: "Élőlény", puzzle: "JEGESMEDVE" },
-            { category: "Élőlény", puzzle: "ÓRIÁSPANDA" },
-            { category: "Élőlény", puzzle: "KOLIBRI" },
-            { category: "Élőlény", puzzle: "BARNA MEDVE" },
-            { category: "Élőlény", puzzle: "VÖRÖS RÓKA" },
-            { category: "Élőlény", puzzle: "HÁZI MACSKA" },
-            { category: "Élőlény", puzzle: "ZSIRÁF" },
-            { category: "Élőlény", puzzle: "CSÁSZÁRPINGVIN" },
-            { category: "Élőlény", puzzle: "TARANTULA PÓK" },
-            { category: "Élőlény", puzzle: "KAMÉLEON" },
-            { category: "Élőlény", puzzle: "PÁVA" },
-            { category: "Élőlény", puzzle: "LAJHÁR" },
-            { category: "Élőlény", puzzle: "NÍLUSI KROKODIL" },
-            { category: "Élőlény", puzzle: "KOMÓDÓI VARÁNUSZ" },
-            { category: "Élőlény", puzzle: "EURÁZSIAI HÓD" },
-            { category: "Élőlény", puzzle: "SZÜRKE MARHA" },
-            { category: "Élőlény", puzzle: "HÓBAGOLY" },
-            { category: "Növény", puzzle: "TÖLGYFA" },
-            { category: "Növény", puzzle: "NAPRAFORGÓ" },
-            { category: "Növény", puzzle: "RÓZSA" },
-            { category: "Növény", puzzle: "TULIPÁN" },
-            { category: "Növény", puzzle: "AKÁCFA" },
-            { category: "Növény", puzzle: "HÓVIRÁG" },
-            { category: "Növény", puzzle: "KAMILLA" },
-            { category: "Növény", puzzle: "LEVENDULA" },
-            { category: "Növény", puzzle: "PITYPANG" },
-            { category: "Növény", puzzle: "LEÁNDER" },
-            { category: "Növény", puzzle: "BÚZA" },
-            { category: "Növény", puzzle: "KUKORICA" },
-            { category: "Növény", puzzle: "BAOBAB FA" },
-            { category: "Növény", puzzle: "FENYŐFA" },
-            { category: "Növény", puzzle: "GOMBA" },
-            { category: "Növény", puzzle: "PÁFRÁNY" },
-            { category: "Növény", puzzle: "ORGONA" },
-            { category: "Növény", puzzle: "SZŐLŐTŐKE" },
-            { category: "Növény", puzzle: "PAPRIKA" },
-            { category: "Növény", puzzle: "PARADICSOM" },
-            { category: "Növény", puzzle: "GÍNKGO BILOBA" },
-            { category: "Növény", puzzle: "VÉNUSZ LÉGYCSAPÓJA" },
-            { category: "Növény", puzzle: "KAKTUSZ" },
-            { category: "Növény", puzzle: "TAVIRÓZSA" },
-            { category: "Növény", puzzle: "MOHA" },
-            { category: "Tárgy", puzzle: "OKOSTELEFON TÖLTŐKÁBEL" },
-            { category: "Tárgy", puzzle: "ROZSDAMENTES ACÉL EDÉNYKÉSZLET" },
-            { category: "Tárgy", puzzle: "BICIKLIPUMPA" },
-            { category: "Tárgy", puzzle: "GOLYÓSTOLL" },
-            { category: "Tárgy", puzzle: "ASZTALI LÁMPA" },
-            { category: "Tárgy", puzzle: "KÖNYVESPOLC" },
-            { category: "Tárgy", puzzle: "FÉNYKÉPEZŐGÉP" },
-            { category: "Tárgy", puzzle: "DUGÓHÚZÓ" },
-            { category: "Tárgy", puzzle: "ESERNYŐ" },
-            { category: "Tárgy", puzzle: "HAJSZÁRÍTÓ" },
-            { category: "Tárgy", puzzle: "MIKROHULLÁMÚ SÜTŐ" },
-            { category: "Tárgy", puzzle: "PORSZÍVÓ" },
-            { category: "Tárgy", puzzle: "ÍRÓASZTAL" },
-            { category: "Tárgy", puzzle: "KARÓRA" },
-            { category: "Tárgy", puzzle: "TÁVIRÁNYÍTÓ" },
-            { category: "Tárgy", puzzle: "FOGKEFE" },
-            { category: "Tárgy", puzzle: "LAPTOP TÁSKA" },
-            { category: "Tárgy", puzzle: "KÁVÉFŐZŐ" },
-            { category: "Tárgy", puzzle: "VÍZFORRALÓ" },
-            { category: "Tárgy", puzzle: "FALINAPTÁR" },
-            { category: "Tárgy", puzzle: "SZEMÜVEGTOK" },
-            { category: "Tárgy", puzzle: "GEMKAPOCS" },
-            { category: "Tárgy", puzzle: "VARRÓTŰ" },
-            { category: "Tárgy", puzzle: "CSAVARHÚZÓ KÉSZLET" },
-            { category: "Tárgy", puzzle: "KULCSCSOMÓ" },
-            { category: "Sport", puzzle: "OLIMPIAI JÁTÉKOK" },
-            { category: "Sport", puzzle: "LABDARÚGÓ VILÁGBAJNOKSÁG" },
-            { category: "Sport", puzzle: "FORMULA 1 MAGYAR NAGYDÍJ" },
-            { category: "Sport", puzzle: "KOVÁCS KATALIN OLIMPIAI BAJNOK KAJAKOZÓ" },
-            { category: "Sport", puzzle: "TOUR DE FRANCE KERÉKPÁRVERSENY" },
-            { category: "Sport", puzzle: "WIMBLEDONI TENISZBAJNOKSÁG" },
-            { category: "Sport", puzzle: "SZILÁGYI ÁRON HÁROMSZOROS OLIMPIAI BAJNOK VÍVÓ" },
-            { category: "Sport", puzzle: "KOSÁRLABDA" },
-            { category: "Sport", puzzle: "VÍZILABDA" },
-            { category: "Sport", puzzle: "ATLÉTIKA" },
-            { category: "Sport", puzzle: "ÚSZÁS" },
-            { category: "Sport", puzzle: "KÉZILABDA" },
-            { category: "Sport", puzzle: "JEGKORONG" },
-            { category: "Sport", puzzle: "A NEMZETI BAJNOKSÁG" },
-            { category: "Sport", puzzle: "ARANYCSAPAT" },
-            { category: "Sport", puzzle: "SUPER BOWL" },
-            { category: "Sport", puzzle: "BAJNOKOK LIGÁJA" },
-            { category: "Sport", puzzle: "MICHAEL JORDAN" },
-            { category: "Sport", puzzle: "ROGER FEDERER" },
-            { category: "Sport", puzzle: "USAIN BOLT" },
-            { category: "Sport", puzzle: "MICHAEL SCHUMACHER" },
-            { category: "Sport", puzzle: "LIONEL MESSI" },
-            { category: "Sport", puzzle: "CRISTIANO RONALDO" },
-            { category: "Sport", puzzle: "LEBRON JAMES" },
-            { category: "Sport", puzzle: "MICHAEL PHELPS" },
-            { category: "Sport", puzzle: "GYARMATI DEZSŐ" },
-            { category: "Sport", puzzle: "DARNYI TAMÁS" },
-            { category: "Márkanév", puzzle: "COCA COLA" },
-            { category: "Márkanév", puzzle: "LEGO" },
-            { category: "Márkanév", puzzle: "PICK SZEGED" },
-            { category: "Márkanév", puzzle: "AUDI" },
-            { category: "Márkanév", puzzle: "NIKE" },
-            { category: "Márkanév", puzzle: "ADIDAS" },
-            { category: "Márkanév", puzzle: "APPLE" },
-            { category: "Márkanév", puzzle: "SAMSUNG" },
-            { category: "Márkanév", puzzle: "GOOGLE" },
-            { category: "Márkanév", puzzle: "FACEBOOK" },
-            { category: "Márkanév", puzzle: "MCDONALDS" },
-            { category: "Márkanév", puzzle: "IKEA" },
-            { category: "Márkanév", puzzle: "ZARA" },
-            { category: "Márkanév", puzzle: "PÖTTYÖS TÚRÓ RUDI" },
-            { category: "Márkanév", puzzle: "HERENDI PORCELÁN" },
-            { category: "Márkanév", puzzle: "GYŐRI KEKSZ" },
-            { category: "Márkanév", puzzle: "TESCO" },
-            { category: "Márkanév", puzzle: "LIDL" },
-            { category: "Márkanév", puzzle: "SPAR" },
-            { category: "Márkanév", puzzle: "TOYOTA" },
-            { category: "Márkanév", puzzle: "BMW" },
-            { category: "Márkanév", puzzle: "NETFLIX" },
-            { category: "Márkanév", puzzle: "SPOTIFY" },
-            { category: "Márkanév", puzzle: "FERRARI" },
-            { category: "Márkanév", puzzle: "SONY PLAYSTATION" },
-            { category: "Mindennapi élet", puzzle: "HOLNAP REGGEL KORÁN KELL KELNEM" },
-            { category: "Mindennapi élet", puzzle: "ELNÉZÉST MERRE VAN A LEGKÖZELEBBI PATIKA" },
-            { category: "Mindennapi élet", puzzle: "ELFOGYOTT A TEJ A HŰTŐBŐL" },
-            { category: "Mindennapi élet", puzzle: "LEMERÜLT A TELEFONOM" },
-            { category: "Mindennapi élet", puzzle: "BEVÁSÁRLÓLISTÁT ÍROK" },
-            { category: "Mindennapi élet", puzzle: "ELKÉSEK A MUNKÁBÓL" },
-            { category: "Mindennapi élet", puzzle: "NINCS ITTHON KENYÉR" },
-            { category: "Mindennapi élet", puzzle: "VIGYÉL ESERNYŐT MERT ESNI FOG" },
-            { category: "Mindennapi élet", puzzle: "MIT KÉRSZ EBÉDRE" },
-            { category: "Mindennapi élet", puzzle: "ELFELEJTETTEM A JELSZAVAM" },
-            { category: "Mindennapi élet", puzzle: "KAPCSOLD BE A TELEVÍZIÓT" },
-            { category: "Mindennapi élet", puzzle: "LE KELL VINNI A SZEMETET" },
-            { category: "Mindennapi élet", puzzle: "NINCS INTERNETKAPCSOLAT" },
-            { category: "Mindennapi élet", puzzle: "HÁNY ÓRA VAN" },
-            { category: "Mindennapi élet", puzzle: "FELHÍVLAK KÉSŐBB" },
-            { category: "Mindennapi élet", puzzle: "BOLDOG SZÜLETÉSNAPOT KÍVÁNOK" },
-            { category: "Mindennapi élet", puzzle: "NAGYON JÓL ÉREZTEM MAGAM" },
-            { category: "Mindennapi élet", puzzle: "EGY KÁVÉT KÉREK SZÉPEN" },
-            { category: "Mindennapi élet", puzzle: "HOL TALÁLOM A MOSDÓT" },
-            { category: "Mindennapi élet", puzzle: "NEM MŰKÖDIK A BANKKÁRTYA TERMINÁL" },
-            { category: "Mindennapi élet", puzzle: "KÜLDD ÁT EMAILBEN LÉGYSZÍVES" },
-            { category: "Mindennapi élet", puzzle: "BE KELL FIZETNI A SZÁMLÁKAT" },
-            { category: "Mindennapi élet", puzzle: "FORGALMI DUGÓBA KERÜLTEM" },
-            { category: "Mindennapi élet", puzzle: "MENNYI AZ IDŐ" },
-            { category: "Mindennapi élet", puzzle: "JÓ ÉTVÁGYAT" },
-            { category: "Mindennapi élet", puzzle: "SOK SIKERT A VIZSGÁHOZ" },
-            { category: "Fogalom", puzzle: "A SZABADSÁG ÉS A SZERELEM" },
-            { category: "Fogalom", puzzle: "DEMOKRÁCIA" },
-            { category: "Fogalom", puzzle: "EMBERI JOGOK" },
-            { category: "Fogalom", puzzle: "BARÁTSÁG" },
-            { category: "Fogalom", puzzle: "KÉPZELET" },
-            { category: "Fogalom", puzzle: "KREATIVITÁS" },
-            { category: "Fogalom", puzzle: "BÖLCSESSÉG" },
-            { category: "Fogalom", puzzle: "IGAZSÁG" },
-            { category: "Fogalom", puzzle: "HŰSÉG" },
-            { category: "Fogalom", puzzle: "TISZTELET" },
-            { category: "Fogalom", puzzle: "INFLÁCIÓ" },
-            { category: "Fogalom", puzzle: "GLOBÁLIS FELMELEGEDÉS" },
-            { category: "Fogalom", puzzle: "KÖRNYEZETVÉDELEM" },
-            { category: "Fogalom", puzzle: "VÉLETLEN" },
-            { category: "Fogalom", puzzle: "SORS" },
-            { category: "Fogalom", puzzle: "KULTÚRA" },
-            { category: "Fogalom", puzzle: "CIVILIZÁCIÓ" },
-            { category: "Fogalom", puzzle: "A HUMOR ÉS A NEVETÉS" },
-            { category: "Fogalom", puzzle: "AZ ÁLMOK ÉS A VALÓSÁG" },
-            { category: "Fogalom", puzzle: "A MÚLT ÉS A JÖVŐ" },
-            { category: "Foglalkozás", puzzle: "TŰZOLTÓ" },
-            { category: "Foglalkozás", puzzle: "ORVOS" },
-            { category: "Foglalkozás", puzzle: "TANÁR" },
-            { category: "Foglalkozás", puzzle: "RENDŐR" },
-            { category: "Foglalkozás", puzzle: "PROGRAMOZÓ" },
-            { category: "Foglalkozás", puzzle: "PÉK" },
-            { category: "Foglalkozás", puzzle: "SZAKÁCS" },
-            { category: "Foglalkozás", puzzle: "FODRÁSZ" },
-            { category: "Foglalkozás", puzzle: "ÜGYVÉD" },
-            { category: "Foglalkozás", puzzle: "ÉPÍTÉSZMÉRNÖK" },
-            { category: "Foglalkozás", puzzle: "ÁLLATORVOS" },
-            { category: "Foglalkozás", puzzle: "POSTÁS" },
-            { category: "Foglalkozás", puzzle: "SZÍNÉSZ" },
-            { category: "Foglalkozás", puzzle: "ZENÉSZ" },
-            { category: "Foglalkozás", puzzle: "FESTŐMŰVÉSZ" },
-            { category: "Foglalkozás", puzzle: "ÚJSÁGÍRÓ" },
-            { category: "Foglalkozás", puzzle: "PILÓTA" },
-            { category: "Foglalkozás", puzzle: "ASZTALOS" },
-            { category: "Foglalkozás", puzzle: "VILLANYSZERELŐ" },
-            { category: "Foglalkozás", puzzle: "KÖNYVELŐ" },
-            { category: "Foglalkozás", puzzle: "TUDÓS" },
-            { category: "Foglalkozás", puzzle: "GRAFIKUS" },
-            { category: "Foglalkozás", puzzle: "MARKETING MENEDZSER" },
-            { category: "Foglalkozás", puzzle: "BANKÁR" },
-            { category: "Foglalkozás", puzzle: "PSZICHOLÓGUS" },
-            { category: "Csillagászat", puzzle: "TEJÚTRENDSZER" },
-            { category: "Csillagászat", puzzle: "NAGY MEDVE CSILLAGKÉP" },
-            { category: "Csillagászat", puzzle: "A HOLD FOGYATKOZÁSA" },
-            { category: "Csillagászat", puzzle: "A NAPRENDSZER BOLYGÓI" },
-            { category: "Csillagászat", puzzle: "HALLEY ÜSTÖKÖS" },
-            { category: "Csillagászat", puzzle: "HUBBLE ŰRTÁVCSŐ" },
-            { category: "Csillagászat", puzzle: "ANDROMÉDA GALAXIS" },
-            { category: "Csillagászat", puzzle: "A JUPITER NAGY VÖRÖS FOLTJA" },
-            { category: "Csillagászat", puzzle: "A SZATURNUSZ GYŰRŰI" },
-            { category: "Csillagászat", puzzle: "METEORRAJ" },
-            { category: "Csillagászat", puzzle: "SARKIFÉNY" },
-            { category: "Csillagászat", puzzle: "CSILLAGHULLÁS" },
-            { category: "Csillagászat", puzzle: "A MARS A VÖRÖS BOLYGÓ" },
-            { category: "Csillagászat", puzzle: "NEMZETKÖZI ŰRÁLLOMÁS" },
-            { category: "Csillagászat", puzzle: "VÉNUSZ AZ ESTHAJNALCSILLAG" },
-            { category: "Csillagászat", puzzle: "NAPFOGYATKOZÁS" },
-            { category: "Csillagászat", puzzle: "TÖRPEBOLYGÓ" },
-            { category: "Csillagászat", puzzle: "A FÖLD KERINGÉSE A NAP KÖRÜL" },
-            { category: "Csillagászat", puzzle: "CSILLAGKÖD" },
-            { category: "Csillagászat", puzzle: "PULZÁR" },
-            { category: "Étel & Ital", puzzle: "SZALONNACUKOR" },
-            { category: "Sport", puzzle: "EURÓPA LIGA" },
-            { category: "Irodalom", puzzle: "ERICH KÄSTNER A KÉT LOTTI" },
-            { category: "Híres Ember", puzzle: "BUD SPENCER" },
-            { category: "Film", puzzle: "A KARIB TENGER KALÓZAI" },
-            { category: "Földrajz", puzzle: "A HOLT TENGER" },
-            { category: "Tudomány", puzzle: "RELATIVITÁS" },
-            { category: "Zene", puzzle: "KFT BALATONI NYÁR" },
-            { category: "Közmondás", puzzle: "A BECSÜLET DRÁGÁBB AZ ARANYNÁL" },
-            { category: "Tárgy", puzzle: "MOBILTELEFON" },
-            { category: "Élőlény", puzzle: "HÁZI MÉH" },
-            { category: "Mindennapi élet", puzzle: "FELADOM A POSTÁN" },
-            { category: "Márkanév", puzzle: "ZSOLNAY PORCELÁN" },
-            { category: "Történelem", puzzle: "A HUSZÁR" },
-            { category: "Sport", puzzle: "BUDAPEST HONVÉD" },
-            { category: "Film & Rendező", puzzle: "GAUDER ÁRON KOJOT NÉGY LELKE" },
-            { category: "Zene", puzzle: "BRÓDY JÁNOS FILLÉRES EMLÉKEIM" },
-            { category: "Foglalkozás", puzzle: "REPÜLŐGÉP SZERELŐ" },
-            { category: "Közmondás", puzzle: "AKI KÍVÁNCSI HAMAR MEGSÖREGSZIK" },
-            { category: "Tárgy", puzzle: "KULACS" },
-            { category: "Étel & Ital", puzzle: "TÚRÓS CSUSZA" },
-            { category: "Híres Ember", puzzle: "ZSÓFIA KIRÁLYNÉ" },
-            { category: "Földrajz", puzzle: "A VATIKÁNVÁROS" },
-            { category: "Tudomány", puzzle: "LEPKEHATÁS" },
-            { category: "Irodalom", puzzle: "DICKENS KARÁCSONYI ÉNEK" },
-            { category: "Sport", puzzle: "SZOBOSZLAI DOMINIK" },
-            { category: "Márkanév", puzzle: "UNIVER" },
-            { category: "Film", puzzle: "INDUL A BAKTERHÁZ" },
-            { category: "Élőlény", puzzle: "EURÁZSIAI HIÚZ" },
-            { category: "Mindennapi élet", puzzle: "A SZOMSZÉD FÜVE MINDIG ZÖLDEBB" },
-            { category: "Zene", puzzle: "THE ROLLING STONES PAINT IT BLACK" },
-            { category: "Történelem", puzzle: "A LOVAGKOR" },
-            { category: "Csillagászat", puzzle: "FEHÉR TÖRPE" },
-            { category: "Tárgy", puzzle: "KÖRÖMLAKK" },
-            { category: "Étel & Ital", puzzle: "SZÓDAVÍZ" },
-            { category: "Híres Ember", puzzle: "ERZSÉBET KIRÁLYNÉ" },
-            { category: "Földrajz", puzzle: "HORTBÁGYI NEMZETI PARK" },
-            { category: "Sport", puzzle: "FERENCVÁROSI TORNA CLUB" },
-            { category: "Film", puzzle: "CSINIBABA" },
-            { category: "Közmondás", puzzle: "JOBB EGY VERÉB MINT TÍZ TÚZOK" },
-            { category: "Irodalom", puzzle: "MARK TWAIN TOM SAWYER KALANDJAI" },
-            { category: "Zene", puzzle: "RÚZSA MAGDI GABRIEL" },
-            { category: "Tudomány", puzzle: "AZ ŐSSEJT KUTATÁS" },
-            { category: "Márkanév", puzzle: "RICHTER GEDEON" },
-            { category: "Élőlény", puzzle: "ARANYHAL" },
-            { category: "Mindennapi élet", puzzle: "KIFOGYOTT A NYOMTATÓBÓL A PAPÍR" },
-            { category: "Tárgy", puzzle: "FALIÓRA" },
-            { category: "Étel & Ital", puzzle: "KRÉMES" },
-            { category: "Film", puzzle: "MACSKAFOGÓ" },
-            { category: "Sport", puzzle: "TÉLI OLIMPIA" },
-            { category: "Híres Ember", puzzle: "SZÉLL KÁLMÁN" },
-            { category: "Földrajz", puzzle: "BERLIN" },
-            { category: "Történelem", puzzle: "A REFORMKOR" },
-            { category: "Zene", puzzle: "HUNGÁRIA CSILLAGOK HÁBORÚJA" },
-            { category: "Közmondás", puzzle: "A MUNKA NEMESÍT" },
-            { category: "Irodalom", puzzle: "NEMES NAGY ÁGNES A LÁTHATATLAN RÉT" },
-            { category: "Tudomány", puzzle: "A MESTERSÉGES INTELLIGENCIA" },
-            { category: "Márkanév", puzzle: "MOL" },
-            { category: "Élőlény", puzzle: "TENGERI CSILLAG" },
-            { category: "Mindennapi élet", puzzle: "NEM TALÁLOM A SZEMÜVEGEMET" },
-            { category: "Tárgy", puzzle: "KONZERVNYITÓ" },
-            { category: "Étel & Ital", puzzle: "HAGYMÁS ROSTÉLYOS" },
-            { category: "Film", puzzle: "A TENKES KAPITÁNYA" },
-            { category: "Sport", puzzle: "MAGYAR KUPA" },
-            { category: "Híres Ember", puzzle: "JÁSZAI MARI" },
-            { category: "Földrajz", puzzle: "AZ ALPOK" },
-            { category: "Történelem", puzzle: "A BASTILLE BEVÉTELE" },
-            { category: "Zene", puzzle: "KORÁL MARADJ VELEM" },
-            { category: "Közmondás", puzzle: "AZ IDŐ PÉNZ" },
-            { category: "Irodalom", puzzle: "FEKETE ISTVÁN TÉLI BEREK" },
-            { category: "Tudomány", puzzle: "A KLÓNOZÁS ETIKAI KÉRDÉSEI" },
-            { category: "Márkanév", puzzle: "OTP BANK" },
-            { category: "Élőlény", puzzle: "HÁZI SERTÉS" },
-            { category: "Mindennapi élet", puzzle: "KÉRLEK ADD IDE A SÓT" },
-            { category: "Tárgy", puzzle: "HÁTIZSÁK" },
-            { category: "Étel & Ital", puzzle: "VADAS MARHA ZSEMLEGOMBÓCCAL" },
-            { category: "Film", puzzle: "SOSE HALUNK MEG" },
-            { category: "Sport", puzzle: "ÚJPESTI TORNA EGYLET" },
-            { category: "Híres Ember", puzzle: "GÁBOR ZSAZSA" },
-            { category: "Földrajz", puzzle: "A KÉKESTETŐ" },
-            { category: "Történelem", puzzle: "A SZPARTAKUSZ FELKELÉS" },
-            { category: "Zene", puzzle: "BOGNÁR SZILVIA INDULJ EL EGY ÚTON" },
-            { category: "Közmondás", puzzle: "A STÍLUS MAGA AZ EMBER" },
-            { category: "Irodalom", puzzle: "SZERB ANTAL A PENDRAGON LEGENDA" },
-            { category: "Tudomány", puzzle: "NANOTECHNOLÓGIA" },
-            { category: "Márkanév", puzzle: "ZWACK UNICUM" },
-            { category: "Élőlény", puzzle: "VÖRÖS PANDA" },
-            { category: "Mindennapi élet", puzzle: "BEZÁRTAM AZ AJTÓT" },
-            { category: "Tárgy", puzzle: "CERUZAHEGYEZŐ" },
-            { category: "Étel & Ital", puzzle: "PAPRIKÁS KRUMPLI" },
-            { category: "Film", puzzle: "A GYŰRŰK URA A KIRÁLY VISSZATÉR" },
-            { category: "Sport", puzzle: "PARALIMPIA" },
-            { category: "Híres Ember", puzzle: "TÖRŐCSIK MARI" },
-            { category: "Földrajz", puzzle: "A SZENT ANNA TÓ" },
-            { category: "Történelem", puzzle: "AZ ÓKORI GÖRÖGORSZÁG" },
-            { category: "Zene", puzzle: "BILLY JOEL PIANO MAN" },
-            { category: "Közmondás", puzzle: "A JÓBÓL IS MEGÁRT A SOK" },
-            { category: "Irodalom", puzzle: "RUDYARD KIPLING A DZSUNGEL KÖNYVE" },
-            { category: "Tudomány", puzzle: "A GENETIKAILAG MÓDOSÍTOTT SZERVEZETEK" },
-            { category: "Márkanév", puzzle: "HELL ENERGY" },
-            { category: "Élőlény", puzzle: "FEKETE PÁRDUC" },
-            { category: "Mindennapi élet", puzzle: "NEM JÖN A BUSZ" },
-            { category: "Tárgy", puzzle: "OLLÓ" },
-            { category: "Étel & Ital", puzzle: "BRASSÓI APRÓPECSENYE" },
-            { category: "Film", puzzle: "AZ OROSZLÁNKIRÁLY" },
-            { category: "Sport", puzzle: "TÍZPRÓBA" },
-            { category: "Híres Ember", puzzle: "HAUMANN PÉTER" },
-            { category: "Földrajz", puzzle: "VELENCEI TÓ" },
-            { category: "Történelem", puzzle: "A KÖNYVNYOMTATÁS FELTALÁLÁSA" },
-            { category: "Zene", puzzle: "ZORÁN APÁM HITTE" },
-            { category: "Közmondás", puzzle: "AZ ÉLET NEM HABOSTORTA" },
-            { category: "Irodalom", puzzle: "LÁZÁR ERVIN A HÉTSZÍNVIRÁG" },
-            { category: "Tudomány", puzzle: "AZ ŐSROBBANÁS ELMÉLETE" },
-            { category: "Márkanév", puzzle: "TIBI CSOKI" },
-            { category: "Élőlény", puzzle: "NAGY KÓCSAG" },
-            { category: "Mindennapi élet", puzzle: "ELFELEJTETTEM BEVÁSÁROLNI" },
-            { category: "Tárgy", puzzle: "RADÍRGUMI" },
-            { category: "Étel & Ital", puzzle: "ARANYGALUSKA VANÍLIAÖNTETTEL" },
-            { category: "Film", puzzle: "AZ ÖTÖDIK ELEM" },
-            { category: "Sport", puzzle: "TRIATLON" },
-            { category: "Híres Ember", puzzle: "SINKOVITS IMRE" },
-            { category: "Földrajz", puzzle: "A TÁTRA HEGYSÉG" },
-            { category: "Történelem", puzzle: "AZ IPARI FORRADALOM" },
-            { category: "Zene", puzzle: "MÁTÉ PÉTER ELMEGYEK" },
-            { category: "Közmondás", puzzle: "SOK JÓ EMBER KIS HELYEN IS ELFÉR" },
-            { category: "Irodalom", puzzle: "GÁRDONYI GÉZA A LÁTHATATLAN EMBER" },
-            { category: "Tudomány", puzzle: "A FÚZIÓS ENERGIA" },
-            { category: "Márkanév", puzzle: "BÉRES CSEPP" },
-            { category: "Élőlény", puzzle: "DENEVER" },
-            { category: "Mindennapi élet", puzzle: "MEGHÚZTAM A LOTTÓT" },
-            { category: "Tárgy", puzzle: "FOGPISZKÁLÓ" },
-            { category: "Étel & Ital", puzzle: "HORTBÁGYI HÚSOS PALACSINTA" },
-            { category: "Film", puzzle: "AVATAR" },
-            { category: "Sport", puzzle: "VÍVÁS" },
-            { category: "Híres Ember", puzzle: "KERN ANDRÁS" },
-            { category: "Földrajz", puzzle: "A SZENTPÉTERVÁRI ERMITÁZS" },
-            { category: "Történelem", puzzle: "A KOLDUSOK FORRADALMA" },
-            { category: "Zene", puzzle: "PRESSER GÁBOR A NAGY TALÁLKOZÁS" },
-            { category: "Közmondás", puzzle: "A TÉVEDÉS JOGA FENNTARTVA" },
-            { category: "Irodalom", puzzle: "TAMÁSI ÁRON ÁBEL A RENGETEGBEN" },
-            { category: "Tudomány", puzzle: "A SÖTÉT ANYAG REJTÉLYE" },
-            { category: "Márkanév", puzzle: "SOPRONI" },
-            { category: "Élőlény", puzzle: "TENGERI TEKNŐS" },
-            { category: "Mindennapi élet", puzzle: "ELÁZTAM AZ ESŐBEN" },
-            { category: "Tárgy", puzzle: "PÉNZTÁRCA" },
-            { category: "Étel & Ital", puzzle: "JÓKAI BABLEVES" },
-            { category: "Film", puzzle: "FORREST GUMP" },
-            { category: "Sport", puzzle: "BIRKÓZÁS" },
-            { category: "Híres Ember", puzzle: "BENKŐ LÁSZLÓ" },
-            { category: "Földrajz", puzzle: "LONDON" },
-            { category: "Történelem", puzzle: "AZ ARANY HORDA" },
-            { category: "Zene", puzzle: "CSÍK ZENEKAR MOST A MENNYBŐL AZ ANGYAL" },
-            { category: "Közmondás", puzzle: "A SZOKÁS RABJA" },
-            { category: "Irodalom", puzzle: "PASSUTH LÁSZLÓ ESŐISTEN SÍR A MEXIKÓI FENNSÍKON" },
-            { category: "Tudomány", puzzle: "AZ EMBERI AGY MŰKÖDÉSE" },
-            { category: "Márkanév", puzzle: "SZEGEDI PAPRIKA" },
-            { category: "Élőlény", puzzle: "VÖRÖS MÓKUS" },
-            { category: "Mindennapi élet", puzzle: "CSAK A TELEFON VILÁGÍT" },
-            { category: "Tárgy", puzzle: "ZSEBLÁMPA" },
-            { category: "Étel & Ital", puzzle: "SZATMÁRI SZILVAPÁLINKA" },
-            { category: "Film", puzzle: "A KENGYEL" },
-            { category: "Sport", puzzle: "ÖTTUSA" },
-            { category: "Híres Ember", puzzle: "CORTES HERNÁN" },
-            { category: "Földrajz", puzzle: "A SZENT LÁSZLÓ TÉR" },
-            { category: "Történelem", puzzle: "AZ ÓKORI RÓMA" },
-            { category: "Zene", puzzle: "DEMJÉN FERENC SZERELEMVONAT" },
-            { category: "Közmondás", puzzle: "CSEBERBŐL VEDERBE" },
-            { category: "Irodalom", puzzle: "WEÖRES SÁNDOR A TELJESSÉG FELÉ" },
-            { category: "Tudomány", puzzle: "A VILÁGEGYETEM TÁGULÁSA" },
-            { category: "Márkanév", puzzle: "KALOCSAI PAPRIKA" },
-            { category: "Élőlény", puzzle: "FÜLESBAGOLY" },
-            { category: "Mindennapi élet", puzzle: "NEM ÉREM EL A VONATOT" },
-            { category: "Tárgy", puzzle: "SEPRŰ" },
-            { category: "Étel & Ital", puzzle: "BÉLSZÍN ROLÓ" },
-            { category: "Film", puzzle: "A KESELYŰ HÁROM NAPJA" },
-            { category: "Sport", puzzle: "CSELGÁNCS" },
-            { category: "Híres Ember", puzzle: "KARAJAN HERBERT VON" },
-            { category: "Földrajz", puzzle: "PÁRIZS NOTRE DAME" },
-            { category: "Történelem", puzzle: "A HUSZITA HÁBORÚK" },
-            { category: "Zene", puzzle: "NEOTON FAMÍLIA DON QUIJOTE" },
-            { category: "Közmondás", puzzle: "A KUTYÁT SEM ÉRDEKLI" },
-            { category: "Irodalom", puzzle: "GERGELY ÁGNES A TOLMÁCS" },
-            { category: "Tudomány", puzzle: "A CSILLAGOK ÉLETCIKLUSA" },
-            { category: "Márkanév", puzzle: "MÁV" },
-            { category: "Élőlény", puzzle: "SZALAMANDRA" },
-            { category: "Mindennapi élet", puzzle: "KIÉGETT AZ IZZÓ" },
-            { category: "Tárgy", puzzle: "CSIPESZ" },
-            { category: "Étel & Ital", puzzle: "OROSZ KRÉMTORTA" },
-            { category: "Film", puzzle: "VAN, AKI FORRÓN SZERETI" },
-            { category: "Sport", puzzle: "GOKART" },
-            { category: "Híres Ember", puzzle: "KUBALA LÁSZLÓ" },
-            { category: "Földrajz", puzzle: "A HIMALÁJA" },
-            { category: "Történelem", puzzle: "A TIZENHÁROM ARADI VÉRTANÚ" },
-            { category: "Zene", puzzle: "V MOTO ROCK VÁRJ MÍG FELKEL MAJD A NAP" },
-            { category: "Közmondás", puzzle: "A BUTASÁG FÁJ" },
-            { category: "Irodalom", puzzle: "ASIMOV ALAPÍTVÁNY" },
-            { category: "Tudomány", puzzle: "A HŐTÁGULÁS JELENSÉGE" },
-            { category: "Márkanév", puzzle: "BKV" },
-            { category: "Élőlény", puzzle: "CSIGA" },
-            { category: "Mindennapi élet", puzzle: "NINCS TÜRELMEM VÁRNI" },
-            { category: "Tárgy", puzzle: "KALAPÁCS" },
-            { category: "Étel & Ital", puzzle: "TEJFÖLÖS GOMBAPAPRIKÁS" },
-            { category: "Film", puzzle: "PSYCHO" },
-            { category: "Sport", puzzle: "SÚLYEMELÉS" },
-            { category: "Híres Ember", puzzle: "KODOLÁNYI JÁNOS" },
-            { category: "Földrajz", puzzle: "A FERTŐ TÓ" },
-            { category: "Történelem", puzzle: "A SZENT SZÖVETSÉG" },
-            { category: "Zene", puzzle: "HOOLIGANS KIRÁLYLÁNY" },
-            { category: "Közmondás", puzzle: "A SZÉPSÉG ÁRA" },
-            { category: "Irodalom", puzzle: "TOLSZTOJ ANNA KARENINA" },
-            { category: "Tudomány", puzzle: "AZ ELEKTROMÁGNESES INDUKCIÓ" },
-            { category: "Márkanév", puzzle: "VOLÁNBUSZ" },
-            { category: "Élőlény", puzzle: "BÉKA" },
-            { category: "Mindennapi élet", puzzle: "ELFOGYOTT A WC PAPÍR" },
-            { category: "Tárgy", puzzle: "FOGÓ" },
-            { category: "Étel & Ital", puzzle: "CSOKOLÁDÉS MUFFIN" },
-            { category: "Film", puzzle: "AZ ÉLET SZÉP" },
-            { category: "Sport", puzzle: "MAGASUGRÁS" },
-            { category: "Híres Ember", puzzle: "KULKA JÁNOS" },
-            { category: "Földrajz", puzzle: "MACHU PICCHU" },
-            { category: "Történelem", puzzle: "A PELOPONNÉSZOSZI HÁBORÚ" },
-            { category: "Zene", puzzle: "OCHO MACHO JÓ NEKEM" },
-            { category: "Közmondás", puzzle: "VERI AZ ÖRDÖG A FELESÉGÉT" },
-            { category: "Irodalom", puzzle: "HEMINGWAY AZ ÖREG HALÁSZ ÉS A TENGER" },
-            { category: "Tudomány", puzzle: "A DOPPLER HATÁS" },
-            { category: "Márkanév", puzzle: "TEVA" },
-            { category: "Élőlény", puzzle: "GYÍK" },
-            { category: "Mindennapi élet", puzzle: "NEM TUDOM MIT VEGYEK FEL" },
-            { category: "Tárgy", puzzle: "VÁLLFA" },
-            { category: "Étel & Ital", puzzle: "SAJTTORTA" },
-            { category: "Film", puzzle: "PONYVAREGÉNY" },
-            { category: "Sport", puzzle: "TÁVOLUGRÁS" },
-            { category: "Híres Ember", puzzle: "LORÁNFFY ZSUZSANNA" },
-            { category: "Földrajz", puzzle: "STONEHENGE" },
-            { category: "Történelem", puzzle: "A PÜNKÖSDI KIRÁLYSÁG" },
-            { category: "Zene", puzzle: "PUNNANY MASSIF ÉLVEZD" },
-            { category: "Közmondás", puzzle: "SZEMET SZEMÉRT FOGAT FOGÉRT" },
-            { category: "Irodalom", puzzle: "MÁRAI SÁNDOR A GYERTYÁK CSONKIG ÉGNEK" },
-            { category: "Tudomány", puzzle: "A HIGGS-BOZON" },
-            { category: "Márkanév", puzzle: "EGIS" },
-            { category: "Élőlény", puzzle: "SÜN" },
-            { category: "Mindennapi élet", puzzle: "FÁJ A FEJEM" },
-            { category: "Tárgy", puzzle: "PÁRNA" },
-            { category: "Étel & Ital", puzzle: "FEKETEERDŐ TORTA" },
-            { category: "Film", puzzle: "A BÁRÁNYOK HALLGATNAK" },
-            { category: "Sport", puzzle: "RÖPLABDA" },
-            { category: "Híres Ember", puzzle: "NAGY IMRE" },
-            { category: "Földrajz", puzzle: "HAWAII SZIGETEK" },
-            { category: "Történelem", puzzle: "A HÉT VEZÉR" },
-            { category: "Zene", puzzle: "ANNA AND THE BARBIES MÁRTI" },
-            { category: "Közmondás", puzzle: "NINCS ÚJ A NAP ALATT" },
-            { category: "Irodalom", puzzle: "DOSZTOJEVSZKIJ BŰN ÉS BŰNHŐDÉS" },
-            { category: "Tudomány", puzzle: "AZ ÜVEGHÁZHATÁS" },
-            { category: "Márkanév", puzzle: "WIZZ AIR" },
-            { category: "Élőlény", puzzle: "VAKOND" },
-            { category: "Mindennapi élet", puzzle: "NINCS KEDVEM SEMMIHEZ" },
-            { category: "Tárgy", puzzle: "TAKARÓ" },
-            { category: "Étel & Ital", puzzle: "SZUSHI" },
-            { category: "Film", puzzle: "SCHINDLER LISTÁJA" },
-            { category: "Sport", puzzle: "SÍELÉS" },
-            { category: "Híres Ember", puzzle: "ZRÍNYI ILONA" },
-            { category: "Földrajz", puzzle: "AZ ÉSZAKI SARK" },
-            { category: "Történelem", puzzle: "A SZIGETVÁRI OSTROM" },
-            { category: "Zene", puzzle: "WELLHELLO RAKPART" },
-            { category: "Közmondás", puzzle: "AKI MER AZ NYER" },
-            { category: "Irodalom", puzzle: "TÉREY JÁNOS KÁLI HOLTAK" },
-            { category: "Tudomány", puzzle: "AZ ÓZONRÉTEG" },
-            { category: "Márkanév", puzzle: "RYANAIR" },
-            { category: "Élőlény", puzzle: "BORZ" },
-            { category: "Mindennapi élet", puzzle: "MAJD HOLNAP MEGOLDOM" },
-            { category: "Tárgy", puzzle: "FÉSŰ" },
-            { category: "Étel & Ital", puzzle: "GYÜMÖLCSLEVES" },
-            { category: "Film", puzzle: "A ZONGORISTA" },
-            { category: "Sport", puzzle: "SNOWBOARD" },
-            { category: "Híres Ember", puzzle: "BÁTHORY ERZSÉBET" },
-            { category: "Földrajz", puzzle: "AZ ORINOCO FOLYÓ" },
-            { category: "Történelem", puzzle: "A DÓZSA PARASZTHÁBORÚ" },
-            { category: "Zene", puzzle: "MAGNA CUM LAUDE VIDÉKI SANZON" },
-            { category: "Közmondás", puzzle: "AZ ERŐ LEGYEN VELED" },
-            { category: "Irodalom", puzzle: "ECO A RÓZSA NEVE" },
-            { category: "Tudomány", puzzle: "A RADIOAKTÍV SUGÁRZÁS" },
-            { category: "Márkanév", puzzle: "PREZI" },
-            { category: "Élőlény", puzzle: "VIDRA" },
-            { category: "Mindennapi élet", puzzle: "IDEJE LENNE RENDET RAKNI" },
-            { category: "Tárgy", puzzle: "KÉPKERET" },
-            { category: "Étel & Ital", puzzle: "RÁNTOTT CSIRKECOMB" },
-            { category: "Film", puzzle: "A SÖTÉT LOVAG" },
-            { category: "Sport", puzzle: "GÖRDESZKA" },
-            { category: "Híres Ember", puzzle: "MÁTYÁS KIRÁLY" },
-            { category: "Földrajz", puzzle: "A SVÁJCI ALPOK" },
-            { category: "Történelem", puzzle: "A KERESZTES HÁBORÚK" },
-            { category: "Zene", puzzle: "COLDPLAY VIVA LA VIDA" },
-            { category: "Közmondás", puzzle: "A SOKASÁG BÖLCSESSÉGE" },
-            { category: "Irodalom", puzzle: "BORGES A KÉPZELT LÉNYEK KÖNYVE" },
-            { category: "Tudomány", puzzle: "A SZUPERNOVA ROBBANÁS" },
-            { category: "Márkanév", puzzle: "LOGMEIN" },
-            { category: "Élőlény", puzzle: "HARKÁLY" },
-            { category: "Mindennapi élet", puzzle: "MA ESTE FILMET NÉZÜNK" },
-            { category: "Tárgy", puzzle: "SZŐNYEG" },
-            { category: "Étel & Ital", puzzle: "MADÁRTEJ" },
-            { category: "Film", puzzle: "GLADIÁTOR" },
-            { category: "Sport", puzzle: "KERÉKPÁROZÁS" },
-            { category: "Híres Ember", puzzle: "HUNYADI JÁNOS" },
-            { category: "Földrajz", puzzle: "A FÜLÖP SZIGETEK" },
-            { category: "Történelem", puzzle: "AZ ELSŐ EMBER A HOLDON" },
-            { category: "Zene", puzzle: "IMAGINE DRAGONS BELIEVER" },
-            { category: "Közmondás", puzzle: "CSAK IDŐ KÉRDÉSE" },
-            { category: "Irodalom", puzzle: "KAFKA A PÖR" },
-            { category: "Tudomány", puzzle: "A FÖLD MÁGNESES MEZŐJE" },
-            { category: "Márkanév", puzzle: "NANUSHKA" },
-            { category: "Élőlény", puzzle: "VARJÚ" },
-            { category: "Mindennapi élet", puzzle: "LEKÉSTEM A TALÁLKOZÓT" },
-            { category: "Tárgy", puzzle: "FÜGGÖNY" },
-            { category: "Étel & Ital", puzzle: "GRÍZES TÉSZTA" },
-            { category: "Film", puzzle: "A HALÁSZ KIRÁLY LEGENDÁJA" },
-            { category: "Sport", puzzle: "SZÖRFÖZÉS" },
-            { category: "Híres Ember", puzzle: "SZENT ISTVÁN KIRÁLY" },
-            { category: "Földrajz", puzzle: "AZ AMAZONAS FOLYÓ" },
-            { category: "Történelem", puzzle: "A SPANYOL INKVIZÍCIÓ" },
-            { category: "Zene", puzzle: "TAYLOR SWIFT SHAKE IT OFF" },
-            { category: "Közmondás", puzzle: "A CSEND ARANY" },
-            { category: "Irodalom", puzzle: "CAMUS A PESTIS" },
-            { category: "Tudomány", puzzle: "A FÉREGJÁRAT ELMÉLETE" },
-            { category: "Márkanév", puzzle: "GRAPHISOFT" },
-            { category: "Élőlény", puzzle: "FARKAS" },
-            { category: "Mindennapi élet", puzzle: "ELFÁRADTAM A MUNKÁBAN" },
-            { category: "Tárgy", puzzle: "KUKTA" },
-            { category: "Étel & Ital", puzzle: "SZÉKELYKÁPOSZTA" },
-            { category: "Film", puzzle: "VÉGSŐ ÁLLOMÁS" },
-            { category: "Sport", puzzle: "BÚVÁRKODÁS" },
-            { category: "Híres Ember", puzzle: "ÁRPÁD VEZÉR" },
-            { category: "Földrajz", puzzle: "A NÍLUS FOLYÓ" },
-            { category: "Történelem", puzzle: "A FEKETE HALÁL" },
-            { category: "Zene", puzzle: "ED SHEERAN SHAPE OF YOU" },
-            { category: "Közmondás", puzzle: "A PÉNZ NEM BOLDOGÍT" },
-            { category: "Irodalom", puzzle: "SOLZHENITSYN A GULAG SZIGETVILÁG" },
-            { category: "Tudomány", puzzle: "A TUDOMÁNYOS MÓDSZER" },
-            { category: "Márkanév", puzzle: "UDS" },
-            { category: "Élőlény", puzzle: "MEDÚZA" },
-            { category: "Mindennapi élet", puzzle: "SIKERÜLT A VIZSGÁM" },
-            { category: "Tárgy", puzzle: "TURMIXGÉP" },
-            { category: "Étel & Ital", puzzle: "RIZOTTÓ" },
-            { category: "Film", puzzle: "JURASSIC PARK" },
-            { category: "Sport", puzzle: "EVEZÉS" },
-            { category: "Híres Ember", puzzle: "ATTILA A HUN" },
-            { category: "Földrajz", puzzle: "SZICÍLIA" },
-            { category: "Történelem", puzzle: "A SZÁZÉVES HÁBORÚ" },
-            { category: "Zene", puzzle: "BEYONCÉ SINGLE LADIES" },
-            { category: "Közmondás", puzzle: "A VÉR NEM VÁLIK VÍZZÉ" },
-            { category: "Irodalom", puzzle: "HUXLEY SZÉP ÚJ VILÁG" },
-            { category: "Tudomány", puzzle: "A KLÍMAVÁLTOZÁS" },
-            { category: "Márkanév", puzzle: "DIAGEO" },
-            { category: "Élőlény", puzzle: "POLIP" },
-            { category: "Mindennapi élet", puzzle: "MEGJÖTT A CSOMAGOM" },
-            { category: "Tárgy", puzzle: "KENYÉRPIRÍTÓ" },
-            { category: "Étel & Ital", puzzle: "LASAGNE" },
-            { category: "Film", puzzle: "ALIEN" },
-            { category: "Sport", puzzle: "HEGYMÁSZÁS" },
-            { category: "Híres Ember", puzzle: "KÁLVIN JÁNOS" },
-            { category: "Földrajz", puzzle: "ÍRORSZÁG" },
-            { category: "Történelem", puzzle: "A LUSZTÁCIÓ" },
-            { category: "Zene", puzzle: "RIHANNA UMBRELLA" },
-            { category: "Közmondás", puzzle: "A KOCKA EL VAN VETVE" },
-            { category: "Irodalom", puzzle: "BRADBURY FAHRENHEIT NÉGYSZÁZÖTVENEGY" },
-            { category: "Tudomány", puzzle: "A SZEIZMOLÓGIA" },
-            { category: "Márkanév", puzzle: "ROCHE" },
-            { category: "Élőlény", puzzle: "KENGURU" },
-            { category: "Mindennapi élet", puzzle: "NE HARAGUDJ HOGY KÉSTEM" },
-            { category: "Tárgy", puzzle: "SZENDVICSSÜTŐ" },
-            { category: "Étel & Ital", puzzle: "CEASAR SALÁTA" },
-            { category: "Film", puzzle: "AZ UTOLSÓ SZAMURÁJ" },
-            { category: "Sport", puzzle: "ÍJÁSZAT" },
-            { category: "Híres Ember", puzzle: "LUTHER MÁRTON" },
-            { category: "Földrajz", puzzle: "SKÓCIA" },
-            { category: "Történelem", puzzle: "A NÉPVÁNDORLÁS KORA" },
-            { category: "Zene", puzzle: "KATY PERRY FIREWORK" },
-            { category: "Közmondás", puzzle: "AMI KÉSIK NEM MÚLIK" },
-            { category: "Irodalom", puzzle: "BULGAKOV A MESTER ÉS MARGARITA" },
-            { category: "Tudomány", puzzle: "A VULKANOLÓGIA" },
-            { category: "Márkanév", puzzle: "NOVARTIS" },
-            { category: "Élőlény", puzzle: "KOALA" },
-            { category: "Mindennapi élet", puzzle: "MENJÜNK EL SÉTÁLNI" },
-            { category: "Tárgy", puzzle: "GOFRISÜTŐ" },
-            { category: "Étel & Ital", puzzle: "CHURROS" },
-            { category: "Film", puzzle: "A RETTEGÉS FOKA" },
-            { category: "Sport", puzzle: "LOVAGLÁS" },
-            { category: "Híres Ember", puzzle: "SZOKRATÉSZ" },
-            { category: "Földrajz", puzzle: "GÖRÖGORSZÁG" },
-            { category: "Történelem", puzzle: "A BIZÁNCI BIRODALOM" },
-            { category: "Zene", puzzle: "LADY GAGA BAD ROMANCE" },
-            { category: "Közmondás", puzzle: "A SZÜKSÉG NAGY ÚR" },
-            { category: "Irodalom", puzzle: "POE A MORGUE UTCAI KETTŐS GYILKOSSÁG" },
-            { category: "Tudomány", puzzle: "A PALEONTOLÓGIA" },
-            { category: "Márkanév", puzzle: "PFIZER" },
-            { category: "Élőlény", puzzle: "GEPÁRD" },
-            { category: "Mindennapi élet", puzzle: "MEG KELL JAVÍTANI A CSAPOT" },
-            { category: "Tárgy", puzzle: "FŰNYÍRÓ" },
-            { category: "Étel & Ital", puzzle: "TACO" },
-            { category: "Film", puzzle: "ÉRZELMEK HULLÁMÁN" },
-            { category: "Sport", puzzle: "GOLF" },
-            { category: "Híres Ember", puzzle: "PLATÓN" },
-            { category: "Földrajz", puzzle: "EGYIPTOM" },
-            { category: "Történelem", puzzle: "AZ OSZMÁN BIRODALOM" },
-            { category: "Zene", puzzle: "JUSTIN BIEBER BABY" },
-            { category: "Közmondás", puzzle: "NEM ZÖRÖG A HARASZT" },
-            { category: "Irodalom", puzzle: "DOYLE SHERLOCK HOLMES" },
-            { category: "Tudomány", puzzle: "AZ ARCHEOLÓGIA" },
-            { category: "Márkanév", puzzle: "JOHNSON AND JOHNSON" },
-            { category: "Élőlény", puzzle: "ELEFÁNT" },
-            { category: "Mindennapi élet", puzzle: "RENDELJÜNK PIZZÁT" },
-            { category: "Tárgy", puzzle: "LOMBSZÍVÓ" },
-            { category: "Étel & Ital", puzzle: "BURRITO" },
-            { category: "Film", puzzle: "A PROFESSZOR" },
-            { category: "Sport", puzzle: "TENISZ" },
-            { category: "Híres Ember", puzzle: "ARISZTOTELÉSZ" },
-            { category: "Földrajz", puzzle: "KÍNA" },
-            { category: "Történelem", puzzle: "A MONGOL BIRODALOM" },
-            { category: "Zene", puzzle: "MILEY CYRUS WRECKING BALL" },
-            { category: "Közmondás", puzzle: "AKI KERES AZ TALÁL" },
-            { category: "Irodalom", puzzle: "CHRISTIE TÍZ KICSI NÉGER" },
-            { category: "Tudomány", puzzle: "AZ ANTROPOLÓGIA" },
-            { category: "Márkanév", puzzle: "BAYER" },
-            { category: "Élőlény", puzzle: "TEVE" },
-            { category: "Mindennapi élet", puzzle: "MINDJÁRT KÉSZ A VACSORA" },
-            { category: "Tárgy", puzzle: "SÖVÉNYVÁGÓ" },
-            { category: "Étel & Ital", puzzle: "QUESADILLA" },
-            { category: "Film", puzzle: "AZ ÁRVA" },
-            { category: "Sport", puzzle: "ASZTALITENISZ" },
-            { category: "Híres Ember", puzzle: "NAGY SÁNDOR" },
-            { category: "Földrajz", puzzle: "INDIA" },
-            { category: "Történelem", puzzle: "A PERZSA BIRODALOM" },
-            { category: "Zene", puzzle: "BRUNO MARS UPTOWN FUNK" },
-            { category: "Közmondás", puzzle: "ADDIG NYÚJTÓZKODJ AMEDDIG A TAKARÓD ÉR" },
-            { category: "Irodalom", puzzle: "KING A RAGYOGÁS" },
-            { category: "Tudomány", puzzle: "A SZOCIOLÓGIA" },
-            { category: "Márkanév", puzzle: "ASTRAZENECA" },
-            { category: "Élőlény", puzzle: "VÍZILÓ" },
-            { category: "Mindennapi élet", puzzle: "NEM TUDOM A VÁLASZT" },
-            { category: "Tárgy", puzzle: "LÁNCFŰRÉSZ" },
-            { category: "Étel & Ital", puzzle: "NACHOS" },
-            { category: "Film", puzzle: "A SZÁLLÍTÓ" },
-            { category: "Sport", puzzle: "TOLLASLABDA" },
-            { category: "Híres Ember", puzzle: "HANNIBAL" },
-            { category: "Földrajz", puzzle: "OROSZORSZÁG" },
-            { category: "Történelem", puzzle: "A BRIT BIRODALOM" },
-            { category: "Zene", puzzle: "PHARRELL WILLIAMS HAPPY" },
-            { category: "Közmondás", puzzle: "INOG A FÖLD A LÁBA ALATT" },
-            { category: "Irodalom", puzzle: "TOLKIEN A HOBBIT" },
-            { category: "Tudomány", puzzle: "A KÖZGAZDASÁGTAN" },
-            { category: "Márkanév", puzzle: "MODERNA" },
-            { category: "Élőlény", puzzle: "ORRSZARVÚ" },
-            { category: "Mindennapi élet", puzzle: "SZERETLEK" }
+            { category: "Közmondás", puzzle: "ADDIG JÁR A KORSÓ A KÚTRA AMÍG EL NEM TÖRIK" }, { category: "Film & Rendező", puzzle: "QUENTIN TARANTINO PULP FICTION" }, { category: "Élőlény", puzzle: "AZ EMBERI TEST LEGKISEBB CSILLÁMA" }, { category: "Tárgy", puzzle: "AUTOMATA NARANCSFACSARÓ GÉP" }, { category: "Fogalom", puzzle: "AZ IDŐ MINDENT MEGOLD" }, { category: "Étel & Ital", puzzle: "BÉCSI SZELET KRUMPLISALÁTÁVAL" }, { category: "Zene", puzzle: "QUEEN BOHEMIAN RHAPSODY" }, { category: "Híres Ember", puzzle: "MUNKÁCSY MIHÁLY" }, { category: "Földrajz", puzzle: "A MARIANNA ÁROK MÉLYSÉGE" }, { category: "Történelem", puzzle: "A MÁSODIK VILÁGHÁBORÚ VÉGE" }, { category: "Irodalom", puzzle: "JÓKAI MÓR AZ ARANY EMBER" }, { category: "Sport", puzzle: "PAPP LÁSZLÓ HÁROMSZOROS OLIMPIAI BAJNOK" }, { category: "Tudomány", puzzle: "ALBERT EINSTEIN RELATIVITÁSELMÉLETE" }, { category: "Márkanév", puzzle: "MERCEDES BENZ" }, { category: "Mindennapi élet", puzzle: "A BLUETOOTH CSATLAKOZTATÁSA SIKERTELEN" }, { category: "Növény", puzzle: "JAPÁN CSERESZNYEVIRÁGZÁS" }, { category: "Dalszöveg", puzzle: "AZÉRT VANNAK A JÓBARÁTOK" }, { category: "Tárgy", puzzle: "ZSEBKÉS" }, { category: "Fogalom", puzzle: "VÉGTELEN" }, { category: "Élőlény", puzzle: "KIRÁLYPINGVIN" },
+            { category: "Közmondás", puzzle: "KI KORÁN KEL ARANYAT LEL" }, { category: "Közmondás", puzzle: "JOBB FÉLNI MINT MEGIJEDNI" }, { category: "Közmondás", puzzle: "SOK LÚD DISZNÓT GYŐZ" }, { category: "Közmondás", puzzle: "AJÁNDÉK LÓNAK NE NÉZD A FOGÁT" }, { category: "Közmondás", puzzle: "NEM MIND ARANY AMI FÉNYLIK" }, { category: "Közmondás", puzzle: "A SZÜKSÉG TÖRVÉNYT BONT" }, { category: "Közmondás", puzzle: "AHÁNY HÁZ ANNYI SZOKÁS" }, { category: "Közmondás", puzzle: "AKI MÁSNAK VERMET ÁS MAGA ESIK BELE" }, { category: "Közmondás", puzzle: "LASSÚ VÍZ PARTOT MOS" }, { category: "Közmondás", puzzle: "AZ ALMA NEM ESIK MESSZE A FÁJÁTÓL" },
+            { category: "Film & Rendező", puzzle: "STEVEN SPIELBERG E T A FÖLDÖNKÍVÜLI" }, { category: "Irodalom", puzzle: "MOLNÁR FERENC A PÁL UTCAI FIÚK" }, { category: "Zene", puzzle: "LGT A KICSI A NAGY AZ ARTÚR ÉS AZ INDIÁN" }, { category: "Híres Ember", puzzle: "PETŐFI SÁNDOR" }, { category: "Földrajz", puzzle: "A DUNA EURÓPA MÁSODIK LEGHOSSZABB FOLYÓJA" }, { category: "Történelem", puzzle: "A MAGYAR HONFOGLALÁS" }, { category: "Tudomány", puzzle: "A DNS KETTŐS SPIRÁL SZERKEZETE" }, { category: "Étel & Ital", puzzle: "GULYÁSLEVES CSIPETKÉVEL" }, { category: "Élőlény", puzzle: "KÉK BÁLNA A LEGNAGYOBB EMLŐS" }, { category: "Növény", puzzle: "TÖLGYFA" }, { category: "Tárgy", puzzle: "OKOSTELEFON TÖLTŐKÁBEL" }, { category: "Sport", puzzle: "OLIMPIAI JÁTÉKOK" }, { category: "Márkanév", puzzle: "COCA COLA" }, { category: "Mindennapi élet", puzzle: "HOLNAP REGGEL KORÁN KELL KELNEM" }, { category: "Fogalom", puzzle: "A SZABADSÁG ÉS A SZERELEM" }, { category: "Foglalkozás", puzzle: "TŰZOLTÓ" }, { category: "Csillagászat", puzzle: "TEJÚTRENDSZER" }
         ];
 
         // --- KONSTANSOK ÉS VÁLTOZÓK ---
-        const MAX_GUESSES = 6; let gameData = {}; let timerInterval; let cooldownIntervals = {}; let infoBarFlipTimeout = null;
+        const MAX_GUESSES = 6; let gameData = {}; let timerInterval; let cooldownIntervals = {}; let hintDisplayTimeout = null; let wheelMessageTimeout = null; let randomMessageInterval = null;
         const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
         const RETRY_COOLDOWN_MS = 15 * 60 * 1000;
         
         // DOM Elemek
         const body = document.body;
-        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const gameEndMessageEl = document.getElementById('game-end-message'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const timerDisplay = document.getElementById('timer-display'); const startTimerButton = document.getElementById('start-timer-button'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
-        const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const stakeAmountEl = document.getElementById('stake-amount'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const solveButton = document.getElementById('solve-button'); const wordInfoDisplay = document.getElementById('word-info'); const difficultyDisplay = document.getElementById('difficulty-display');
+        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
+        const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const stakeAmountEl = document.getElementById('stake-amount'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const solveButton = document.getElementById('solve-button'); const wheelMessageDisplay = document.getElementById('wheel-message-display');
         const wheelRoundDisplay = document.getElementById('wheel-round-display'); const wheelDecisionControls = document.getElementById('wheel-decision-controls'); const cashOutButton = document.getElementById('cash-out-button'); const nextRoundButton = document.getElementById('next-round-button'); const themeToggleButton = document.getElementById('theme-toggle-button'); const themePicker = document.getElementById('theme-picker');
-        const infoBarInner = document.getElementById('info-bar-inner'); const infoBarFront = document.querySelector('.info-bar-front'); const infoBarBack = document.querySelector('.info-bar-back'); const idleMessageContainer = document.getElementById('idle-message-container'); const hintControls = document.getElementById('hint-controls');
+        const infoBar = document.getElementById('info-bar'); const hintDisplayArea = document.getElementById('hint-display-area'); const idleMessageContainer = document.getElementById('idle-message-container'); const hintControls = document.getElementById('hint-controls');
         const wheelAlphabetPanel = document.getElementById('wheel-alphabet-panel');
         
-        const themes = [ { name: "Klasszikus", className: "theme-classic", color: "#3d405b" }, { name: "Erdei", className: "theme-forest", color: "#2d6a4f" }, { name: "Óceán", className: "theme-ocean", color: "#0077b6" }, { name: "Naplemente", className: "theme-sunset", color: "#f77f00" }, { name: "Éjszakai", className: "theme-night", color: "#232526" }, { name: "Rózsa", className: "theme-rose", color: "#c9184a" }, { name: "Vintage", className: "theme-vintage", color: "#a27b5c" }, { name: "Rét", className: "theme-meadow", color: "#7cb518" }, { name: "Királyi", className: "theme-royal", color: "#5a189a" }, { name: "Sivatag", className: "theme-desert", color: "#edc4b3" }, { name: "Hacker", className: "theme-hacker", color: "#00ff00" } ];
+        const themes = [ { name: "Klasszikus", className: "theme-classic", color: "#3d405b" }, { name: "Erdei", className: "theme-forest", color: "#2d6a4f" }, { name: "Óceán", className: "theme-ocean", color: "#0077b6" }, { name: "Naplemente", className: "theme-sunset", color: "#f77f00" }, { name: "Éjszakai", className: "theme-night", color: "#232526" }, { name: "Rózsa", className: "theme-rose", color: "#c9184a" }, { name: "Vintage", className: "theme-vintage", color: "#a27b5c" }, { name: "Rét", className: "theme-meadow", color: "#7cb518" }, { name: "Királyi", className: "theme-royal", color: "#5a189a" }, { name: "Hacker", className: "theme-hacker", color: "#00ff00" } ];
         const KEY_LAYOUT = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
         const wheelSegmentsR1 = [ { label: '500', value: 500, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '750', value: 750, color: '#b39ddb' }, { label: '1000', value: 1000, color: '#f2cc8f' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '2000', value: 2000, color: '#e07a5f' }];
         const wheelSegmentsR2 = [ { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'FELEZŐ', value: 'half', color: '#f57c00' }, { label: '1500', value: 1500, color: '#b39ddb' }, { label: '2500', value: 2500, color: '#f2cc8f' }, { label: '750', value: 750, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '3000', value: 3000, color: '#81b29a' }, { label: '5000', value: 5000, color: '#e07a5f' }];
@@ -1323,12 +343,45 @@
         let wheelState = {};
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
-        const IDLE_MESSAGES = [
-            { title: "A nyomozás szünetel...", text: "Minden nyomot felderítettél erre az órára. A központ hamarosan új aktákat küld. Addig is, élesítsd az elmédet!" },
-            { title: "Pihenő a detektívnek", text: "Kiváló munka! Az összes rejtély megoldva. Egy kávé és egy fánk, amíg várunk a következő megbízásra?" },
-            { title: "Minden szál elvarrva", text: "Úgy tűnik, mára befejezted a szó-vadászatot. De egy jó nyomozó sosem pihen igazán. Várj a következő óráig az új kihívásokért!" },
-            { title: "Csend a központban", text: "A tábla tiszta, a rejtvények megfejtve. Élvezd a rövid nyugalmat, mert a következő óra újabb fejtörőket hoz!" }
+        
+        const BONUS_REMINDER_MESSAGES = [
+            { title: "A nyomozás szünetel...", text: "Minden nyomot felderítettél! Oldd fel a bónusz játékot a Szerencsekerék gombbal a nagyobb nyereményért, vagy várj a következő óráig az új kihívásokért!" },
+            { title: "Minden szál elvarrva", text: "Kiváló munka, minden rejtély megoldva! Most jöhet a Szerencsekerék, vagy egy kávészünet a következő ügyig?" },
         ];
+        
+        const FUNNY_IDLE_MESSAGES = [
+            { title: "Türelmi idő", text: "A gyanúsítottak kihallgatása folyamatban... Az informátorunk a következő órában jelentkezik újabb nyomokkal." },
+            { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. Jöjj vissza egy óra múlva!" },
+            { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, egy órán belül érkezik a következő fülessel." },
+            { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, legalább egy óráig rakj rendet az irodádban. A papírmunka a legkeményebb dió." },
+            { title: "Lehallgatás alatt", text: "Egy poloskát telepítettél a bűnözők búvóhelyére. Most nincs más hátra, mint várni. Egy órán belül biztosan mondanak valami érdekeset." },
+            { title: "Álruha tesztelése", text: "A következő ügyhöz tökéletes álca kell. A bajuszragasztó egy óráig szárad. Addig is, gyakorold a mély hangot." },
+            { title: "Nagyító tisztítása", text: "Egy jó detektív eszközei mindig patyolattiszták. Az apró betűs részhez elengedhetetlen. A következő órában új nyomok után kutathatsz." },
+            { title: "A forró nyom kihűlt", text: "Úgy tűnik, zsákutcába jutottál. De ne csüggedj, a bűnözők hibázni fognak! A következő órában újabb esélyt kapsz." },
+            { title: "Rejtvényfejtés a fotelben", text: "Mint a legnagyobb detektívek, te is az agyadat használod. Dőlj hátra, és gondolkodj! A megoldás egy órán belül beugrik." },
+            { title: "Tanúvédelem", text: "A koronatanút biztonságos helyre szállítottad. Most egy órád van, amíg a helyzet lecsillapodik, és újra akcióba léphetsz." },
+            { title: "Ujjlenyomatok elemzése", text: "A labor per pillanat túlterhelt. Az eredményekre legalább egy órát várni kell. Addig is, igyál egy kávét, megérdemled." },
+            { title: "A nagy hal kapásra vár", text: "A csali kint van, a háló kivetve. Most már csak türelem kell. Egy órán belül a legnagyobb bűnöző is a kezeid közé kerülhet." }
+        ];
+
+        const RANDOM_GAME_MESSAGES = [ "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.", "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól.", "Figyelj a részletekre, a tettes mindig hibázik.", "Ez a szó rejtélyesebb, mint egy lezárt akta.", "Kövesd a betűk nyomát!", "A logika a legjobb fegyvered.", "Minden tipp egy lépés a megoldás felé.", "Nincs megoldhatatlan ügy, csak kevés információ.", "Olyan ez, mint egy kódolt üzenet.", "Látom a fényt az alagút végén... vagy csak egy lámpa?", "A gyanúsítottak köre szűkül.", "Még egy-két betű, és lezárhatjuk az aktát.", "Az igazság odaát van... a billentyűzeteden.", "A bizonyítékok magukért beszélnek.", "Ne add fel, a főnyom a szemed előtt lehet!", "Ez a rejtvény próbára teszi a szürkeállományt.", "A csend néha a leghangosabb vallomás.", "Minden rossz tipp egy zsákutca.", "Az alibid ingatag, de a tipped talán nem az.", "Járj a dolgok végére, detektív!", "A türelem meghozza a betűjét.", "Ez a szó ártatlannak tűnik, de csalóka.", "Minden karakter számít.", "A nagyító alatt minden kiderül.", "A megoldás egyszerűbb, mint gondolnád. Vagy nem.", "Az idő ellened dolgozik, de a tudás veled van.", "A tettes nevét betűkből kell kirakni.", "Egy igazi mesterdetektív sosem adja fel.", "A gyanú árnyéka minden betűre rávetül.", "Ez az eset annyira csavaros, mint egy telefonkábel.", "A megoldás kulcsa a következő leütésben rejlik.", "Nézz a szavak mögé!", "A lexikon a legjobb informátorod.", "Ezt az ügyet még a főnök is nehéznek találná.", "A betűk erdejében kell megtalálni a helyes utat.", "Ne hagyd, hogy egy rossz tipp eltérítsen!", "A véletlenekben nem hiszünk, csak a nyomokban.", "Minden egyes tipp egy kihallgatás.", "A betűk, mint a tanúk, néha hazudnak.", "A megoldás egy karnyújtásnyira van.", "A koncentráció a siker záloga.", "Egy utolsó erőfeszítés, és megvan!", "Az ügy megoldása közelebb van, mint gondolnád.", "A rejtély hamarosan megoldódik.", "A nyomozás a tetőfokára hág.", "Ez a rejtély nem adja magát könnyen.", "A tettes egyre idegesebb, érzi, hogy a nyomában vagy." ];
+
+        const WHEEL_MESSAGES = {
+            start_round: [ "Kezdődjön a kör!", "Új feladvány, új esély!", "Lássuk, mit tudsz!", "Mutasd meg a tudásod!", "Sok szerencsét a következő körhöz!" ],
+            spin_prompt: [ "Pörgess egy nagyot!", "Jöhet a pörgetés!", "Lássuk, mit dob a gép!", "Sorsfordító pörgetés következik!", "Mutasd, mit ér a szerencséd!" ],
+            spin_result: [ "A kerék {value} ponton állt meg!", "A szerencse {value} pontot hozott!", "Eredmény: {value} pont!", "Szép pörgetés: {value}!", "{value} a jutalmad!" ],
+            guess_consonant: [ "Válassz egy mássalhangzót!", "Melyik mássalhangzóra tippelsz?", "Jöhet egy mássalhangzó!", "Most egy mássalhangzóval teheted próbára magad.", "Mássalhangzót, de gyorsan!" ],
+            guess_vowel: [ "Melyik magánhangzóra esik a választásod?", "Vegyél egy magánhangzót!", "Jöhet egy magánhangzó 250 pontért!", "Melyik magánhangzó hiányzik?" ],
+            correct_guess: [ "Ez telitalálat!", "Tökéletes tipp!", "Benne van!", "Eltaláltad!", "Pontosan!", "Kiváló megfigyelés!", "Ez az!" ],
+            wrong_guess: [ "Sajnos ez nincs benne.", "Ez a betű most nem segített.", "Nem jártál szerencsével.", "Rossz tipp, de ne add fel!", "Ez most mellément." ],
+            bankrupt: [ "Ó, ne! Csőd!", "A bank mindent visz!", "Lenulláztad a körös nyereményed!", "Ez fájni fog... CSŐD!", "Sajnos a csődre pörgettél." ],
+            half: [ "Felező! A teljes nyereményed megcsappant.", "A felező lecsapott!", "Ajaj, a nyeremény fele elúszott.", "Felező! Óvatosan a következő pörgetéssel!" ],
+            solve_success: [ "Hihetetlen! Helyes a megfejtés!", "Gratulálunk, zseniális vagy!", "Megcsináltad! Tiéd a nyeremény!", "Le a kalappal, ez a helyes megoldás!" ],
+            solve_fail: [ "Sajnos ez nem a helyes megfejtés. A játék véget ért.", "Ez most nem jött össze. Elbuktad a tétet.", "Rossz válasz. A nyeremény elszállt." ],
+            cash_out: [ "Okos döntés! A nyeremény a zsebedben.", "Gratulálunk a nyereményedhez!", "Szép volt! Ezt már senki sem veheti el tőled." ],
+            next_round: [ "Jöhet a következő, nehezebb kör!", "A java még csak most jön!", "Duplázzuk a téteket? Jöhet a következő kör!" ],
+            not_enough_points: [ "Nincs elég pontod magánhangzót venni!", "Ehhez több pontra lesz szükséged!", "Sajnos a kassza üres egy magánhangzóhoz." ]
+        };
 
         // --- TÉMA VÁLASZTÓ LOGIKA ---
         function populateThemePicker() { themes.forEach(theme => { const swatch = document.createElement('div'); swatch.className = 'theme-swatch'; swatch.title = theme.name; swatch.style.backgroundColor = theme.color; swatch.dataset.theme = theme.className; themePicker.appendChild(swatch); }); }
@@ -1340,23 +393,24 @@
         document.addEventListener('click', (e) => { if (!themePicker.contains(e.target) && !themeToggleButton.contains(e.target)) { themePicker.style.display = 'none'; } });
         
         // --- SZERENCSEKERÉK FÜGGVÉNYEK ---
+        function showWheelMessage(category, options = {}) { clearTimeout(wheelMessageTimeout); const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; let message = messages[Math.floor(Math.random() * messages.length)]; if (options.value) { message = message.replace('{value}', `<strong>${options.value}</strong>`); } wheelMessageDisplay.innerHTML = message; wheelMessageDisplay.style.opacity = 1; wheelMessageTimeout = setTimeout(() => { wheelMessageDisplay.style.opacity = 0; }, options.duration || 4000); }
         function drawWheel(round) { wheel.innerHTML = ''; const segments = wheelSegmentSets[round]; const numSegments = segments.length; const angleStep = 360 / numSegments; const radius = 50; for (let i = 0; i < numSegments; i++) { const segment = segments[i]; const startAngle = i * angleStep; const endAngle = (i + 1) * angleStep; const start = polarToCartesian(radius, radius, radius, endAngle); const end = polarToCartesian(radius, radius, radius, startAngle); const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"; const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", d); path.setAttribute("fill", segment.color); wheel.appendChild(path); const textAngle = startAngle + angleStep / 2; const textPos = polarToCartesian(radius, radius, radius * 0.7, textAngle); const text = document.createElementNS("http://www.w3.org/2000/svg", "text"); text.setAttribute("x", textPos.x); text.setAttribute("y", textPos.y); text.setAttribute("text-anchor", "middle"); text.setAttribute("dominant-baseline", "middle"); text.setAttribute("font-size", "7"); text.setAttribute("font-weight", "bold"); text.setAttribute("fill", "white"); text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`); text.textContent = segment.label; wheel.appendChild(text); } }
         function polarToCartesian(cx, cy, r, angle) { const rad = (angle - 90) * Math.PI / 180.0; return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) }; }
-        function initWheelGame() { let stake = 0; const currentScore = getDailyScore(); while (true) { const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi pontszám: ${currentScore})`, "100"); if (stakeInput === null) return; stake = parseInt(stakeInput); if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; } alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg."); } addPointsToDailyScore(-stake); gameData.bonusPlayed = true; saveGame(); unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('pulse', 'unlocked'); wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [] }; stakeAmountEl.textContent = stake; startNewRound(); wheelGameOverlay.classList.add('visible'); }
-        function startNewRound() { wheelState.currentRound++; wheelState.guessedLetters = []; wheelState.roundScore = 0; wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; const availablePuzzles = wheelPuzzles.filter(p => !p.used); if (availablePuzzles.length === 0) { wheelPuzzles.forEach(p => p.used = false); } const puzzleIndex = Math.floor(Math.random() * availablePuzzles.length); wheelState.puzzle = availablePuzzles[puzzleIndex]; availablePuzzles[puzzleIndex].used = true; drawWheel(wheelState.currentRound); setupPuzzleBoard(); createAlphabetPanel(); updateUIForGameState('start_round'); }
-        function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
-        function handleAlphabetClick(letter) { if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; if (VOWELS.includes(letter)) { if (wheelState.totalWinnings < 250) { alert("Nincs elég pontod (250) magánhangzót venni!"); return; } if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { guessLetter(letter); } } else { if (wheelState.spinResult > 0) { guessLetter(letter); } else { alert("Előbb pörgetned kell, hogy mássalhangzót tippelhess!"); } } }
+        function initWheelGame() { let stake = 0; const currentScore = getDailyScore(); while (true) { const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi pontszám: ${currentScore})`, "100"); if (stakeInput === null) { return; } stake = parseInt(stakeInput); if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; } alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg."); } addPointsToDailyScore(-stake); gameData.bonusPlayed = true; saveGame(); unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('pulse', 'unlocked'); wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [] }; stakeAmountEl.textContent = stake; startNewRound(); wheelGameOverlay.classList.add('visible'); checkAndDisplayIdleState(); }
+        function startNewRound() { wheelState.currentRound++; wheelState.guessedLetters = []; wheelState.roundScore = 0; wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; const availablePuzzles = wheelPuzzles.filter(p => !p.used); if (availablePuzzles.length === 0) { wheelPuzzles.forEach(p => p.used = false); } const puzzleIndex = Math.floor(Math.random() * availablePuzzles.length); wheelState.puzzle = availablePuzzles[puzzleIndex]; availablePuzzles[puzzleIndex].used = true; drawWheel(wheelState.currentRound); setupPuzzleBoard(); createAlphabetPanel(); updateUIForGameState('start_round'); showWheelMessage('start_round'); }
+        function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); key.title = "Magánhangzó (250 pont)"; } else { key.title = "Mássalhangzó"; } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
+        function handleAlphabetClick(letter) { if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; if (VOWELS.includes(letter)) { if (wheelState.totalWinnings < 250) { showWheelMessage('not_enough_points'); return; } if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { guessLetter(letter); } } else { if (wheelState.spinResult > 0) { guessLetter(letter); } else { showWheelMessage('spin_prompt'); } } }
         function updateAlphabetPanel() { wheelState.guessedLetters.forEach(letter => { const key = wheelAlphabetPanel.querySelector(`[data-letter="${letter}"]`); if(key) key.classList.add('guessed'); }); }
         function setupPuzzleBoard() { puzzleBoardEl.innerHTML = ''; puzzleCategoryEl.textContent = wheelState.puzzle.category; const puzzleText = wheelState.puzzle.puzzle; for(const char of puzzleText) { const tile = document.createElement('div'); if (char === ' ') { tile.className = 'puzzle-tile space'; } else { tile.className = 'puzzle-tile'; tile.innerHTML = `<div class="tile-inner"><div class="tile-face tile-front"></div><div class="tile-face tile-back">${char}</div></div>`; tile.dataset.letter = char.toUpperCase(); } puzzleBoardEl.appendChild(tile); } }
-        function togglePowerMeterAndSpin() { if (wheelState.isSpinning) return; if (!wheelState.isPoweringUp) { wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
-        function spinWheel(power) { wheelState.isSpinning = true; updateUIForGameState('spinning'); const baseRotations = 3; const randomExtra = Math.random(); const powerRotation = 2 * power; const totalRotation = (baseRotations + randomExtra + powerRotation) * 360; const currentRotation = parseFloat(wheel.dataset.rotation || 0); const newRotation = currentRotation + totalRotation; wheel.style.transform = `rotate(${newRotation}deg)`; wheel.dataset.rotation = newRotation; setTimeout(() => { const finalAngle = newRotation % 360; const segments = wheelSegmentSets[wheelState.currentRound]; const segmentAngle = 360 / segments.length; const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % segments.length; handleSpinResult(segments[segmentIndex].value); }, 4000); }
-        function handleSpinResult(result) { wheelState.isSpinning = false; if (result === 'bankrupt') { loseGame("CSŐD! Elvesztetted a körben szerzett pontokat.", null); } else if (result === 'half') { wheelState.totalWinnings = Math.floor(wheelState.totalWinnings / 2); updateWheelPlayerScore(); alert(`FELEZŐ! A teljes nyereményed megfeleződött: ${wheelState.totalWinnings} pont.`); updateUIForGameState('start_round'); } else { wheelState.spinResult = result; updateUIForGameState('guess_consonant'); alert(`Pörgetés: ${result}. Válassz egy mássalhangzót!`); } }
-        function guessLetter(letter) { letter = letter.toUpperCase(); wheelState.guessedLetters.push(letter); if (VOWELS.includes(letter)) { wheelState.totalWinnings -= 250; } let foundCount = 0; document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); if (foundCount > 0) { if (!VOWELS.includes(letter)) { let pointsEarned = foundCount * wheelState.spinResult; wheelState.roundScore += pointsEarned; wheelState.totalWinnings += pointsEarned; } alert(`Helyes! A(z) "${letter}" betű ${foundCount} alkalommal szerepel.`); } else { alert(`Sajnos a(z) "${letter}" betű nem szerepel a feladványban.`); } updateWheelPlayerScore(); updateAlphabetPanel(); updateUIForGameState('start_round'); checkWheelWin(); }
-        function solve() { const solution = prompt("Kérlek, add meg a teljes megfejtést:"); if (solution && solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { alert(`Helyes megfejtés!`); document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); updateUIForGameState('puzzle_solved'); } else { loseGame("Sajnos ez nem a helyes megfejtés.", wheelState.puzzle.puzzle); } }
-        function loseGame(reason, correctAnswer) { wheelState.totalWinnings -= wheelState.roundScore; wheelState.roundScore = 0; let message = `${reason}`; if(correctAnswer) { message += `\n\nA helyes megfejtés: "${correctAnswer}"`; alert(message); updateUIForGameState('game_over'); } else { alert(message); updateUIForGameState('start_round'); } }
-        function cashOut() { alert(`Gratulálunk! ${wheelState.totalWinnings} pontot nyertél. Ez, és a téted (${wheelState.initialStake}) is hozzáadódik a napi pontszámodhoz.`); addPointsToDailyScore(wheelState.totalWinnings + wheelState.initialStake); updateUIForGameState('game_over'); }
+        function togglePowerMeterAndSpin() { if (wheelState.isSpinning) return; if (!wheelState.isPoweringUp) { showWheelMessage('Állítsd be az erősséget, majd kattints újra!'); wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
+        function spinWheel(power) { wheelState.isSpinning = true; updateUIForGameState('spinning'); showWheelMessage('Pörög a kerék...'); const baseRotations = 3; const randomExtra = Math.random(); const powerRotation = 2 * power; const totalRotation = (baseRotations + randomExtra + powerRotation) * 360; const currentRotation = parseFloat(wheel.dataset.rotation || 0); const newRotation = currentRotation + totalRotation; wheel.style.transform = `rotate(${newRotation}deg)`; wheel.dataset.rotation = newRotation; setTimeout(() => { const finalAngle = newRotation % 360; const segments = wheelSegmentSets[wheelState.currentRound]; const segmentAngle = 360 / segments.length; const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % segments.length; handleSpinResult(segments[segmentIndex].value); }, 4000); }
+        function handleSpinResult(result) { wheelState.isSpinning = false; if (result === 'bankrupt') { loseGame(null); } else if (result === 'half') { wheelState.totalWinnings = Math.floor(wheelState.totalWinnings / 2); updateWheelPlayerScore(); showWheelMessage('half'); updateUIForGameState('start_round'); } else { wheelState.spinResult = result; updateUIForGameState('guess_consonant'); showWheelMessage('spin_result', { value: result }); showWheelMessage('guess_consonant', {duration: 6000}); } }
+        function guessLetter(letter) { letter = letter.toUpperCase(); wheelState.guessedLetters.push(letter); if (VOWELS.includes(letter)) { wheelState.totalWinnings -= 250; } let foundCount = 0; document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); if (foundCount > 0) { if (!VOWELS.includes(letter)) { let pointsEarned = foundCount * wheelState.spinResult; wheelState.roundScore += pointsEarned; wheelState.totalWinnings += pointsEarned; } showWheelMessage('correct_guess'); } else { showWheelMessage('wrong_guess'); } updateWheelPlayerScore(); updateAlphabetPanel(); updateUIForGameState('start_round'); checkWheelWin(); }
+        function solve() { const solution = prompt("Kérlek, add meg a teljes megfejtést:"); if (solution === null) { return; } if (solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { showWheelMessage('solve_success'); document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); updateUIForGameState('puzzle_solved'); } else { loseGame(wheelState.puzzle.puzzle); } }
+        function loseGame(correctAnswer) { wheelState.totalWinnings = 0; wheelState.roundScore = 0; if(correctAnswer) { showWheelMessage('solve_fail', {duration: 6000}); updateUIForGameState('game_over'); } else { showWheelMessage('bankrupt'); updateUIForGameState('start_round'); } updateWheelPlayerScore(); }
+        function cashOut() { showWheelMessage('cash_out', {duration: 5000}); addPointsToDailyScore(wheelState.totalWinnings + wheelState.initialStake); updateUIForGameState('game_over'); }
         function updateWheelPlayerScore() { playerScoreEl.textContent = wheelState.totalWinnings; }
-        function updateUIForGameState(state) { const controls = document.getElementById('wheel-controls'); controls.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; solveButton.disabled = true; powerMeterContainer.style.pointerEvents = 'none'; if (state === 'start_round' || state === 'guess_consonant') { controls.style.display = 'flex'; spinButton.disabled = false; powerMeterContainer.style.pointerEvents = 'auto'; solveButton.disabled = false; wheelState.spinResult = (state === 'start_round') ? 0 : wheelState.spinResult; } else if (state === 'spinning') { controls.style.display = 'flex'; } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; } else { alert("Ez volt az utolsó kör!"); cashOut(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
+        function updateUIForGameState(state) { const controls = document.getElementById('wheel-controls'); controls.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; solveButton.disabled = true; powerMeterContainer.style.pointerEvents = 'none'; if (state === 'start_round' || state === 'guess_consonant') { controls.style.display = 'flex'; spinButton.disabled = false; powerMeterContainer.style.pointerEvents = 'auto'; solveButton.disabled = false; wheelState.spinResult = (state === 'start_round') ? 0 : wheelState.spinResult; } else if (state === 'spinning') { controls.style.display = 'flex'; } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; showWheelMessage('next_round'); } else { showWheelMessage("Ez volt az utolsó kör! A nyereményed a tiéd!", 5000); cashOut(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
         function checkWheelWin() { const allTiles = document.querySelectorAll('.puzzle-tile[data-letter]'); const revealedTiles = document.querySelectorAll('.puzzle-tile.revealed[data-letter]'); if(allTiles.length > 0 && allTiles.length === revealedTiles.length) { updateUIForGameState('puzzle_solved'); } }
         
         // --- FŐ JÁTÉKLOGIKA ---
@@ -1366,20 +420,19 @@
         function updateDailyScoreDisplay(score) { dailyScoreDisplaySpan.textContent = score; }
         function getAvailableWordIndices() { let history = JSON.parse(localStorage.getItem('szonyomozo_word_history')) || []; const now = Date.now(); history = history.filter(entry => now - entry.timestamp < SIX_HOURS_IN_MS); localStorage.setItem('szonyomozo_word_history', JSON.stringify(history)); const usedIndices = new Set(history.map(entry => entry.index)); const allIndices = Array.from(Array(wordData.length).keys()); return allIndices.filter(index => !usedIndices.has(index)); }
         function addWordsToHistory(indices) { let history = JSON.parse(localStorage.getItem('szonyomozo_word_history')) || []; const now = Date.now(); indices.forEach(index => history.push({ index, timestamp: now })); localStorage.setItem('szonyomozo_word_history', JSON.stringify(history)); }
-        function initGame() { checkDailyReset(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: [], revealedIndices: {}, isTimerRunning: [], revealedHints: {}, bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const availableIndices = getAvailableWordIndices(); let chosenIndices = []; for (let i = 0; i < 5; i++) { if(availableIndices.length === 0) { console.warn("Elfogyott a 6 órán belül nem használt szó. Ismétlődés lehetséges."); const allIndices = Array.from(Array(wordData.length).keys()); availableIndices.push(...allIndices); } const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * availableIndices.length); chosenIndices.push(availableIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; addWordsToHistory(chosenIndices); gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.isTimerRunning = Array(5).fill(false); gameData.revealedIndices = {}; gameData.revealedHints = {}; gameData.bonusPlayed = false; for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], usedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); if (!checkAndDisplayIdleState()) { loadWord(gameData.currentWordIndex); } checkForBonusGameUnlock(); }
-        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; clearInterval(timerInterval); clearTimeout(infoBarFlipTimeout); infoBarInner.classList.remove('flipped'); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet].status; gameData.isGameOver = (wordProgress !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; const wordObject = wordData[gameData.hourlySet[indexInSet]]; const { word, category, difficulty } = wordObject; renderInfoBarFront(); gameEndMessageEl.textContent = ''; gameEndMessageEl.style.display = "none"; initializeGrid(word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); startTimerButton.style.display = 'inline-block'; if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); startTimerButton.style.display = 'none'; showEndMessage(); } else { keyboardContainer.classList.add('disabled'); startTimerButton.disabled = gameData.isTimerRunning[indexInSet]; if (gameData.isTimerRunning[indexInSet]) { startTimer(gameData.timers[indexInSet]); handleStartTimerClick(); } else { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; } } }
-        function submitGuess() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (gameData.currentCol !== wordObject.word.length) return; const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join(''); if (guess.length !== wordObject.word.length) return; flipRow(guess, wordObject.word.toUpperCase()); if (guess === wordObject.word.toUpperCase()) { if(!gameData.progress[gameData.currentWordIndex].scored) { const points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0)); addPointsToDailyScore(points); gameEndMessageEl.innerHTML = `Helyes! +${points} pont!`; gameData.progress[gameData.currentWordIndex].scored = true; } gameData.progress[gameData.currentWordIndex].status = 'solved'; clearInterval(timerInterval); gameData.isGameOver = true; keyboardContainer.classList.add('disabled'); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; setTimeout(() => { showEndMessage(); checkForBonusGameUnlock(); saveGame(); renderWordTracker(); checkAndDisplayIdleState(); }, 2000); } else { gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); failWord(); } else { gameData.currentCol = 0; } } saveGame(); }
+        function initGame() { checkDailyReset(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: {}, gameModes: {}, revealedIndices: {}, revealedHints: {}, bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const availableIndices = getAvailableWordIndices(); let chosenIndices = []; for (let i = 0; i < 5; i++) { if(availableIndices.length === 0) { console.warn("Elfogyott a 6 órán belül nem használt szó. Ismétlődés lehetséges."); const allIndices = Array.from(Array(wordData.length).keys()); availableIndices.push(...allIndices); } const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * availableIndices.length); chosenIndices.push(availableIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; addWordsToHistory(chosenIndices); gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.gameModes = Array(5).fill('relax'); gameData.revealedIndices = {}; gameData.revealedHints = {}; gameData.bonusPlayed = false; for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], usedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); if (!checkAndDisplayIdleState()) { loadWord(gameData.currentWordIndex); } checkForBonusGameUnlock(); }
+        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; clearInterval(timerInterval); clearInterval(randomMessageInterval); clearTimeout(hintDisplayTimeout); hintDisplayArea.classList.remove('active'); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet].status; gameData.isGameOver = (wordProgress !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[indexInSet]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); startRandomMessageTimer(); } }
+        function submitGuess() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (gameData.currentCol !== wordObject.word.length) return; const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join(''); if (guess.length !== wordObject.word.length) return; flipRow(guess, wordObject.word.toUpperCase()); if (guess === wordObject.word.toUpperCase()) { gameData.isGameOver = true; clearInterval(timerInterval); clearInterval(randomMessageInterval); if(!gameData.progress[gameData.currentWordIndex].scored) { let points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0)); if (gameData.gameModes[gameData.currentWordIndex] === 'timed') { points = Math.round(points * 1.5); } addPointsToDailyScore(points); showFeedbackMessage(`Helyes! +${points} pont!`); gameData.progress[gameData.currentWordIndex].scored = true; } gameData.progress[gameData.currentWordIndex].status = 'solved'; keyboardContainer.classList.add('disabled'); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; setTimeout(() => { checkForBonusGameUnlock(); saveGame(); renderWordTracker(); checkAndDisplayIdleState(); }, 2500); } else { gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } else { gameData.currentCol = 0; } } saveGame(); }
         function calculateHintCost(isLetterHint = false) { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; let baseCost; switch (wordObject.difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const hintsUsed = gameData.revealedHints[gameData.currentWordIndex].usedCount; const costMultiplier = hintsUsed >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost * costMultiplier * letterMultiplier); }
         function spendPointsForHint(isLetterHint = false) { const cost = calculateHintCost(isLetterHint); const currentScore = getDailyScore(); if (currentScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${currentScore} pontod van.`); return false; } if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToDailyScore(-cost); return true; } return false; }
         
         // --- SEGÉD- ÉS RENDERELŐ FÜGGVÉNYEK ---
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
-        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.dataset.index = index; const progress = gameData.progress[index]; if (progress.status === 'solved') { item.classList.add('solved'); item.textContent = `${index + 1}. szó`; } else if (progress.status === 'failed' && progress.failTimestamp) { item.classList.add('failed'); const remainingTime = progress.failTimestamp + RETRY_COOLDOWN_MS - Date.now(); if (remainingTime > 0) { item.innerHTML = `${index + 1}. szó <div class="cooldown-timer"></div>`; updateCooldownTimer(item.querySelector('.cooldown-timer'), progress.failTimestamp); item.style.cursor = 'not-allowed'; } else { item.textContent = `${index + 1}. szó (Újra)`; item.style.cursor = 'pointer'; item.addEventListener('click', () => { gameData.progress[index] = {status: 'pending', scored: false}; gameData.timers[index] = 180; gameData.isTimerRunning[index] = false; saveGame(); if (!checkAndDisplayIdleState()) { loadWord(index); } }); } } else { item.textContent = `${index + 1}. szó`; item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && (!gameData.isTimerRunning[gameData.currentWordIndex] || gameData.isGameOver) && !checkAndDisplayIdleState()) loadWord(index); }); } if (index === gameData.currentWordIndex && !checkAndDisplayIdleState()) { item.classList.add('active'); } wordTrackerContainer.appendChild(item); }); }
+        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.dataset.index = index; const progress = gameData.progress[index]; if (progress.status === 'solved') { item.classList.add('solved'); item.textContent = `${index + 1}. szó`; } else if (progress.status === 'failed' && progress.failTimestamp) { item.classList.add('failed'); const remainingTime = progress.failTimestamp + RETRY_COOLDOWN_MS - Date.now(); if (remainingTime > 0) { item.innerHTML = `${index + 1}. szó <div class="cooldown-timer"></div>`; updateCooldownTimer(item.querySelector('.cooldown-timer'), progress.failTimestamp); item.style.cursor = 'not-allowed'; } else { item.textContent = `${index + 1}. szó (Újra)`; item.style.cursor = 'pointer'; item.addEventListener('click', () => { gameData.progress[index] = {status: 'pending', scored: false}; gameData.timers[index] = 180; gameData.gameModes[index] = 'relax'; saveGame(); if (!checkAndDisplayIdleState()) { loadWord(index); } }); } } else { item.textContent = `${index + 1}. szó`; item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && !gameData.isGameOver) loadWord(index); }); } if (index === gameData.currentWordIndex && !checkAndDisplayIdleState()) { item.classList.add('active'); } wordTrackerContainer.appendChild(item); }); }
         function updateCooldownTimer(element, failTimestamp) { if (!element) return; const intervalId = setInterval(() => { const remaining = failTimestamp + RETRY_COOLDOWN_MS - Date.now(); if (remaining <= 0) { clearInterval(intervalId); renderWordTracker(); return; } const minutes = Math.floor((remaining / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((remaining / 1000) % 60).toString().padStart(2, '0'); element.textContent = `${minutes}:${seconds}`; }, 1000); cooldownIntervals[element.parentElement.dataset.index] = intervalId; }
-        function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); const timeString = `${minutes}:${seconds}`; timerDisplay.textContent = timeString; const timerDisplayBack = document.getElementById('timer-display-back'); if (timerDisplayBack) timerDisplayBack.textContent = timeString; }
-        function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; saveGame(); updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); failWord(); } }, 1000); }
-        function displayHintInInfoBar(isLetterHint) { clearTimeout(infoBarFlipTimeout); infoBarInner.classList.remove('flipped'); const originalContent = infoBarFront.innerHTML; infoBarFront.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!!!</strong>`; setTimeout(() => { if(gameData.isGameOver) { showEndMessage(); return; } infoBarFront.innerHTML = originalContent; renderInfoBarFront(); const hintsData = gameData.revealedHints[gameData.currentWordIndex]; hintsData.usedCount++; if (isLetterHint) { revealRandomLetter(); } else { const nextHintIndex = hintsData.text.length; revealTextHint(nextHintIndex); } populateInfoBarBack(); infoBarInner.classList.add('flipped'); updateHintButtons(); saveGame(); infoBarFlipTimeout = setTimeout(() => { infoBarInner.classList.remove('flipped'); }, 20000); }, 3000); }
-        function populateInfoBarBack() { const hintTextArea = document.getElementById('hint-text-area'); hintTextArea.innerHTML = ''; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const revealedTextHints = gameData.revealedHints[gameData.currentWordIndex].text; revealedTextHints.forEach(hintIndex => { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. tipp:</strong> ${wordObject.hints[hintIndex]}`; hintTextArea.appendChild(p); }); }
+        function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); const timeString = `${minutes}:${seconds}`; const timerDisplayEl = document.getElementById('timer-display'); if (timerDisplayEl) timerDisplayEl.textContent = timeString; }
+        function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; saveGame(); updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } }, 1000); }
+        function displayHint(isLetterHint) { clearTimeout(hintDisplayTimeout); clearInterval(randomMessageInterval); hintDisplayArea.innerHTML = `Lássuk csak...`; hintDisplayArea.classList.add('active'); setTimeout(() => { if (gameData.isGameOver) { showEndMessage(); return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; hintsData.usedCount++; if (isLetterHint) { revealRandomLetter(); hintDisplayArea.innerHTML = 'Felfedtem egy betűt a rácson!'; } else { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const nextHintIndex = hintsData.text.length; revealTextHint(nextHintIndex); hintDisplayArea.innerHTML = `<strong>${nextHintIndex + 1}. tipp:</strong> ${wordObject.hints[nextHintIndex]}`; } updateHintButtons(); saveGame(); hintDisplayTimeout = setTimeout(() => { hintDisplayArea.classList.remove('active'); startRandomMessageTimer(); }, 5000); }, 1500); }
         function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); }
         function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex]; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; revealedIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); }
         function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; gameData.progress[gameData.currentWordIndex].failTimestamp = Date.now(); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); checkForBonusGameUnlock(); checkAndDisplayIdleState(); }
@@ -1388,37 +441,39 @@
         function handleKeyPress(key) { if (gameData.isGameOver || wheelGameOverlay.classList.contains('visible') || keyboardContainer.classList.contains('disabled')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE') { deleteLetter(); } else if (upperKey.length === 1 && KEY_LAYOUT.flat().join('').toUpperCase().includes(upperKey)) { addLetter(upperKey); } }
         function addLetter(letter) { const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length; if (gameData.currentCol >= wordLength) return; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); else gameData.currentCol = wordLength; return; } if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; } }
         function deleteLetter() { if (gameData.currentCol <= 0) return; gameData.currentCol--; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { if(gameData.currentCol > 0) deleteLetter(); return; } if (cell) { cell.querySelector('.cell-front').textContent = ''; cell.classList.remove('filled'); } }
-        function renderInfoBarFront() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const { word, category, difficulty } = wordObject; wordInfoDisplay.textContent = `${category} | ${word.length} betűs`; difficultyDisplay.className = 'difficulty-display'; difficultyDisplay.classList.add(`difficulty-${difficulty.toLowerCase().replace(/ /g, '-')}`); difficultyDisplay.textContent = difficulty; updateTimerDisplay(gameData.timers[gameData.currentWordIndex]); }
-        function showEndMessage() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const progress = gameData.progress[gameData.currentWordIndex]; let message = gameEndMessageEl.innerHTML; if (progress.status === 'solved' && !progress.scored) { message = `🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`; } else if (progress.status === 'failed') { message = `Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`; } gameEndMessageEl.innerHTML = message; gameEndMessageEl.style.display = 'flex'; }
+        function renderInfoBarFront() { infoBar.classList.remove('feedback-message'); const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const { word, category, difficulty } = wordObject; infoBar.innerHTML = `<div id="word-info-container"><span id="word-info">${category} | ${word.length} betűs</span><span id="difficulty-display" class="difficulty-${difficulty.toLowerCase().replace(/ /g, '-')}">${difficulty}</span></div><div id="game-mode-toggle"><span id="game-mode-label">Relax</span><span id="timer-display"></span></div>`; const gameModeToggle = document.getElementById('game-mode-toggle'); gameModeToggle.addEventListener('click', toggleGameMode); updateGameModeDisplay(); }
+        function showFeedbackMessage(message) { infoBar.classList.add('feedback-message'); infoBar.innerHTML = message; setTimeout(() => { renderInfoBarFront(); }, 2500); }
+        function showEndMessage() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const progress = gameData.progress[gameData.currentWordIndex]; if (progress.status === 'failed') { showFeedbackMessage(`Sajnos nem sikerült. A megoldás: <strong>${wordObject.word}</strong>.`); } else if (progress.status === 'solved' && !gameData.progress[gameData.currentWordIndex].scored) { showFeedbackMessage(`🎉 Ügyes! A helyes szó: <strong>${wordObject.word}</strong>. 🎉`); }}
         function flipRow(guess, targetWord) { const targetLetters = targetWord.split(''); const guessLetters = guess.split(''); const letterStates = Array(targetWord.length).fill('absent'); const usedTargetIndexes = new Set(); guessLetters.forEach((letter, index) => { if (letter === targetLetters[index]) { letterStates[index] = 'correct'; usedTargetIndexes.add(index); }}); guessLetters.forEach((letter, index) => { if (letterStates[index] !== 'correct') { const presentIndex = targetLetters.findIndex((l, i) => l === letter && !usedTargetIndexes.has(i)); if (presentIndex !== -1) { letterStates[index] = 'present'; usedTargetIndexes.add(presentIndex); } } }); const rowEl = document.getElementById(`row-${gameData.currentRow}`); for (let i = 0; i < targetWord.length; i++) { const cell = rowEl.children[i]; setTimeout(() => { cell.querySelector('.cell-back').textContent = guessLetters[i]; cell.querySelector('.cell-back').classList.add(letterStates[i]); cell.classList.add('flip'); updateKeyboard(guessLetters[i], letterStates[i]); }, i * 200); } }
         function updateKeyboard(letter, state) { const key = document.querySelector(`.key[data-key="${letter}"]`); if (!key) return; const priorities = { 'correct': 3, 'present': 2, 'absent': 1 }; const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent'; if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) { key.classList.remove('correct', 'present', 'absent'); key.classList.add(state); } }
         function checkForNewHour() { if (newSetOverlay.classList.contains('visible')) return; const currentSeed = getCurrentHourSeed(); if (gameData.seed && currentSeed !== gameData.seed) { newSetOverlay.classList.add('visible'); } }
-        function updateHintButtons() { if (!gameData.revealedHints || !gameData.revealedHints[gameData.currentWordIndex] || !gameData.isTimerRunning[gameData.currentWordIndex] || gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; requestTextHintButton.textContent = 'Szöveges segítség'; requestLetterHintButton.textContent = 'Betű felfedése'; return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const hintsUsed = hintsData.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = hintsData.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
+        function updateHintButtons() { if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const hintsUsed = hintsData.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = hintsData.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
         function checkForBonusGameUnlock() { const allSolved = gameData.progress.every(p => p.status === 'solved'); if (allSolved && !gameData.bonusPlayed) { unlockBonusButton.disabled = false; unlockBonusButton.classList.add('unlocked', 'pulse'); } else { unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('unlocked', 'pulse'); } }
         function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
         function getCurrentHourSeed() { const now = new Date(); return now.getFullYear() * 1000000 + (now.getMonth() + 1) * 10000 + now.getDate() * 100 + now.getHours(); }
-        function handleStartTimerClick() { if (gameData.isGameOver) return; startTimerButton.disabled = true; startTimerButton.style.display = 'none'; keyboardContainer.classList.remove('disabled'); gameData.isTimerRunning[gameData.currentWordIndex] = true; updateHintButtons(); saveGame(); }
-        function checkAndDisplayIdleState() { const allWordsCompleted = gameData.progress.every(p => { const isRetryAvailable = p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) > RETRY_COOLDOWN_MS; return p.status === 'solved' || (p.status === 'failed' && !isRetryAvailable); }); if (allWordsCompleted) { gridContainer.style.display = 'none'; keyboardContainer.style.display = 'none'; hintControls.style.display = 'none'; gameEndMessageEl.style.display = 'none'; const randomMsg = IDLE_MESSAGES[Math.floor(Math.random() * IDLE_MESSAGES.length)]; idleMessageContainer.innerHTML = `<h3>${randomMsg.title}</h3><p>${randomMsg.text}</p>`; idleMessageContainer.style.display = 'block'; infoBarInner.parentElement.style.display = 'none'; return true; } else { gridContainer.style.display = 'grid'; keyboardContainer.style.display = 'flex'; hintControls.style.display = 'flex'; gameEndMessageEl.style.display = 'flex'; idleMessageContainer.style.display = 'none'; infoBarInner.parentElement.style.display = 'block'; return false; } }
+        function toggleGameMode() { if (gameData.isGameOver) return; const currentMode = gameData.gameModes[gameData.currentWordIndex]; gameData.gameModes[gameData.currentWordIndex] = currentMode === 'relax' ? 'timed' : 'relax'; updateGameModeDisplay(); saveGame(); }
+        function updateGameModeDisplay() { const mode = gameData.gameModes[gameData.currentWordIndex]; const modeLabel = document.getElementById('game-mode-label'); const timerDisplay = document.getElementById('timer-display'); if (mode === 'timed') { modeLabel.textContent = 'Időfutam'; timerDisplay.style.display = 'inline'; startTimer(gameData.timers[gameData.currentWordIndex]); } else { modeLabel.textContent = 'Relax'; timerDisplay.style.display = 'none'; clearInterval(timerInterval); } }
+        function showRandomGameMessage() { if (gameData.isGameOver || wheelGameOverlay.classList.contains('visible') || hintDisplayArea.classList.contains('active') || checkAndDisplayIdleState()) return; showFeedbackMessage(`<i>${RANDOM_GAME_MESSAGES[Math.floor(Math.random() * RANDOM_GAME_MESSAGES.length)]}</i>`); }
+        function startRandomMessageTimer() { clearInterval(randomMessageInterval); randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); }
+        function checkAndDisplayIdleState() { const allWordsCompleted = gameData.progress.every(p => { const isRetryAvailable = p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) > RETRY_COOLDOWN_MS; return p.status === 'solved' || (p.status === 'failed' && !isRetryAvailable); }); if (allWordsCompleted) { gridContainer.style.display = 'none'; keyboardContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; clearInterval(randomMessageInterval); let msg; const allSolved = gameData.progress.every(p => p.status === 'solved'); if (allSolved && !gameData.bonusPlayed) { msg = BONUS_REMINDER_MESSAGES[getCurrentHourSeed() % BONUS_REMINDER_MESSAGES.length]; } else { msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; } idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p>`; idleMessageContainer.style.display = 'block'; return true; } else { gridContainer.style.display = 'grid'; keyboardContainer.style.display = 'flex'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; return false; } }
 
         // --- ESEMÉNYKEZELŐK ---
-        startTimerButton.addEventListener('click', () => { if (!gameData.isTimerRunning[gameData.currentWordIndex]) { startTimer(gameData.timers[gameData.currentWordIndex]); handleStartTimerClick(); }});
         document.addEventListener('keydown', (e) => { if (document.querySelector('.overlay.visible') || ['INPUT', 'TEXTAREA','BUTTON'].includes(document.activeElement.tagName)) return; handleKeyPress(e.key); });
         refreshButton.addEventListener('click', () => location.reload());
         unlockBonusButton.addEventListener('click', () => { if(unlockBonusButton.classList.contains('unlocked')) initWheelGame(); });
         spinButton.addEventListener('click', togglePowerMeterAndSpin);
         powerMeterContainer.addEventListener('click', togglePowerMeterAndSpin);
         solveButton.addEventListener('click', solve);
-        closeWheelButton.addEventListener('click', () => { wheelGameOverlay.classList.remove('visible'); updateDailyScoreDisplay(getDailyScore()); checkForBonusGameUnlock(); });
+        closeWheelButton.addEventListener('click', () => { wheelGameOverlay.classList.remove('visible'); updateDailyScoreDisplay(getDailyScore()); checkForBonusGameUnlock(); checkAndDisplayIdleState(); });
         cashOutButton.addEventListener('click', cashOut);
         nextRoundButton.addEventListener('click', startNewRound);
-        requestTextHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if ((hintsData.usedCount || 0) >= 3 || hintsData.text.length >= wordObject.hints.length) { alert("Nincs több elérhető szöveges segítség ehhez a szóhoz, vagy elérted a limidet!"); return;} if(spendPointsForHint(false)) { displayHintInInfoBar(false); } });
-        requestLetterHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if ((hintsData.usedCount || 0) >= 3) { alert("Elérted a maximális segítségkérést ehhez a szóhoz!"); return; } if(spendPointsForHint(true)) { displayHintInInfoBar(true); } });
+        requestTextHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if ((hintsData.usedCount || 0) >= 3 || hintsData.text.length >= wordObject.hints.length) { alert("Nincs több elérhető szöveges segítség ehhez a szóhoz, vagy elérted a limidet!"); return;} if(spendPointsForHint(false)) { displayHint(false); } });
+        requestLetterHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if ((hintsData.usedCount || 0) >= 3) { alert("Elérted a maximális segítségkérést ehhez a szóhoz!"); return; } if(spendPointsForHint(true)) { displayHint(true); } });
         
         // --- INDÍTÁS ---
         populateThemePicker();
         loadTheme();
         initGame();
-        setInterval(checkForNewHour, 10000);
     });
     </script>
 </body>

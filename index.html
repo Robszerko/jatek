@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Alap Téma (Klasszikus) --- */
         :root {
             --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
             --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
@@ -17,9 +16,9 @@
             --absent-color: #9e9e9e; --key-bg: #dcd3b8; --key-text: #3d405b;
             --key-shadow: 0 3px 0 #bcaaa4; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
             --difficulty-easy: #388e3c; --difficulty-hard: #f57c00; --difficulty-extra: #d32f2f;
+            --fail-color: #e53935;
         }
 
-        /* --- További Színtémák --- */
         .theme-forest { --bg-gradient-start: #2d6a4f; --bg-gradient-end: #1b4332; --container-bg: rgba(247, 246, 242, 0.95); --text-color: #081c15; --title-color: #74c69d; --border-color-idle: #b7e4c7; --border-color-active: #95d5b2; --correct-color: #52b788; --present-color: #ffd60a; --absent-color: #9e9e9e; --key-bg: #d8f3dc; --key-text: #1b4332; --key-shadow: 0 3px 0 #b7e4c7; }
         .theme-ocean { --bg-gradient-start: #0077b6; --bg-gradient-end: #023e8a; --container-bg: rgba(237, 246, 249, 0.95); --text-color: #03045e; --title-color: #00b4d8; --border-color-idle: #ade8f4; --border-color-active: #90e0ef; --correct-color: #48cae4; --present-color: #ffc300; --absent-color: #adb5bd; --key-bg: #caf0f8; --key-text: #023e8a; --key-shadow: 0 3px 0 #ade8f4; }
         .theme-sunset { --bg-gradient-start: #f77f00; --bg-gradient-end: #d62828; --container-bg: rgba(255, 250, 240, 0.95); --text-color: #800f2f; --title-color: #fcbf49; --border-color-idle: #eae2b7; --border-color-active: #f77f00; --correct-color: #70e000; --present-color: #fcbf49; --absent-color: #bc6c25; --key-bg: #fff1e6; --key-text: #d62828; --key-shadow: 0 3px 0 #eae2b7; }
@@ -108,8 +107,13 @@
         }
         
         #daily-score-display { font-family: var(--font-main); font-size: 1.1rem; font-weight: 700; color: var(--title-color); background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; border: 2px solid var(--border-color-idle); margin-top: 10px; transition: color 0.3s ease, border-color 0.3s ease; }
+        
         #word-tracker { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
         .tracker-item { flex: 1; min-width: 60px; padding: 10px 5px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color-idle); font-weight: 500; cursor: pointer; transition: all 0.3s ease; position: relative; }
+        .tracker-item.solved { background-color: var(--correct-color); border-color: var(--correct-color); color: white; cursor: not-allowed;}
+        .tracker-item.failed { background-color: var(--fail-color); border-color: var(--fail-color); color: white; }
+        .tracker-item .cooldown-timer { font-size: 0.8em; font-weight: bold; margin-top: 4px; }
+        
         #info-bar { padding: 12px; background: rgba(0,0,0,0.05); border: 2px solid var(--border-color-idle); border-radius: 10px; text-align: center; font-size: clamp(0.9rem, 2.5vw, 1rem); font-weight: 500; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; transition: border-color 0.3s ease, color 0.3s ease; }
         #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); transition: color 0.3s ease; }
         
@@ -120,7 +124,6 @@
         #rules-container, #hint-display-container { transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; color: var(--text-color); }
         .overlay-content { transition: background-color 0.3s ease, color 0.3s ease; }
         
-        /* A többi CSS szabály változatlan maradt a helytakarékosság érdekében */
         body { background-blend-mode: overlay; }
         #game-container, header, #word-tracker, #info-bar, #grid-container, #hint-controls, #keyboard-container, #rules-container { width: 100%; }
         #start-timer-button { background-color: var(--difficulty-easy); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; font-size: 0.9rem; box-shadow: 0 3px 0 #2e7d32; }
@@ -128,12 +131,12 @@
         #word-info-container { display: flex; flex-direction: column; align-items: center; }
         #difficulty-display { font-weight: 700; margin-top: 4px; border-radius: 10px; padding: 3px 10px; color: white; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3); }
         .difficulty-könnyű { background-color: var(--difficulty-easy); } .difficulty-nehéz { background-color: var(--difficulty-hard); } .difficulty-extra-nehéz { background-color: var(--difficulty-extra); }
-        #grid-container { display: grid; grid-template-rows: repeat(6, 1fr); gap: 8px; max-width: 500px; margin: 0 auto 20px auto; height: 360px; }
-        .grid-row { display: grid; gap: 8px; }
+        #grid-container { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; max-width: 500px; margin: 0 auto 20px auto; height: auto; max-height: calc(100vw - 30px); aspect-ratio: 5 / 6; }
+        .grid-row { display: grid; gap: 5px; }
         .grid-cell { perspective: 1000px; }
         .cell-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .grid-cell.flip .cell-inner { transform: rotateX(180deg); }
-        .cell-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: bold; text-transform: uppercase; box-sizing: border-box; border-radius: 8px; }
+        .cell-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: bold; text-transform: uppercase; box-sizing: border-box; border-radius: 8px; }
         .cell-revealed { border-color: var(--correct-color); background-color: rgba(129, 178, 154, 0.2); }
         .cell-back { color: white; transform: rotateX(180deg); border: 3px solid transparent; }
         .cell-back.correct { background-color: var(--correct-color); border-color: var(--correct-color);} .cell-back.present { background-color: var(--present-color); border-color: var(--present-color);} .cell-back.absent  { background-color: var(--absent-color); border-color: var(--absent-color);}
@@ -148,13 +151,14 @@
         .hint-button#request-letter-hint-button { background-color: var(--correct-color); box-shadow: 0 3px 0 #6a9982; }
         .hint-button:hover:not(:disabled) { transform: translateY(-2px); }
         .hint-button:disabled { background-color: var(--absent-color); cursor: not-allowed; box-shadow: none; opacity: 0.7; }
-        #keyboard-container { display: flex; flex-direction: column; gap: 12px; }
-        #keyboard-container.disabled { pointer-events: none; opacity: 0.6; }
-        .keyboard-row { display: flex; justify-content: center; gap: 6px; }
-        .key { font-family: var(--font-main); font-weight: 500; border: none; border-radius: 8px; height: 60px; flex: 1; cursor: pointer; text-transform: uppercase; font-size: clamp(1rem, 3vw, 1.4rem); display: flex; justify-content: center; align-items: center; }
+        
+        #keyboard-container { display: flex; flex-direction: column; gap: clamp(6px, 1.5vw, 10px); width: 100%; max-width: 900px; margin: 0 auto; }
+        .keyboard-row { display: flex; justify-content: center; gap: clamp(3px, 1vw, 6px); }
+        .key { font-family: var(--font-main); font-weight: 500; border: none; border-radius: 6px; height: clamp(45px, 12vw, 60px); flex-grow: 1; cursor: pointer; text-transform: uppercase; font-size: clamp(0.8rem, 3vw, 1.4rem); display: flex; justify-content: center; align-items: center; padding: 0; }
         .key:active, .key.active-press { transform: translateY(2px); box-shadow: none; }
-        .key.large { flex: 1.5; font-size: 0.9rem; }
+        .key.large { flex-grow: 1.5; font-size: clamp(0.7rem, 2.5vw, 1rem); }
         .key.correct, .key.correct:hover { background-color: var(--correct-color); color: white; } .key.present, .key.present:hover { background-color: var(--present-color); color: white; } .key.absent, .key.absent:hover { background-color: var(--absent-color); color: white; opacity: 0.7; }
+
         #rules-container { margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color-idle); line-height: 1.7; }
         #rules-container h3 { font-family: var(--font-title); color: var(--title-color); text-align: center; font-size: 1.5rem; margin: 0 0 15px 0; }
         #rules-container ul { list-style-type: '🕵️ '; padding-left: 20px; text-align: left; margin: 0; }
@@ -170,7 +174,7 @@
         #refresh-button, #close-wheel-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 15px; transition: transform 0.2s ease, background-color 0.3s ease; }
         #wheel-game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         #wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 20px auto; }
-        #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #e53935; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid var(--fail-color); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
         #wheel { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
         #wheel-game-ui { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
         #wheel-round-display { font-size: 1.4rem; font-weight: bold; color: var(--title-color); }
@@ -190,7 +194,7 @@
         #cash-out-button { background-color: var(--difficulty-easy); box-shadow: 0 3px 0 #2e7d32; }
         #next-round-button { background-color: var(--difficulty-hard); box-shadow: 0 3px 0 #c46400; }
         #power-meter-container { width: 80%; max-width: 400px; height: 20px; background-color: #ccc; border-radius: 10px; overflow: hidden; margin-top: 10px; cursor: pointer; border: 2px solid #5d4037; }
-        #power-meter-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f2cc8f, #e07a5f, #d32f2f); }
+        #power-meter-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f2cc8f, #e07a5f, var(--fail-color)); }
         .power-up { animation: power-up 1.5s linear infinite; }
         @keyframes power-up { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
     </style>
@@ -243,25 +247,10 @@
         <div id="rules-container">
              <h3>Játékszabályok</h3>
             <ul>
-                <li><strong>Kezdés:</strong> Minden nap <span class="rules-correct">200 ponttal</span> indulsz. A cél, hogy ezt minél jobban gyarapítsd éjfélig, amikor a pontszám nullázódik.</li>
-                <li><strong>Alapjáték:</strong> Óránként 5 új szót kapsz, amik legalább 6 óráig nem ismétlődnek. Minden szó megfejtésére 3 perced van. Egy helyes megfejtésért a szó hosszának 100-szorosa a jutalom.</li>
-                <li><strong>Segítségek és Költségek:</strong>
-                    <ul>
-                        <li>Kérhetsz szöveges vagy betűfelfedő segítséget, de ezek <span class="rules-penalty">pontokba kerülnek</span>.</li>
-                        <li>Az alapdíj a szó nehézségétől függ: Könnyű: 50 pont, Nehéz: 75 pont, Extra Nehéz: 100 pont.</li>
-                        <li>Figyelem! Egy adott szónál a <span class="rules-penalty">3. segítségkérés már dupla pontba</span> kerül!</li>
-                    </ul>
-                </li>
-                <li><strong>Szerencsekerék Bónusz Játék:</strong>
-                    <ul>
-                        <li>Ha mind az 5 szót sikeresen megfejted, feloldod a Szerencsekerék bónusz játékot.</li>
-                        <li><strong>Tét:</strong> A játék elején fel kell tenned a napi pontjaid egy részét. Ezt az összeget kockáztatod.</li>
-                        <li><strong>1. Kör:</strong> Pörgess és fejtsd meg a feladványt! Ha sikerül, dönthetsz: felveszed a nyereményed (tét + pörgetett összeg), vagy továbbmész a 2. körbe.</li>
-                        <li><strong>2. Kör:</strong> Nagyobb nyeremények, de a keréken megjelenik egy <span class="rules-penalty">Felező</span> mező. Sikeres kör után ismét dönthetsz a nyeremény felvétele, vagy a mindent vagy semmit 3. kör között.</li>
-                        <li><strong>3. Kör:</strong> Extra magas nyeremények, de a keréken már <span class="rules-penalty">két Csőd</span> és egy Felező mező is van. Ha itt nyersz, hatalmas pontszámmal zárod a bónusz játékot.</li>
-                        <li><strong>Kockázat:</strong> Ha bármelyik körben a <span class="rules-penalty">Csőd</span>-re pörgetsz, vagy rosszul oldod meg a feladványt, az addig összegyűjtött bónusz pontjaidat és a feltett tétet is elveszíted! A játék kiírja a helyes megoldást.</li>
-                    </ul>
-                </li>
+                <li><strong>Alapjáték:</strong> Óránként 5 új szót kapsz, amik legalább 6 óráig nem ismétlődnek. A helyes megfejtésért pont jár.</li>
+                <li><strong style="color:var(--fail-color)">Újrapróbálás:</strong> Ha nem sikerül egy szó, 30 perc múlva újra próbálkozhatsz vele, hogy esélyed legyen a bónusz játékra.</li>
+                <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót megfejted, feloldod a bónusz játékot, ahol a pontjaidat kockáztathatod a nagyobb nyereményért.</li>
+                <li><strong>Témák:</strong> A fejlécben a csillagra ⭐ kattintva válthatsz színtémát.</li>
             </ul>
         </div>
     </div>
@@ -352,8 +341,9 @@
         ];
 
         // --- KONSTANSOK ÉS VÁLTOZÓK ---
-        const MAX_GUESSES = 6; let gameData = {}; let timerInterval;
+        const MAX_GUESSES = 6; let gameData = {}; let timerInterval; let cooldownIntervals = {};
         const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
+        const RETRY_COOLDOWN_MS = 30 * 60 * 1000;
         
         // DOM Elemek
         const body = document.body;
@@ -366,74 +356,26 @@
         const themeToggleButton = document.getElementById('theme-toggle-button');
         const themePicker = document.getElementById('theme-picker');
         
-        // Színtémák
-        const themes = [
-            { name: "Klasszikus", className: "theme-classic", color: "#3d405b" },
-            { name: "Erdei", className: "theme-forest", color: "#2d6a4f" },
-            { name: "Óceán", className: "theme-ocean", color: "#0077b6" },
-            { name: "Naplemente", className: "theme-sunset", color: "#f77f00" },
-            { name: "Éjszakai", className: "theme-night", color: "#232526" },
-            { name: "Rózsa", className: "theme-rose", color: "#c9184a" },
-            { name: "Vintage", className: "theme-vintage", color: "#a27b5c" },
-            { name: "Rét", className: "theme-meadow", color: "#7cb518" },
-            { name: "Királyi", className: "theme-royal", color: "#5a189a" },
-            { name: "Sivatag", className: "theme-desert", color: "#edc4b3" },
-            { name: "Hacker", className: "theme-hacker", color: "#00ff00" }
-        ];
-
+        const themes = [ { name: "Klasszikus", className: "theme-classic", color: "#3d405b" }, { name: "Erdei", className: "theme-forest", color: "#2d6a4f" }, { name: "Óceán", className: "theme-ocean", color: "#0077b6" }, { name: "Naplemente", className: "theme-sunset", color: "#f77f00" }, { name: "Éjszakai", className: "theme-night", color: "#232526" }, { name: "Rózsa", className: "theme-rose", color: "#c9184a" }, { name: "Vintage", className: "theme-vintage", color: "#a27b5c" }, { name: "Rét", className: "theme-meadow", color: "#7cb518" }, { name: "Királyi", className: "theme-royal", color: "#5a189a" }, { name: "Sivatag", className: "theme-desert", color: "#edc4b3" }, { name: "Hacker", className: "theme-hacker", color: "#00ff00" } ];
         const KEY_LAYOUT = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű', 'Ő', 'Ú'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
-        const wheelSegmentsR1 = [ { label: '500', value: 500, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '750', value: 750, color: '#b39ddb' }, { label: '1000', value: 1000, color: '#f2cc8f' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '2000', value: 2000, color: '#e07a5f' }];
-        const wheelSegmentsR2 = [ { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'FELEZŐ', value: 'half', color: '#f57c00' }, { label: '1500', value: 1500, color: '#b39ddb' }, { label: '2500', value: 2500, color: '#f2cc8f' }, { label: '750', value: 750, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '3000', value: 3000, color: '#81b29a' }, { label: '5000', value: 5000, color: '#e07a5f' }];
-        const wheelSegmentsR3 = [ { label: '5000', value: 5000, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '7500', value: 7500, color: '#b39ddb' }, { label: 'FELEZŐ', value: 'half', color: '#f57c00' }, { label: '10000', value: 10000, color: '#81b29a' }, { label: 'CSŐD', value: 'bankrupt', color: '#e53935' }, { label: '15000', value: 15000, color: '#f2cc8f' }, { label: '25000', value: 25000, color: '#e07a5f' }];
+        const wheelSegmentsR1 = [ { label: '500', value: 500, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '750', value: 750, color: '#b39ddb' }, { label: '1000', value: 1000, color: '#f2cc8f' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '2000', value: 2000, color: '#e07a5f' }];
+        const wheelSegmentsR2 = [ { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'FELEZŐ', value: 'half', color: '#f57c00' }, { label: '1500', value: 1500, color: '#b39ddb' }, { label: '2500', value: 2500, color: '#f2cc8f' }, { label: '750', value: 750, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '3000', value: 3000, color: '#81b29a' }, { label: '5000', value: 5000, color: '#e07a5f' }];
+        const wheelSegmentsR3 = [ { label: '5000', value: 5000, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '7500', value: 7500, color: '#b39ddb' }, { label: 'FELEZŐ', value: 'half', color: '#f57c00' }, { label: '10000', value: 10000, color: '#81b29a' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '15000', value: 15000, color: '#f2cc8f' }, { label: '25000', value: 25000, color: '#e07a5f' }];
         const wheelSegmentSets = [null, wheelSegmentsR1, wheelSegmentsR2, wheelSegmentsR3];
-
         let wheelState = {};
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ"; const CONSONANTS = "BCDFGHJKLMNPQRSTVXYZ";
         
         // --- TÉMA VÁLASZTÓ LOGIKA ---
-        function populateThemePicker() {
-            themes.forEach(theme => {
-                const swatch = document.createElement('div');
-                swatch.className = 'theme-swatch';
-                swatch.title = theme.name;
-                swatch.style.backgroundColor = theme.color;
-                swatch.dataset.theme = theme.className;
-                themePicker.appendChild(swatch);
-            });
-        }
-        function applyTheme(themeClassName) {
-            body.className = '';
-            body.classList.add(themeClassName);
-            document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
-            const activeSwatch = document.querySelector(`.theme-swatch[data-theme="${themeClassName}"]`);
-            if(activeSwatch) activeSwatch.classList.add('active');
-        }
-        function saveTheme(themeClassName) {
-            localStorage.setItem('szonyomozo_theme', themeClassName);
-        }
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('szonyomozo_theme') || 'theme-classic';
-            applyTheme(savedTheme);
-        }
-        themeToggleButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            themePicker.style.display = themePicker.style.display === 'flex' ? 'none' : 'flex';
-        });
-        themePicker.addEventListener('click', (e) => {
-            if (e.target.classList.contains('theme-swatch')) {
-                const themeClassName = e.target.dataset.theme;
-                applyTheme(themeClassName);
-                saveTheme(themeClassName);
-            }
-        });
-        document.addEventListener('click', (e) => {
-            if (!themePicker.contains(e.target) && !themeToggleButton.contains(e.target)) {
-                themePicker.style.display = 'none';
-            }
-        });
+        function populateThemePicker() { themes.forEach(theme => { const swatch = document.createElement('div'); swatch.className = 'theme-swatch'; swatch.title = theme.name; swatch.style.backgroundColor = theme.color; swatch.dataset.theme = theme.className; themePicker.appendChild(swatch); }); }
+        function applyTheme(themeClassName) { body.className = ''; body.classList.add(themeClassName); document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active')); const activeSwatch = document.querySelector(`.theme-swatch[data-theme="${themeClassName}"]`); if(activeSwatch) activeSwatch.classList.add('active'); }
+        function saveTheme(themeClassName) { localStorage.setItem('szonyomozo_theme', themeClassName); }
+        function loadTheme() { const savedTheme = localStorage.getItem('szonyomozo_theme') || 'theme-classic'; applyTheme(savedTheme); }
+        themeToggleButton.addEventListener('click', (e) => { e.stopPropagation(); themePicker.style.display = themePicker.style.display === 'flex' ? 'none' : 'flex'; });
+        themePicker.addEventListener('click', (e) => { if (e.target.classList.contains('theme-swatch')) { const themeClassName = e.target.dataset.theme; applyTheme(themeClassName); saveTheme(themeClassName); } });
+        document.addEventListener('click', (e) => { if (!themePicker.contains(e.target) && !themeToggleButton.contains(e.target)) { themePicker.style.display = 'none'; } });
         
         // --- SZERENCSEKERÉK FÜGGVÉNYEK ---
-        function drawWheel(round) { wheel.innerHTML = ''; const segments = wheelSegmentSets[round]; const numSegments = segments.length; const angleStep = 360 / numSegments; const radius = 50; for (let i = 0; i < numSegments; i++) { const segment = segments[i]; const startAngle = i * angleStep; const endAngle = (i + 1) * angleStep; const start = polarToCartesian(radius, radius, radius, endAngle); const end = polarToCartesian(radius, radius, radius, startAngle); const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"; const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", d); path.setAttribute("fill", segment.color); wheel.appendChild(path); const textAngle = startAngle + angleStep / 2; const textPos = polarToCartesian(radius, radius, radius * 0.7, textAngle); const text = document.createElementNS("http://www.w3.org/2000/svg", "text"); text.setAttribute("x", textPos.x); text.setAttribute("y", textPos.y); text.setAttribute("text-anchor", "middle"); text.setAttribute("dominant-baseline", "middle"); text.setAttribute("font-size", "7"); text.setAttribute("font-weight", "bold"); text.setAttribute("fill", "white"); text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`); text.textContent = segment.label; wheel.appendChild(text); } }
+        function drawWheel(round) { wheel.innerHTML = ''; const segments = wheelSegmentSets[round]; const numSegments = segments.length; const angleStep = 360 / numSegments; const radius = 50; for (let i = 0; i < numSegments; i++) { const segment = segments[i]; const startAngle = i * angleStep; const endAngle = (i + 1) * angleStep; const start = polarToCartesian(radius, radius, radius, endAngle); const end = polarToCartesian(radius, radius, radius, startAngle); const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"; const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", d); path.setAttribute("fill", segment.value === 'bankrupt' ? getComputedStyle(document.documentElement).getPropertyValue('--fail-color') : segment.color); wheel.appendChild(path); const textAngle = startAngle + angleStep / 2; const textPos = polarToCartesian(radius, radius, radius * 0.7, textAngle); const text = document.createElementNS("http://www.w3.org/2000/svg", "text"); text.setAttribute("x", textPos.x); text.setAttribute("y", textPos.y); text.setAttribute("text-anchor", "middle"); text.setAttribute("dominant-baseline", "middle"); text.setAttribute("font-size", "7"); text.setAttribute("font-weight", "bold"); text.setAttribute("fill", "white"); text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`); text.textContent = segment.label; wheel.appendChild(text); } }
         function polarToCartesian(cx, cy, r, angle) { const rad = (angle - 90) * Math.PI / 180.0; return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) }; }
         function initWheelGame() { let stake = 0; const currentScore = getDailyScore(); while (true) { const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi pontszám: ${currentScore})`, "100"); if (stakeInput === null) return; stake = parseInt(stakeInput); if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; } alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg."); } addPointsToDailyScore(-stake); gameData.bonusPlayed = true; saveGame(); unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('pulse'); wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [] }; startNewRound(); wheelGameOverlay.classList.add('visible'); }
         function startNewRound() { wheelState.currentRound++; wheelState.guessedLetters = []; wheelState.roundScore = 0; wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; const puzzleIndex = Math.floor(Math.random() * wheelPuzzles.length); wheelState.puzzle = wheelPuzzles[puzzleIndex]; drawWheel(wheelState.currentRound); setupPuzzleBoard(); updateUIForGameState('start_round'); }
@@ -466,16 +408,17 @@
         
         // --- SEGÉD- ÉS RENDERELŐ FÜGGVÉNYEK ---
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
-        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.textContent = `${index + 1}. szó`; item.dataset.index = index; const status = gameData.progress[index].status; if (status === 'solved') item.classList.add('solved'); if (status === 'failed') item.classList.add('failed'); if (index === gameData.currentWordIndex) item.classList.add('active'); if (status === 'pending') { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && !gameData.isTimerRunning[index]) loadWord(index); }); } wordTrackerContainer.appendChild(item); }); }
+        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.dataset.index = index; const status = gameData.progress[index].status; const failTimestamp = gameData.progress[index].failTimestamp; if (status === 'solved') { item.classList.add('solved'); item.textContent = `${index + 1}. szó`; } else if (status === 'failed' && failTimestamp) { item.classList.add('failed'); const remainingTime = failTimestamp + RETRY_COOLDOWN_MS - Date.now(); if (remainingTime > 0) { item.innerHTML = `${index + 1}. szó <div class="cooldown-timer"></div>`; updateCooldownTimer(item.querySelector('.cooldown-timer'), remainingTime); item.style.cursor = 'not-allowed'; } else { item.textContent = `${index + 1}. szó (Újra)`; item.style.cursor = 'pointer'; item.addEventListener('click', () => { gameData.progress[index] = {status: 'pending', scored: false}; gameData.timers[index] = 180; gameData.isTimerRunning[index] = false; saveGame(); loadWord(index); }); } } else { item.textContent = `${index + 1}. szó`; item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && !gameData.isTimerRunning[index]) loadWord(index); }); } if (index === gameData.currentWordIndex) { item.classList.add('active'); } wordTrackerContainer.appendChild(item); }); }
+        function updateCooldownTimer(element, remainingTime) { if (!element) return; const intervalId = setInterval(() => { const now = Date.now(); const newRemaining = remainingTime - (now - (Date.now() - remainingTime)); if (newRemaining <= 0) { clearInterval(intervalId); renderWordTracker(); return; } const minutes = Math.floor((newRemaining / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((newRemaining / 1000) % 60).toString().padStart(2, '0'); element.textContent = `${minutes}:${seconds}`; }, 1000); }
         function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); timerDisplay.textContent = `${minutes}:${seconds}`; }
         function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); failWord(); } }, 1000); }
         function showHintAlert(callback) { gameEndMessageEl.innerHTML = `<strong class="hint-alert">SEGÍTSÉG!</strong>`; setTimeout(() => { if (gameData.isGameOver) { showEndMessage(); return; } gameEndMessageEl.innerHTML = ''; callback(); }, 2000); }
         function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); updateTextHintButtonLabel(); if (hintsData.textUsedCount >= 3) { requestTextHintButton.disabled = true; } const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (wordObject.hints && wordObject.hints[hintIndex]) { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex; hintDisplayArea.appendChild(p); } saveGame(); }
         function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex]; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; revealedIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); if (unrevealedWordIndices.length - 1 === 0) { requestLetterHintButton.disabled = true; } saveGame(); }
-        function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); checkForBonusGameUnlock(); }
-        function initializeGrid(wordLength) { gridContainer.innerHTML = ''; for (let i = 0; i < MAX_GUESSES; i++) { const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`; row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`; for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; } gridContainer.appendChild(row); } const revealed = gameData.revealedIndices[gameData.currentWordIndex]; if (revealed && revealed.length > 0) { const targetWord = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.toUpperCase(); revealed.forEach(index => { for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`); if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); } } }); } }
-        function initializeKeyboard() { keyboardContainer.innerHTML = ''; KEY_LAYOUT.forEach(rowKeys => { const row = document.createElement('div'); row.className = 'keyboard-row'; rowKeys.forEach(key => { const button = document.createElement('button'); button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase(); if (key === 'Enter' || key === 'Backspace') button.classList.add('large'); button.addEventListener('click', () => handleKeyPress(key)); row.appendChild(button); }); keyboardContainer.appendChild(row); }); }
-        function handleKeyPress(key) { if (gameData.isGameOver || wheelGameOverlay.classList.contains('visible') || keyboardContainer.classList.contains('disabled')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE' || upperKey === 'DELETE') { deleteLetter(); } else if (upperKey.length === 1 && "QWERTZUIOPÖÜÓASDFGHJKLÉÁŰŐÚYXCVBNMÍ".includes(upperKey)) { addLetter(upperKey); } }
+        function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; gameData.progress[gameData.currentWordIndex].failTimestamp = Date.now(); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); checkForBonusGameUnlock(); }
+        function initializeGrid(wordLength) { gridContainer.innerHTML = ''; gridContainer.style.height = `${(gridContainer.offsetWidth / wordLength) * MAX_GUESSES}px`; for (let i = 0; i < MAX_GUESSES; i++) { const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`; row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`; for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; } gridContainer.appendChild(row); } const revealed = gameData.revealedIndices[gameData.currentWordIndex]; if (revealed && revealed.length > 0) { const targetWord = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.toUpperCase(); revealed.forEach(index => { for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`); if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); } } }); } }
+        function initializeKeyboard() { keyboardContainer.innerHTML = ''; KEY_LAYOUT.forEach(rowKeys => { const row = document.createElement('div'); row.className = 'keyboard-row'; rowKeys.forEach(key => { const button = document.createElement('button'); button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase(); if (key === 'Enter' || key === 'Backspace') button.classList.add('large'); button.addEventListener('click', (e) => { e.preventDefault(); handleKeyPress(key); }); row.appendChild(button); }); keyboardContainer.appendChild(row); }); }
+        function handleKeyPress(key) { if (gameData.isGameOver || wheelGameOverlay.classList.contains('visible') || keyboardContainer.classList.contains('disabled')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE') { deleteLetter(); } else if (upperKey.length === 1 && "QWERTZUIOPÖÜÓASDFGHJKLÉÁŰŐÚYXCVBNMÍ".includes(upperKey)) { addLetter(upperKey); } }
         function addLetter(letter) { const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length; if (gameData.currentCol >= wordLength) return; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); else gameData.currentCol = wordLength; return; } if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; } }
         function deleteLetter() { if (gameData.currentCol <= 0) return; gameData.currentCol--; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { if(gameData.currentCol > 0) deleteLetter(); return; } if (cell) { cell.querySelector('.cell-front').textContent = ''; cell.classList.remove('filled'); } }
         function renderAllRevealedHints() { const revealed = gameData.revealedHints[gameData.currentWordIndex].text || []; revealed.forEach(hintIndex => { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (wordObject.hints && wordObject.hints[hintIndex]) { const p = document.createElement('p'); p.innerHTML = `<strong>${hintIndex + 1}. segítség:</strong> ${wordObject.hints[hintIndex]}`; p.dataset.hintId = hintIndex; hintDisplayArea.appendChild(p); } }); }
@@ -491,7 +434,7 @@
         
         // --- ESEMÉNYKEZELŐK ---
         startTimerButton.addEventListener('click', () => { startTimer(gameData.timers[gameData.currentWordIndex]); handleStartTimerClick(); });
-        document.addEventListener('keydown', (e) => { if (document.querySelector('.overlay.visible') || ['INPUT', 'TEXTAREA','BUTTON'].includes(document.activeElement.tagName)) return; let key = e.key.toUpperCase(); if (e.code === 'Backspace') key = 'Backspace'; if (e.code === 'Enter') key = 'Enter'; const allKeys = KEY_LAYOUT.flat().map(k => k.toUpperCase()); if (allKeys.includes(key)) { e.preventDefault(); handleKeyPress(key); const keyElement = document.querySelector(`.key[data-key='${key}']`); if (keyElement) { keyElement.classList.add('active-press'); setTimeout(() => keyElement.classList.remove('active-press'), 150); } } });
+        document.addEventListener('keydown', (e) => { if (document.querySelector('.overlay.visible') || ['INPUT', 'TEXTAREA','BUTTON'].includes(document.activeElement.tagName)) return; if (e.key === 'Enter') { handleKeyPress('Enter'); } else if (e.key === 'Backspace') { handleKeyPress('Backspace'); } else if (KEY_LAYOUT.flat().includes(e.key.toUpperCase())) { handleKeyPress(e.key.toUpperCase()); } });
         refreshButton.addEventListener('click', () => location.reload());
         unlockBonusButton.addEventListener('click', initWheelGame);
         spinButton.addEventListener('click', togglePowerMeterAndSpin);

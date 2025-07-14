@@ -54,6 +54,15 @@
         #logo-svg .logo-text { fill: var(--text-color); transition: fill 0.3s ease; }
         #logo-svg stop { transition: stop-color 0.3s ease; }
         
+        #secret-digit-display {
+            position: absolute; top: 50%; right: -35px; transform: translateY(-50%);
+            font-family: var(--font-title); font-size: 2.5rem; color: var(--title-color);
+            opacity: 0; transition: opacity 0.3s ease-in-out;
+            text-shadow: 0 0 10px var(--title-color), 0 0 20px white; pointer-events: none;
+        }
+        #secret-digit-display.visible { opacity: 1; animation: flash 2s ease-in-out; }
+        @keyframes flash { 0%, 100% { opacity: 0; transform: translateY(-50%) scale(0.8); } 20%, 80% { opacity: 1; transform: translateY(-50%) scale(1.1); } }
+
         header h1 {
             font-family: var(--font-title); color: var(--title-color); font-size: clamp(2rem, 9vw, 3rem); margin: 0;
             letter-spacing: 0.05em; margin-left: -2px; z-index: 0; transition: color 0.3s ease;
@@ -143,9 +152,35 @@
         #rules-container ul { list-style-type: '🕵️ '; padding-left: 20px; text-align: left; margin: 0; }
         #rules-container li { margin-bottom: 12px; padding-left: 8px; }
         
-        #unlock-bonus-button { opacity: 0.5; cursor: not-allowed; background-color: var(--difficulty-extra); color: white; border: 2px solid white; border-radius: 10px; padding: 15px 30px; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; margin: 20px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
-        #unlock-bonus-button.unlocked { opacity: 1; cursor: pointer; }
-        #unlock-bonus-button.pulse-red { animation: pulse-red 2s infinite; }
+        #bonus-unlock-container {
+            display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0;
+            padding: 20px; border: 2px dashed var(--border-color-idle); border-radius: 15px; width: 100%;
+        }
+        #bonus-unlock-header { display: flex; align-items: center; gap: 15px; }
+        #wheel-logo-svg { width: 60px; height: 60px; }
+        #bonus-unlock-header h2 { font-family: var(--font-title); color: var(--title-color); font-size: 1.8rem; margin: 0; }
+        #code-input-container { display: flex; gap: 10px; }
+        .code-input {
+            width: 45px; height: 60px; border-radius: 8px; border: 3px solid var(--border-color-idle);
+            text-align: center; font-family: var(--font-main); font-size: 2rem; font-weight: bold; color: var(--text-color);
+            background-color: var(--container-bg); -moz-appearance: textfield;
+        }
+        .code-input::-webkit-outer-spin-button, .code-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .code-input:focus { border-color: var(--title-color); outline: none; }
+        #code-input-container.shake { animation: shake 0.5s; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        #check-code-button {
+            background-color: var(--correct-color); color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: 700; cursor: pointer; transition: transform 0.2s;
+        }
+        #check-code-button:hover { transform: scale(1.05); }
+
+        #play-wheel-button {
+            display: none; background-color: var(--difficulty-extra); color: white; border: 2px solid white;
+            border-radius: 10px; padding: 15px 30px; font-family: var(--font-title); font-size: 1.2rem;
+            letter-spacing: 1px; margin: 20px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); cursor: pointer;
+            animation: pulse-red 2s infinite;
+        }
         @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
         
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s; }
@@ -210,6 +245,7 @@
         .card-face-back .card-title { font-size: 1.1rem; margin-bottom: 5px; }
         .card-face-back .card-desc { font-size: 0.8rem; }
         #card-prizes-list { list-style-type: '🃏'; text-align: left; padding-left: 20px; font-size: 0.9rem; line-height: 1.6; }
+
     </style>
 </head>
 <body class="theme-classic">
@@ -229,6 +265,7 @@
                         <line class="logo-handle" x1="32" y1="72" x2="5" y2="95" stroke-width="16" stroke-linecap="round"/>
                         <text class="logo-text" x="50" y="62" font-family="Fredoka One, cursive" font-size="38" text-anchor="middle">Szó</text>
                     </svg>
+                    <div id="secret-digit-display"></div>
                 </div>
                 <div style="text-align: center; position: relative;">
                     <div id="title-container">
@@ -249,7 +286,27 @@
         </header>
         
         <div id="word-tracker"></div>
-        <button id="unlock-bonus-button" disabled>🏆 Szerencsekerék 🏆</button>
+        
+        <div id="bonus-unlock-container">
+            <div id="bonus-unlock-header">
+                 <svg id="wheel-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="var(--key-bg)" stroke="var(--title-color)" stroke-width="8"/>
+                    <path d="M50 5 L50 95 M5 50 L95 50 M20 20 L80 80 M20 80 L80 20" stroke="rgba(0,0,0,0.1)" stroke-width="6"/>
+                    <circle cx="50" cy="50" r="15" fill="var(--title-color)"/>
+                    <text x="50" y="58" text-anchor="middle" font-size="20" fill="white" font-weight="bold">★</text>
+                </svg>
+                <h2>Szerencsekerék</h2>
+            </div>
+            <p>Gyűjtsd össze a játék közben felvillanó 4 jegyű kódot a feloldáshoz!</p>
+            <div id="code-input-container">
+                <input type="number" class="code-input" maxlength="1" data-index="0">
+                <input type="number" class="code-input" maxlength="1" data-index="1">
+                <input type="number" class="code-input" maxlength="1" data-index="2">
+                <input type="number" class="code-input" maxlength="1" data-index="3">
+            </div>
+            <button id="check-code-button">Kód beváltása</button>
+        </div>
+        <button id="play-wheel-button">🏆 Szerencsekerék Játék 🏆</button>
         
         <div id="info-bar">
             <!-- Tartalom JS-ből -->
@@ -272,9 +329,9 @@
              <h3>Játékszabályok</h3>
             <ul>
                 <li><strong>Alapjáték:</strong> Óránként 5 új szót kapsz, amik legalább 6 óráig nem ismétlődnek. A helyes megfejtésért pont jár.</li>
-                <li><strong>Játékmód:</strong> Dönthetsz, hogy "Relax" módban, időkorlát nélkül, vagy "Időfutam" módban, időre játszol. Az időfutam több pontot ér!</li>
-                <li><strong style="color:var(--fail-color)">Újrapróbálás:</strong> Ha nem sikerül egy szó, a megoldás nem jelenik meg. 15 perc múlva újra próbálkozhatsz, vagy felfedheted a megoldást, de akkor elveszted az újrapróbálkozás esélyét.</li>
-                <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót megfejted, feloldod a bónusz játékot, ahol a pontjaidat kockáztathatod a nagyobb nyereményért. A 3. kör után a "12 Kártya" bónuszjáték következik!</li>
+                <li><strong>Titkos Kód:</strong> A játék közben, a logó mellett 4 számjegy villan fel. Jegyezd meg őket!</li>
+                <li><strong>Szerencsekerék:</strong> Ha mind az 5 szót megfejted, VAGY beírod a helyes titkos kódot, feloldod a bónusz játékot.</li>
+                <li><strong style="color:var(--fail-color)">Újrapróbálás:</strong> Ha nem sikerül egy szó, 15 perc múlva újra próbálkozhatsz, vagy felfedheted a megoldást.</li>
             </ul>
         </div>
     </div>
@@ -384,7 +441,13 @@
         // DOM Elemek
         const body = document.body;
         const hiddenInput = document.getElementById('hidden-input');
-        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const unlockBonusButton = document.getElementById('unlock-bonus-button'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
+        const secretDigitDisplay = document.getElementById('secret-digit-display');
+        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const dailyScoreDisplaySpan = document.querySelector('#daily-score-display span'); const newSetOverlay = document.getElementById('new-set-overlay'); const refreshButton = document.getElementById('refresh-button');
+        const bonusUnlockContainer = document.getElementById('bonus-unlock-container');
+        const codeInputContainer = document.getElementById('code-input-container');
+        const codeInputs = document.querySelectorAll('.code-input');
+        const checkCodeButton = document.getElementById('check-code-button');
+        const playWheelButton = document.getElementById('play-wheel-button');
         const keyboardToggleCheckbox = document.getElementById('keyboard-toggle-checkbox');
         const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const stakeAmountEl = document.getElementById('stake-amount'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const solveButton = document.getElementById('solve-button'); const wheelMessageDisplay = document.getElementById('wheel-message-display');
         const wheelRoundDisplay = document.getElementById('wheel-round-display'); const wheelDecisionControls = document.getElementById('wheel-decision-controls'); const cashOutButton = document.getElementById('cash-out-button'); const nextRoundButton = document.getElementById('next-round-button'); const themeToggleButton = document.getElementById('theme-toggle-button'); const themePicker = document.getElementById('theme-picker');
@@ -407,7 +470,6 @@
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
-        const BONUS_REMINDER_MESSAGES = [ { title: "A nyomozás szünetel...", text: "Minden nyomot felderítettél! Oldd fel a bónusz játékot a Szerencsekerék gombbal a nagyobb nyereményért, vagy..." }, { title: "Minden szál elvarrva", text: "Kiváló munka, minden rejtély megoldva! Most jöhet a Szerencsekerék, vagy egy kávészünet amíg..." }, ];
         const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
         const RANDOM_GAME_MESSAGES = [ "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.", "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól." ];
         const WHEEL_MESSAGES = {
@@ -464,7 +526,7 @@
         function showWheelMessage(category, options = {}) { clearTimeout(wheelMessageTimeout); const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; let message = messages[Math.floor(Math.random() * messages.length)]; if (options.value) { message = message.replace('{value}', `<strong>${options.value}</strong>`); } if (options.solution) { message = message.replace('{solution}', options.solution); } wheelMessageDisplay.innerHTML = message; wheelMessageDisplay.style.opacity = 1; wheelMessageTimeout = setTimeout(() => { wheelMessageDisplay.style.opacity = 0; }, options.duration || 4000); }
         function drawWheel(round) { wheel.innerHTML = ''; const segments = wheelSegmentSets[round]; if(!segments) return; const numSegments = segments.length; const angleStep = 360 / numSegments; const radius = 50; for (let i = 0; i < numSegments; i++) { const segment = segments[i]; const startAngle = i * angleStep; const endAngle = (i + 1) * angleStep; const start = polarToCartesian(radius, radius, radius, endAngle); const end = polarToCartesian(radius, radius, radius, startAngle); const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"; const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", d); path.setAttribute("fill", segment.color); wheel.appendChild(path); const textAngle = startAngle + angleStep / 2; const textPos = polarToCartesian(radius, radius, radius * 0.7, textAngle); const text = document.createElementNS("http://www.w3.org/2000/svg", "text"); text.setAttribute("x", textPos.x); text.setAttribute("y", textPos.y); text.setAttribute("text-anchor", "middle"); text.setAttribute("dominant-baseline", "middle"); text.setAttribute("font-size", "7"); text.setAttribute("font-weight", "bold"); text.setAttribute("fill", "white"); text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`); text.textContent = segment.label; wheel.appendChild(text); } }
         function polarToCartesian(cx, cy, r, angle) { const rad = (angle - 90) * Math.PI / 180.0; return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) }; }
-        function initWheelGame() { let stake = 0; const currentScore = getDailyScore(); let jokerText = ""; while (true) { jokerText = prompt("A bónusz játék előtt add meg a JOKER szövegedet! Ha ezt a kártyát húzod, ez a szöveg fog megjelenni.", "Szia Anya!"); if (jokerText && jokerText.trim() !== "") { break; } alert("A Joker szöveg nem lehet üres!"); } while (true) { const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi pontszám: ${currentScore})`, "100"); if (stakeInput === null) { return; } stake = parseInt(stakeInput); if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; } alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg."); } addPointsToDailyScore(-stake); gameData.bonusPlayed = true; saveGame(); unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('pulse-red', 'unlocked'); wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [], hasBeenBankrupt: false, jokerText: jokerText, vowelsBoughtThisRound: 0, consonantMisses: 0 }; stakeAmountEl.textContent = stake; startNewRound(); wheelGameOverlay.classList.add('visible'); checkAndDisplayIdleState(); }
+        function initWheelGame() { let stake = 0; const currentScore = getDailyScore(); let jokerText = ""; while (true) { jokerText = prompt("A bónusz játék előtt add meg a JOKER szövegedet! Ha ezt a kártyát húzod, ez a szöveg fog megjelenni.", "Szia Anya!"); if (jokerText && jokerText.trim() !== "") { break; } alert("A Joker szöveg nem lehet üres!"); } while (true) { const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi pontszám: ${currentScore})`, "100"); if (stakeInput === null) { return; } stake = parseInt(stakeInput); if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; } alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg."); } addPointsToDailyScore(-stake); playWheelButton.style.display = 'none'; wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [], hasBeenBankrupt: false, jokerText: jokerText, vowelsBoughtThisRound: 0, consonantMisses: 0 }; stakeAmountEl.textContent = stake; startNewRound(); wheelGameOverlay.classList.add('visible'); checkAndDisplayIdleState(); }
         function startNewRound() { wheelState.currentRound++; wheelState.guessedLetters = []; wheelState.roundScore = 0; wheelState.vowelsBoughtThisRound = 0; wheelState.consonantMisses = 0; wheelHelpButton.style.display = 'none'; wheelHelpButton.classList.remove('pulse-purple'); wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; const seed = getCurrentHourSeed() + wheelState.currentRound; const puzzleIndex = Math.floor(seededRandom(seed) * wheelPuzzles.length); wheelState.puzzle = wheelPuzzles[puzzleIndex]; drawWheel(wheelState.currentRound); setupPuzzleBoard(); createAlphabetPanel(); updateUIForGameState('start_round'); showWheelMessage('start_round'); }
         function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); key.title = "Magánhangzó (250 pont)"; } else { key.title = "Mássalhangzó"; } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
         function handleAlphabetClick(letter) { if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; const isVowel = VOWELS.includes(letter); if (isVowel) { if(wheelState.spinResult !== null && wheelState.spinResult > 0) { showWheelMessage("Előbb tippelj a mássalhangzóra pörgetés után!"); return; } if (wheelState.vowelsBoughtThisRound >= 2) { showWheelMessage('vowel_limit'); return; } const effectiveWinnings = wheelState.totalWinnings + wheelState.initialStake; if (effectiveWinnings < 250) { showWheelMessage('not_enough_points'); return; } if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { addPointsToDailyScore(-250); wheelState.vowelsBoughtThisRound++; guessLetter(letter); } } else { const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (wheelState.spinResult > 0) { guessLetter(letter); } else { showWheelMessage('spin_prompt'); } } }
@@ -491,10 +553,11 @@
         function getDailyScore() { const stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); return stats ? stats.totalScore : 0; }
         function addPointsToDailyScore(points) { let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.totalScore = Math.max(0, stats.totalScore + points); localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateDailyScoreDisplay(stats.totalScore); }
         function updateDailyScoreDisplay(score) { dailyScoreDisplaySpan.textContent = Math.round(score); }
-        function initGame() { checkDailyReset(); loadKeyboardSetting(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: {}, gameModes: {}, revealedIndices: {}, revealedHints: {}, bonusPlayed: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const allIndices = Array.from(Array(wordData.length).keys()); let chosenIndices = []; for (let i = 0; i < 5; i++) { const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * allIndices.length); chosenIndices.push(allIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.gameModes = Array(5).fill('relax'); gameData.revealedIndices = {}; gameData.revealedHints = {}; gameData.bonusPlayed = false; for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], usedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); if (!checkAndDisplayIdleState()) { loadWord(gameData.currentWordIndex); } checkForBonusGameUnlock(); }
-        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; clearInterval(timerInterval); clearInterval(randomMessageInterval); clearTimeout(hintDisplayTimeout); hintDisplayArea.classList.remove('active'); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet]; gameData.isGameOver = (wordProgress.status !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); startRandomMessageTimer(); if (keyboardToggleCheckbox.checked) { setTimeout(() => hiddenInput.focus(), 100); } } }
-        function submitGuess() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (gameData.currentCol !== wordObject.word.length) return; const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join(''); if (guess.length !== wordObject.word.length) return; flipRow(guess, wordObject.word.toUpperCase()); if (guess === wordObject.word.toUpperCase()) { gameData.isGameOver = true; clearInterval(timerInterval); clearInterval(randomMessageInterval); if(!gameData.progress[gameData.currentWordIndex].scored) { let points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0)); if (gameData.gameModes[gameData.currentWordIndex] === 'timed') { points = Math.round(points * 1.5); } addPointsToDailyScore(points); showFeedbackMessage(`Helyes! +${points} pont!`); gameData.progress[gameData.currentWordIndex].scored = true; } gameData.progress[gameData.currentWordIndex].status = 'solved'; keyboardContainer.classList.add('disabled'); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; setTimeout(() => { checkForBonusGameUnlock(); saveGame(); renderWordTracker(); checkAndDisplayIdleState(); }, 2500); } else { gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } else { gameData.currentCol = 0; } } saveGame(); }
-        function calculateHintCost(isLetterHint = false) { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; let baseCost; switch (wordObject.difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const score = getDailyScore(); const dynamicCost = Math.floor(score * 0.05); baseCost += dynamicCost; const hintsUsed = gameData.revealedHints[gameData.currentWordIndex].usedCount; const costMultiplier = hintsUsed >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost * costMultiplier * letterMultiplier); }
+        function initGame() { checkDailyReset(); loadKeyboardSetting(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: {}, gameModes: {}, revealedIndices: {}, revealedHints: {}, secretCode: [], digitsShown: [false, false, false, false], bonusUnlocked: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const allIndices = Array.from(Array(wordData.length).keys()); let chosenIndices = []; for (let i = 0; i < 5; i++) { const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * allIndices.length); chosenIndices.push(allIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; for (let i = 0; i < 4; i++) { gameData.secretCode.push(Math.floor(seededRandom(hourSeed + 200 + i) * 10)); } gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.gameModes = Array(5).fill('relax'); gameData.revealedIndices = {}; gameData.revealedHints = {}; for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], usedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); updateBonusUnlockUI(); if (!checkAndDisplayIdleState()) { loadWord(gameData.currentWordIndex); } }
+        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; clearInterval(timerInterval); clearInterval(randomMessageInterval); clearTimeout(hintDisplayTimeout); hintDisplayArea.classList.remove('active'); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet]; gameData.isGameOver = (wordProgress.status !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[indexInSet]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); scheduleDigitAppearance(); startRandomMessageTimer(); if (keyboardToggleCheckbox.checked) { setTimeout(() => hiddenInput.focus(), 100); } } }
+        function scheduleDigitAppearance() { const digitIndex = gameData.currentWordIndex; if (digitIndex >= 4 || gameData.digitsShown[digitIndex] || gameData.isGameOver) { return; } const randomDelay = Math.random() * 20000 + 5000; setTimeout(() => { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const digit = gameData.secretCode[digitIndex]; secretDigitDisplay.textContent = digit; secretDigitDisplay.classList.add('visible'); gameData.digitsShown[digitIndex] = true; saveGame(); setTimeout(() => { secretDigitDisplay.classList.remove('visible'); }, 2000); }, randomDelay); }
+        function submitGuess() { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (gameData.currentCol !== wordObject.word.length) return; const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join(''); if (guess.length !== wordObject.word.length) return; flipRow(guess, wordObject.word.toUpperCase()); if (guess === wordObject.word.toUpperCase()) { gameData.isGameOver = true; clearInterval(timerInterval); clearInterval(randomMessageInterval); if(!gameData.progress[gameData.currentWordIndex].scored) { let points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0)); if (gameData.gameModes[gameData.currentWordIndex] === 'timed') { points = Math.round(points * 1.5); } addPointsToDailyScore(points); showFeedbackMessage(`Helyes! +${points} pont!`); gameData.progress[gameData.currentWordIndex].scored = true; } gameData.progress[gameData.currentWordIndex].status = 'solved'; keyboardContainer.classList.add('disabled'); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; setTimeout(() => { checkForBonusGameUnlock(); saveGame(); renderWordTracker(); updateBonusUnlockUI(); checkAndDisplayIdleState(); }, 2500); } else { gameData.currentRow++; if (gameData.currentRow >= MAX_GUESSES) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } else { gameData.currentCol = 0; } } saveGame(); }
+        function calculateHintCost(isLetterHint = false) { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; let baseCost; switch (wordObject.difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const score = getDailyScore(); const dynamicCost = Math.floor(score * 0.05); baseCost += dynamicCost; const hintsUsed = gameData.revealedHints[gameData.currentWordIndex].usedCount; const costMultiplier = hintsUsed >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost); }
         function spendPointsForHint(isLetterHint = false) { const cost = calculateHintCost(isLetterHint); const currentScore = getDailyScore(); if (currentScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${currentScore} pontod van.`); return false; } if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToDailyScore(-cost); return true; } return false; }
         
         // --- SEGÉD- ÉS RENDERELŐ FÜGGVÉNYEK ---
@@ -506,7 +569,7 @@
         function displayHint(isLetterHint) { clearTimeout(hintDisplayTimeout); clearInterval(randomMessageInterval); hintDisplayArea.innerHTML = `Lássuk csak...`; hintDisplayArea.classList.add('active'); setTimeout(() => { if (gameData.isGameOver) { showEndMessage(); return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; hintsData.usedCount++; if (isLetterHint) { revealRandomLetter(); hintDisplayArea.innerHTML = 'Felfedtem egy betűt a rácson!'; } else { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const nextHintIndex = hintsData.text.length; revealTextHint(nextHintIndex); hintDisplayArea.innerHTML = `<strong>${nextHintIndex + 1}. tipp:</strong> ${wordObject.hints[nextHintIndex]}`; } updateHintButtons(); saveGame(); hintDisplayTimeout = setTimeout(() => { hintDisplayArea.classList.remove('active'); startRandomMessageTimer(); }, 5000); }, 1500); }
         function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); }
         function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex]; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; revealedIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); }
-        function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; gameData.progress[gameData.currentWordIndex].failTimestamp = Date.now(); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); checkForBonusGameUnlock(); }
+        function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; gameData.progress[gameData.currentWordIndex].failTimestamp = Date.now(); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); }
         function initializeGrid(wordLength) { gridContainer.innerHTML = ''; gridContainer.style.height = `auto`; for (let i = 0; i < MAX_GUESSES; i++) { const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`; row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`; for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; } gridContainer.appendChild(row); } const revealed = gameData.revealedIndices[gameData.currentWordIndex]; if (revealed && revealed.length > 0) { const targetWord = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.toUpperCase(); revealed.forEach(index => { for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`); if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); } } }); } }
         function initializeKeyboard() { keyboardContainer.innerHTML = ''; KEY_LAYOUT.forEach(rowKeys => { const row = document.createElement('div'); row.className = 'keyboard-row'; rowKeys.forEach(key => { const button = document.createElement('button'); button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase(); if (key === 'Enter' || key === 'Backspace') button.classList.add('large'); button.addEventListener('click', (e) => { e.preventDefault(); handleKeyPress(key); }); row.appendChild(button); }); keyboardContainer.appendChild(row); }); }
         function handleKeyPress(key) { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE' || upperKey === 'BACK') { deleteLetter(); } else if (upperKey.length === 1 && FULL_ALPHABET.includes(upperKey)) { addLetter(upperKey); } }
@@ -519,25 +582,60 @@
         function updateKeyboard(letter, state) { const key = document.querySelector(`.key[data-key="${letter}"]`); if (!key) return; const priorities = { 'correct': 3, 'present': 2, 'absent': 1 }; const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent'; if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) { key.classList.remove('correct', 'present', 'absent'); key.classList.add(state); } }
         function checkForNewHour() { if (newSetOverlay.classList.contains('visible')) return; const currentSeed = getCurrentHourSeed(); if (gameData.seed && currentSeed !== gameData.seed) { newSetOverlay.classList.add('visible'); } }
         function updateHintButtons() { if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const hintsUsed = hintsData.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = hintsData.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
-        function checkForBonusGameUnlock() { const allSolved = gameData.progress.every(p => p.status === 'solved'); if (allSolved && !gameData.bonusPlayed) { unlockBonusButton.disabled = false; unlockBonusButton.classList.add('unlocked', 'pulse-red'); } else { unlockBonusButton.disabled = true; unlockBonusButton.classList.remove('unlocked', 'pulse-red'); } }
+        function checkForBonusGameUnlock() { const allWordsSolved = gameData.progress.every(p => p.status === 'solved'); if (allWordsSolved) { gameData.bonusUnlocked = true; saveGame(); updateBonusUnlockUI(); } }
+        function updateBonusUnlockUI() { if (gameData.bonusUnlocked) { bonusUnlockContainer.style.display = 'none'; playWheelButton.style.display = 'block'; } else { bonusUnlockContainer.style.display = 'flex'; playWheelButton.style.display = 'none'; } }
         function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
         function getCurrentHourSeed() { const now = new Date(); return now.getFullYear() * 1000000 + (now.getMonth() + 1) * 10000 + now.getDate() * 100 + now.getHours(); }
         function toggleGameMode() { if (gameData.isGameOver) return; const currentMode = gameData.gameModes[gameData.currentWordIndex]; gameData.gameModes[gameData.currentWordIndex] = currentMode === 'relax' ? 'timed' : 'relax'; updateGameModeDisplay(); saveGame(); }
         function updateGameModeDisplay() { const mode = gameData.gameModes[gameData.currentWordIndex]; const modeLabel = document.getElementById('game-mode-label'); const timerDisplay = document.getElementById('timer-display'); if(!modeLabel || !timerDisplay) return; if (mode === 'timed') { modeLabel.textContent = 'Időfutam'; timerDisplay.style.display = 'inline'; startTimer(gameData.timers[gameData.currentWordIndex]); } else { modeLabel.textContent = 'Relax'; timerDisplay.style.display = 'none'; clearInterval(timerInterval); } }
         function showRandomGameMessage() { if (gameData.isGameOver || document.querySelector('.overlay.visible') || hintDisplayArea.classList.contains('active') || checkAndDisplayIdleState()) return; showFeedbackMessage(`<i>${RANDOM_GAME_MESSAGES[Math.floor(Math.random() * RANDOM_GAME_MESSAGES.length)]}</i>`); }
         function startRandomMessageTimer() { clearInterval(randomMessageInterval); randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); }
-        function checkAndDisplayIdleState() { clearInterval(idleCountdownInterval); const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); if (allWordsCompleted) { gridContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; setKeyboardVisibility(false); clearInterval(randomMessageInterval); let msg; const allSolved = gameData.progress.every(p => p.status === 'solved'); if (allSolved && !gameData.bonusPlayed) { msg = BONUS_REMINDER_MESSAGES[getCurrentHourSeed() % BONUS_REMINDER_MESSAGES.length]; } else { msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; } idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; idleMessageContainer.style.display = 'block'; const countdownElement = document.getElementById('countdown-timer'); function updateCountdown() { const now = new Date(); const nextHour = new Date(now); nextHour.setHours(now.getHours() + 1); nextHour.setMinutes(0); nextHour.setSeconds(0); nextHour.setMilliseconds(0); const timeLeft = nextHour - now; const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24).toString().padStart(2, '0'); const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; if (timeLeft < 0) { clearInterval(idleCountdownInterval); countdownElement.textContent = "Bármelyik pillanatban!"; } } updateCountdown(); idleCountdownInterval = setInterval(updateCountdown, 1000); return true; } else { gridContainer.style.display = 'grid'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; setKeyboardVisibility(keyboardToggleCheckbox.checked); return false; } }
+        function checkAndDisplayIdleState() { clearInterval(idleCountdownInterval); const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); if (allWordsCompleted) { gridContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; setKeyboardVisibility(false); clearInterval(randomMessageInterval); let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; idleMessageContainer.style.display = 'block'; const countdownElement = document.getElementById('countdown-timer'); function updateCountdown() { const now = new Date(); const nextHour = new Date(now); nextHour.setHours(now.getHours() + 1); nextHour.setMinutes(0); nextHour.setSeconds(0); nextHour.setMilliseconds(0); const timeLeft = nextHour - now; if (timeLeft < 0) { clearInterval(idleCountdownInterval); countdownElement.textContent = "Bármelyik pillanatban!"; return; } const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; } updateCountdown(); idleCountdownInterval = setInterval(updateCountdown, 1000); return true; } else { gridContainer.style.display = 'grid'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; setKeyboardVisibility(keyboardToggleCheckbox.checked); return false; } }
 
         // --- ESEMÉNYKEZELŐK ---
-        document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT' && e.target.type !== 'checkbox') return; handleKeyPress(e.key); });
+        document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && !e.target.classList.contains('code-input')) return; if (!e.target.classList.contains('code-input')) { handleKeyPress(e.key); } });
         hiddenInput.addEventListener('input', (e) => { if (e.target.value) { handleKeyPress(e.target.value.slice(-1)); e.target.value = ''; } });
         gridContainer.addEventListener('click', () => { if (keyboardToggleCheckbox.checked) { hiddenInput.focus(); } });
         refreshButton.addEventListener('click', () => location.reload());
-        unlockBonusButton.addEventListener('click', () => { if(unlockBonusButton.classList.contains('unlocked')) initWheelGame(); });
+        
+        playWheelButton.addEventListener('click', () => { initWheelGame(); });
+
+        codeInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val && !/^\d$/.test(val)) { e.target.value = ''; return; }
+                if (val && input.dataset.index < '3') {
+                    codeInputs[parseInt(input.dataset.index) + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && input.dataset.index > '0') {
+                    codeInputs[parseInt(input.dataset.index) - 1].focus();
+                }
+            });
+        });
+
+        checkCodeButton.addEventListener('click', () => {
+            const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+            const correctCode = gameData.secretCode.join('');
+            if (enteredCode === correctCode) {
+                alert("Helyes kód! Feloldottad a Szerencsekereket!");
+                gameData.bonusUnlocked = true;
+                saveGame();
+                updateBonusUnlockUI();
+            } else {
+                alert("Hibás kód! Figyelj tovább a felvillanó számokra!");
+                codeInputContainer.classList.add('shake');
+                setTimeout(() => codeInputContainer.classList.remove('shake'), 500);
+                codeInputs.forEach(input => input.value = '');
+                codeInputs[0].focus();
+            }
+        });
+
         spinButton.addEventListener('click', togglePowerMeterAndSpin);
         powerMeterContainer.addEventListener('click', togglePowerMeterAndSpin);
         solveButton.addEventListener('click', solve);
-        closeWheelButton.addEventListener('click', () => { wheelGameOverlay.classList.remove('visible'); updateDailyScoreDisplay(getDailyScore()); checkForBonusGameUnlock(); checkAndDisplayIdleState(); });
+        closeWheelButton.addEventListener('click', () => { wheelGameOverlay.classList.remove('visible'); updateDailyScoreDisplay(getDailyScore()); checkAndDisplayIdleState(); updateBonusUnlockUI(); });
         cashOutButton.addEventListener('click', cashOut);
         nextRoundButton.addEventListener('click', startNewRound);
         collectWinningsButton.addEventListener('click', () => { cardGameOverlay.classList.remove('visible'); cashOut(); closeWheelButton.click(); });

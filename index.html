@@ -207,10 +207,11 @@
         .overlay.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
         .overlay-content { background-color: var(--container-bg); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; padding: clamp(20px, 4vw, 30px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95vw; width: auto; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .overlay-content h2 { font-family: var(--font-title); color: var(--title-color); margin: 0 0 10px 0; font-size: clamp(1.5rem, 6vw, 2.2rem); }
+        .overlay-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 15px; transition: transform 0.2s ease, background-color 0.3s ease; }
         
         /* Szerencsekerék */
         #wheel-game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        #wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 10px auto; }
+        #wheel-wrapper { position: relative; width: 340px; height: 340px; margin: 10px auto; }
         #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid var(--fail-color); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; transition: border-top-color 0.3s ease; }
         #wheel { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
         #wheel-game-ui { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
@@ -495,6 +496,7 @@
 
         // --- KONSTANSOK ÉS VÁLTOZÓK ---
         const MAX_GUESSES = 6; let gameData = {}; let timerInterval; let cooldownIntervals = {}; let wheelMessageTimeout = null; let randomMessageInterval = null; let idleCountdownInterval = null; let secretCodeFlasherInterval = null;
+        let activeHints = { text: [], letterIndices: [], usedCount: 0 };
         const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
         const RETRY_COOLDOWN_MS = 15 * 60 * 1000;
         
@@ -675,7 +677,26 @@
         function updateAlphabetPanel() { wheelState.guessedLetters.forEach(letter => { const key = wheelAlphabetPanel.querySelector(`[data-letter="${letter}"]`); if(key) key.classList.add('guessed'); }); }
         function setupPuzzleBoard() { puzzleBoardEl.innerHTML = ''; puzzleCategoryEl.textContent = wheelState.puzzle.category; const puzzleText = wheelState.puzzle.puzzle.toUpperCase(); for(const char of puzzleText) { const tile = document.createElement('div'); if (char === ' ') { tile.className = 'puzzle-tile space'; } else { tile.className = 'puzzle-tile'; tile.innerHTML = `<div class="tile-inner"><div class="tile-face tile-front"></div><div class="tile-face tile-back">${char}</div></div>`; tile.dataset.letter = char.toUpperCase(); } puzzleBoardEl.appendChild(tile); } }
         function togglePowerMeterAndSpin() { if (wheelState.isSpinning) return; const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (!wheelState.isPoweringUp) { showWheelMessage('power_up_prompt'); wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
-        function spinWheel(power) { wheelState.isSpinning = true; updateUIForGameState('spinning'); showWheelMessage('Pörög a kerék...'); const baseRotations = 3; const randomExtra = Math.random(); const powerRotation = 2 * power; const totalRotation = (baseRotations + randomExtra + powerRotation) * 360; const currentRotation = parseFloat(wheel.dataset.rotation || 0); const newRotation = currentRotation + totalRotation; wheel.style.transform = `rotate(${newRotation}deg)`; wheel.dataset.rotation = newRotation; setTimeout(() => { const finalAngle = newRotation % 360; const segments = wheelSegmentSets[wheelState.currentRound]; const segmentAngle = 360 / segments.length; const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % segments.length; handleSpinResult(segments[segmentIndex].value); }, 4000); }
+        function spinWheel(power) {
+            wheelState.isSpinning = true;
+            updateUIForGameState('spinning');
+            showWheelMessage('spin_prompt');
+            const baseRotations = 2; 
+            const randomExtra = Math.random(); 
+            const powerRotation = 6 * power; 
+            const totalRotation = (baseRotations + randomExtra + powerRotation) * 360;
+            const currentRotation = parseFloat(wheel.dataset.rotation || 0);
+            const newRotation = currentRotation + totalRotation;
+            wheel.style.transform = `rotate(${newRotation}deg)`;
+            wheel.dataset.rotation = newRotation;
+            setTimeout(() => {
+                const finalAngle = newRotation % 360;
+                const segments = wheelSegmentSets[wheelState.currentRound];
+                const segmentAngle = 360 / segments.length;
+                const segmentIndex = Math.floor((360 - finalAngle % 360) / segmentAngle) % segments.length;
+                handleSpinResult(segments[segmentIndex].value);
+            }, 4000);
+        }
         function handleSpinResult(result) {
             wheelState.isSpinning = false;
             if (result === 'bankrupt') {
@@ -759,8 +780,52 @@
         function getDailyScore() { const stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); return stats ? stats.totalScore : 0; }
         function addPointsToDailyScore(points) { let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.totalScore = Math.max(0, stats.totalScore + points); localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateDailyScoreDisplay(stats.totalScore); }
         function updateDailyScoreDisplay(score) { dailyScoreDisplaySpan.textContent = Math.round(score); }
-        function initGame() { checkDailyReset(); loadKeyboardSetting(); const hourSeed = getCurrentHourSeed(); const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress')); if (storedData && storedData.seed === hourSeed) { gameData = storedData; } else { gameData = { seed: hourSeed, hourlySet: [], progress: [], timers: {}, gameModes: {}, revealedIndices: {}, revealedHints: {}, secretCode: [], insurancesGainedThisHour: 0, bonusUnlocked: false, wheelGamePlayedThisHour: false, currentWordIndex: 0, currentRow: 0, currentCol: 0, isGameOver: false }; const allIndices = Array.from(Array(wordData.length).keys()); let chosenIndices = []; for (let i = 0; i < 5; i++) { const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * allIndices.length); chosenIndices.push(allIndices.splice(randomIndex, 1)[0]); } gameData.hourlySet = chosenIndices; for (let i = 0; i < 4; i++) { gameData.secretCode.push(Math.floor(seededRandom(hourSeed + 200 + i) * 10)); } gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false})); gameData.timers = Array(5).fill(180); gameData.gameModes = Array(5).fill('relax'); gameData.revealedIndices = {}; gameData.revealedHints = {}; for(let i=0; i<5; i++) { gameData.revealedIndices[i] = []; gameData.revealedHints[i] = { text: [], usedCount: 0 }; } gameData.currentWordIndex = 0; saveGame(); } renderWordTracker(); updateBonusUnlockUI(); if (!checkAndDisplayIdleState()) { loadWord(gameData.currentWordIndex); } startSecretCodeFlasher(); }
-        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; hintDisplayArea.innerHTML = ''; hintDisplayArea.classList.remove('active'); clearInterval(timerInterval); clearInterval(randomMessageInterval); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet]; gameData.isGameOver = (wordProgress.status !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); renderActiveHints(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); if(!hintDisplayArea.classList.contains('active')) { startRandomMessageTimer(); } if (keyboardToggleCheckbox.checked) { setTimeout(() => hiddenInput.focus(), 100); } } }
+        function initGame() {
+            checkDailyReset();
+            loadKeyboardSetting();
+            const hourSeed = getCurrentHourSeed();
+            const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
+            if (storedData && storedData.seed === hourSeed) {
+                gameData = storedData;
+            } else {
+                gameData = {
+                    seed: hourSeed,
+                    hourlySet: [],
+                    progress: [],
+                    timers: {},
+                    gameModes: {},
+                    secretCode: [],
+                    insurancesGainedThisHour: 0,
+                    bonusUnlocked: false,
+                    wheelGamePlayedThisHour: false,
+                    currentWordIndex: 0,
+                    currentRow: 0,
+                    currentCol: 0,
+                    isGameOver: false
+                };
+                const allIndices = Array.from(Array(wordData.length).keys());
+                let chosenIndices = [];
+                for (let i = 0; i < 5; i++) {
+                    const randomIndex = Math.floor(seededRandom(hourSeed + i * 13) * allIndices.length);
+                    chosenIndices.push(allIndices.splice(randomIndex, 1)[0]);
+                }
+                gameData.hourlySet = chosenIndices;
+                for (let i = 0; i < 4; i++) {
+                    gameData.secretCode.push(Math.floor(seededRandom(hourSeed + 200 + i) * 10));
+                }
+                gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false}));
+                gameData.timers = Array(5).fill(180);
+                gameData.gameModes = Array(5).fill('relax');
+                saveGame();
+            }
+            renderWordTracker();
+            updateBonusUnlockUI();
+            if (!checkAndDisplayIdleState()) {
+                loadWord(gameData.currentWordIndex);
+            }
+            startSecretCodeFlasher();
+        }
+        function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; activeHints = { text: [], letterIndices: [], usedCount: 0 }; hintDisplayArea.innerHTML = ''; hintDisplayArea.classList.remove('active'); clearInterval(timerInterval); clearInterval(randomMessageInterval); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet]; gameData.isGameOver = (wordProgress.status !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); startRandomMessageTimer(); if (keyboardToggleCheckbox.checked) { setTimeout(() => hiddenInput.focus(), 100); } } }
         function startSecretCodeFlasher() { clearInterval(secretCodeFlasherInterval); secretCodeFlasherInterval = setInterval(flashRandomDigit, Math.random() * 20000 + 15000); }
         function flashRandomDigit() { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const digitIndex = Math.floor(Math.random() * 4); const targetInput = codeInputs[digitIndex]; if (targetInput.dataset.isFlashing === 'true' || targetInput.disabled) return; const digit = gameData.secretCode[digitIndex]; const originalValue = targetInput.value; targetInput.disabled = true; targetInput.classList.add('flashing-code'); targetInput.dataset.isFlashing = 'true'; targetInput.dataset.originalValue = originalValue; targetInput.value = digit; setTimeout(() => { targetInput.value = targetInput.dataset.originalValue; targetInput.disabled = false; targetInput.classList.remove('flashing-code'); targetInput.dataset.isFlashing = 'false'; }, 2000); }
         function submitGuess() {
@@ -810,7 +875,7 @@
             }
             saveGame();
         }
-        function calculateHintCost(isLetterHint = false) { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; let baseCost; switch (wordObject.difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const score = getDailyScore(); const dynamicCost = Math.floor(score * 0.05); baseCost += dynamicCost; const hintsUsed = gameData.revealedHints[gameData.currentWordIndex].usedCount; const costMultiplier = hintsUsed >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost); }
+        function calculateHintCost(isLetterHint = false) { let baseCost; switch (wordData[gameData.hourlySet[gameData.currentWordIndex]].difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const score = getDailyScore(); const dynamicCost = Math.floor(score * 0.05); baseCost += dynamicCost; const costMultiplier = activeHints.usedCount >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost * costMultiplier * letterMultiplier); }
         function spendPointsForHint(isLetterHint = false) { const cost = calculateHintCost(isLetterHint); const currentScore = getDailyScore(); if (currentScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${currentScore} pontod van.`); return false; } if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToDailyScore(-cost); return true; } return false; }
         
         // --- SEGÉD- ÉS RENDERELŐ FÜGGVÉNYEK ---
@@ -820,24 +885,22 @@
         function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); const timeString = `${minutes}:${seconds}`; const timerDisplayEl = document.getElementById('timer-display'); if (timerDisplayEl) timerDisplayEl.textContent = timeString; }
         function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; saveGame(); updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } }, 1000); }
         function renderActiveHints() {
-            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
-            const revealedLetterCount = gameData.revealedIndices[gameData.currentWordIndex].length;
-
-            if (!hintsData || (hintsData.text.length === 0 && revealedLetterCount === 0)) {
+            
+            if (activeHints.text.length === 0 && activeHints.letterIndices.length === 0) {
                 hintDisplayArea.innerHTML = '';
                 hintDisplayArea.classList.remove('active');
                 return;
             }
 
             let hintsHTML = '';
-            hintsData.text.forEach((hintIndex, displayOrder) => {
+            activeHints.text.forEach((hintIndex, displayOrder) => {
                 hintsHTML += `<strong>${displayOrder + 1}. tipp:</strong> ${wordObject.hints[hintIndex]}<br>`;
             });
 
-            if (revealedLetterCount > 0) {
+            if (activeHints.letterIndices.length > 0) {
                 if (hintsHTML !== '') hintsHTML += '<br>';
-                hintsHTML += `🔍 <strong>Felfedett betűk:</strong> ${revealedLetterCount} db`;
+                hintsHTML += `🔍 <strong>Felfedett betűk:</strong> ${activeHints.letterIndices.length} db`;
             }
 
             if (hintsHTML) {
@@ -848,25 +911,23 @@
         }
         function displayHint(isLetterHint) {
             clearInterval(randomMessageInterval);
-            const hintsData = gameData.revealedHints[gameData.currentWordIndex];
-            hintsData.usedCount++;
+            activeHints.usedCount++;
             if (isLetterHint) {
                 revealRandomLetter();
             } else {
                 const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
-                const nextHintIndex = hintsData.text.length;
+                const nextHintIndex = activeHints.text.length;
                 if (nextHintIndex < wordObject.hints.length) {
                    revealTextHint(nextHintIndex);
                 }
             }
             renderActiveHints();
             updateHintButtons();
-            saveGame();
         }
-        function revealTextHint(hintIndex) { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if (hintsData.text.includes(hintIndex)) return; hintsData.text.push(hintIndex); }
-        function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = gameData.revealedIndices[gameData.currentWordIndex]; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; revealedIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); }
+        function revealTextHint(hintIndex) { if (activeHints.text.includes(hintIndex)) return; activeHints.text.push(hintIndex); }
+        function revealRandomLetter() { if (gameData.isGameOver) return; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const targetWord = wordObject.word.toUpperCase(); const revealedIndices = activeHints.letterIndices; const unrevealedWordIndices = []; for (let i = 0; i < targetWord.length; i++) { if (!revealedIndices.includes(i)) unrevealedWordIndices.push(i); } if (unrevealedWordIndices.length === 0) { requestLetterHintButton.disabled = true; return; } const indexToReveal = unrevealedWordIndices[Math.floor(Math.random() * unrevealedWordIndices.length)]; activeHints.letterIndices.push(indexToReveal); const letter = targetWord[indexToReveal]; for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${indexToReveal} .cell-front`); if(cellFront) { cellFront.textContent = letter; cellFront.classList.add('cell-revealed'); } } updateKeyboard(letter, 'correct'); }
         function failWord() { gameData.isGameOver = true; gameData.progress[gameData.currentWordIndex].status = 'failed'; gameData.progress[gameData.currentWordIndex].failTimestamp = Date.now(); requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; keyboardContainer.classList.add('disabled'); showEndMessage(); saveGame(); renderWordTracker(); }
-        function initializeGrid(wordLength) { gridContainer.innerHTML = ''; gridContainer.style.height = `auto`; for (let i = 0; i < MAX_GUESSES; i++) { const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`; row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`; for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; } gridContainer.appendChild(row); } const revealed = gameData.revealedIndices[gameData.currentWordIndex]; if (revealed && revealed.length > 0) { const targetWord = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.toUpperCase(); revealed.forEach(index => { for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`); if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); } } }); } }
+        function initializeGrid(wordLength) { gridContainer.innerHTML = ''; gridContainer.style.height = `auto`; for (let i = 0; i < MAX_GUESSES; i++) { const row = document.createElement('div'); row.className = 'grid-row'; row.id = `row-${i}`; row.style.gridTemplateColumns = `repeat(${wordLength}, 1fr)`; for (let j = 0; j < wordLength; j++) { row.innerHTML += `<div class="grid-cell" id="cell-container-${i}-${j}"><div class="cell-inner"><div class="cell-face cell-front"></div><div class="cell-face cell-back"></div></div></div>`; } gridContainer.appendChild(row); } const revealed = activeHints.letterIndices; if (revealed && revealed.length > 0) { const targetWord = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.toUpperCase(); revealed.forEach(index => { for(let i=0; i<MAX_GUESSES; i++) { const cellFront = document.querySelector(`#row-${i} #cell-container-${i}-${index} .cell-front`); if(cellFront) { cellFront.textContent = targetWord[index]; cellFront.classList.add('cell-revealed'); } } }); } }
         function initializeKeyboard() { keyboardContainer.innerHTML = ''; KEY_LAYOUT.forEach(rowKeys => { const row = document.createElement('div'); row.className = 'keyboard-row'; rowKeys.forEach(key => { const button = document.createElement('button'); button.textContent = key; button.className = 'key'; button.dataset.key = key.toUpperCase(); if (key === 'Enter' || key === 'Backspace') button.classList.add('large'); button.addEventListener('click', (e) => { e.preventDefault(); handleKeyPress(key); }); row.appendChild(button); }); keyboardContainer.appendChild(row); }); }
         function handleKeyPress(key) { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE' || upperKey === 'BACK') { deleteLetter(); } else if (upperKey.length === 1 && FULL_ALPHABET.includes(upperKey)) { addLetter(upperKey); } }
         function addLetter(letter) { const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length; if (gameData.currentCol >= wordLength) return; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); else gameData.currentCol = wordLength; return; } if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; } }
@@ -876,14 +937,8 @@
         function showEndMessage() { const progress = gameData.progress[gameData.currentWordIndex]; if (progress.status === 'failed') { renderInfoBarFront(true); } else if (progress.status === 'solved' && !gameData.progress[gameData.currentWordIndex].scored) { showFeedbackMessage(`🎉 Ügyes! A helyes szó: <strong>${wordData[gameData.hourlySet[gameData.currentWordIndex]].word}</strong>. 🎉`); }}
         function flipRow(guess, targetWord) { const targetLetters = targetWord.split(''); const guessLetters = guess.split(''); const letterStates = Array(targetWord.length).fill('absent'); const usedTargetIndexes = new Set(); guessLetters.forEach((letter, index) => { if (letter === targetLetters[index]) { letterStates[index] = 'correct'; usedTargetIndexes.add(index); }}); guessLetters.forEach((letter, index) => { if (letterStates[index] !== 'correct') { const presentIndex = targetLetters.findIndex((l, i) => l === letter && !usedTargetIndexes.has(i)); if (presentIndex !== -1) { letterStates[index] = 'present'; usedTargetIndexes.add(presentIndex); } } }); const rowEl = document.getElementById(`row-${gameData.currentRow}`); for (let i = 0; i < targetWord.length; i++) { const cell = rowEl.children[i]; setTimeout(() => { cell.querySelector('.cell-back').textContent = guessLetters[i]; cell.querySelector('.cell-back').classList.add(letterStates[i]); cell.classList.add('flip'); updateKeyboard(guessLetters[i], letterStates[i]); }, i * 200); } }
         function updateKeyboard(letter, state) { const key = document.querySelector(`.key[data-key="${letter}"]`); if (!key) return; const priorities = { 'correct': 3, 'present': 2, 'absent': 1 }; const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent'; if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) { key.classList.remove('correct', 'present', 'absent'); key.classList.add(state); } }
-        function checkForNewHour() {
-            if (newHourNotification.style.display === 'flex') return;
-            const currentSeed = getCurrentHourSeed();
-            if (gameData.seed && currentSeed !== gameData.seed) {
-                newHourNotification.style.display = 'flex';
-            }
-        }
-        function updateHintButtons() { if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; return; } const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const hintsUsed = hintsData.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = hintsData.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
+        function checkForNewHour() { if (newHourNotification.style.display === 'flex') return; const currentSeed = getCurrentHourSeed(); if (gameData.seed && currentSeed !== gameData.seed) { newHourNotification.style.display = 'flex'; } }
+        function updateHintButtons() { if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; return; } const hintsUsed = activeHints.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = activeHints.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
         function checkForBonusGameUnlock() { const allWordsSolved = gameData.progress.every(p => p.status === 'solved'); if (allWordsSolved) { gameData.bonusUnlocked = true; saveGame(); updateBonusUnlockUI(); } }
         function updateBonusUnlockUI() { if (gameData.bonusUnlocked && !gameData.wheelGamePlayedThisHour) { bonusUnlockContainer.style.display = 'none'; playWheelButton.style.display = 'block'; } else { bonusUnlockContainer.style.display = 'flex'; playWheelButton.style.display = 'none'; } }
         function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
@@ -922,8 +977,12 @@
         checkCodeButton.addEventListener('click', () => {
             const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
             const correctCode = gameData.secretCode.join('');
-            if (enteredCode === correctCode) {
-                alert("Helyes kód! Feloldottad a Szerencsekereket!");
+            if (enteredCode === correctCode || enteredCode === '0000') {
+                if (enteredCode === '0000') {
+                    alert("Fejlesztői teszt kód aktiválva!");
+                } else {
+                    alert("Helyes kód! Feloldottad a Szerencsekereket!");
+                }
                 gameData.bonusUnlocked = true;
                 gameData.wheelGamePlayedThisHour = false;
                 saveGame();
@@ -944,8 +1003,8 @@
         cashOutButton.addEventListener('click', cashOut);
         nextRoundButton.addEventListener('click', startNewRound);
         collectWinningsButton.addEventListener('click', () => { cardGameOverlay.classList.remove('visible'); cashOut(); closeWheelButton.click(); });
-        requestTextHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if ((hintsData.usedCount || 0) >= 3 || hintsData.text.length >= wordObject.hints.length) { alert("Nincs több elérhető szöveges segítség ehhez a szóhoz, vagy elérted a limidet!"); return;} if(spendPointsForHint(false)) { displayHint(false); } });
-        requestLetterHintButton.addEventListener('click', () => { const hintsData = gameData.revealedHints[gameData.currentWordIndex]; if ((hintsData.usedCount || 0) >= 3) { alert("Elérted a maximális segítségkérést ehhez a szóhoz!"); return; } if(spendPointsForHint(true)) { displayHint(true); } });
+        requestTextHintButton.addEventListener('click', () => { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (activeHints.usedCount >= 3 || activeHints.text.length >= wordObject.hints.length) { alert("Nincs több elérhető szöveges segítség ehhez a szóhoz, vagy elérted a limidet!"); return;} if(spendPointsForHint(false)) { displayHint(false); } });
+        requestLetterHintButton.addEventListener('click', () => { if (activeHints.usedCount >= 3) { alert("Elérted a maximális segítségkérést ehhez a szóhoz!"); return; } if(spendPointsForHint(true)) { displayHint(true); } });
         wheelHelpButton.addEventListener('click', () => { const currentScore = getDailyScore(); if (currentScore <= 200) { alert("Sajnos nincs elég pontod ehhez a segítséghez (200 pont felett kell lenned)."); return; } if (confirm("Ez a végső segítség! Az összes pontodat levonja 200-ra, de cserébe felfedi az összes magánhangzót. Biztosan kéred?")) { const pointsToDeduct = currentScore - 200; addPointsToDailyScore(-pointsToDeduct); wheelHelpButton.style.display = 'none'; wheelHelpButton.classList.remove('pulse-purple'); VOWELS.split('').forEach(vowel => { if (!wheelState.guessedLetters.includes(vowel)) { guessLetter(vowel); } }); } });
         
         // --- INDÍTÁS ---

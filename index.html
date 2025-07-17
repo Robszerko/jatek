@@ -532,7 +532,14 @@
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
         const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
-        const RANDOM_GAME_MESSAGES = [ "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.", "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól." ];
+        const RANDOM_GAME_MESSAGES = [
+            "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.",
+            "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól.", "Figyelj a részletekre, a tettes hibázni fog!",
+            "Ezt a rejtélyt még Columbo is megirigyelné.", "Már majdnem forró a nyom...", "A logika a legjobb fegyvered.",
+            "Minden tipp egy lépés a megoldás felé.", "Néha a legkézenfekvőbb megoldás a helyes.", "Van egy gyanúsítottam: az 'X' betű.",
+            "A helyszínelők mindjárt itt vannak a segítséggel.", "Bízz a megérzéseidben, nyomozó!", "Ennek a szónak alibije van?",
+            "Nézzük át újra a bizonyítékokat (betűket)!"
+        ];
         const WHEEL_MESSAGES = {
             start_round: [ "Kezdődjön a kör!", "Új feladvány, új esély!", "Lássuk, mit tudsz!"],
             power_up_prompt: [ "Állítsd be az erősséget, majd kattints újra!" ],
@@ -752,7 +759,14 @@
         }
         function guessLetter(letter, fromJoker = false) { letter = letter.toUpperCase(); wheelState.guessedLetters.push(letter); let foundCount = 0; document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); if (foundCount > 0) { if (!VOWELS.includes(letter) && !fromJoker) { let pointsEarned = foundCount * wheelState.spinResult; wheelState.roundScore += pointsEarned; wheelState.totalWinnings += pointsEarned; } showWheelMessage('correct_guess'); } else { if(!VOWELS.includes(letter)) { wheelState.consonantMisses++; if(wheelState.consonantMisses >= 5) { wheelHelpButton.style.display = 'block'; wheelHelpButton.classList.add('pulse-purple'); } } showWheelMessage('wrong_guess'); } updateWheelPlayerScore(); updateAlphabetPanel(); updateUIForGameState('start_round'); checkWheelWin(); }
         function solve() { const solution = prompt("Kérlek, add meg a teljes megfejtést:"); if (solution === null) return; if (solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { showWheelMessage('solve_success'); document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); updateUIForGameState('puzzle_solved'); } else { loseGame(); } }
-        function loseGame() { wheelState.totalWinnings = 0; wheelState.initialStake = 0; updateWheelPlayerScore(); showWheelMessage('solve_fail', {duration: 8000, solution: wheelState.puzzle.puzzle}); updateUIForGameState('game_over'); }
+        function loseGame() {
+            addPointsToDailyScore(wheelState.initialStake); // Visszaadja a tétet, de a nyeremény elvész
+            wheelState.totalWinnings = 0;
+            wheelState.initialStake = 0;
+            updateWheelPlayerScore();
+            showWheelMessage('solve_fail', {duration: 8000, solution: wheelState.puzzle.puzzle});
+            updateUIForGameState('game_over');
+        }
         function cashOut() { showWheelMessage('cash_out', {duration: 5000}); addPointsToDailyScore(wheelState.totalWinnings + wheelState.initialStake); updateUIForGameState('game_over'); }
         function updateWheelPlayerScore() { playerScoreEl.textContent = wheelState.totalWinnings; stakeAmountEl.textContent = wheelState.initialStake; }
         function updateUIForGameState(state) { const controls = document.getElementById('wheel-controls'); controls.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; solveButton.disabled = true; powerMeterContainer.style.pointerEvents = 'none'; if (state === 'start_round' || state === 'guess_consonant') { controls.style.display = 'flex'; spinButton.disabled = false; powerMeterContainer.style.pointerEvents = 'auto'; solveButton.disabled = false; wheelState.spinResult = (state === 'start_round') ? null : wheelState.spinResult; } else if (state === 'spinning') { controls.style.display = 'flex'; } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; } else { wheelGameOverlay.classList.remove('visible'); initCardGame(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
@@ -945,7 +959,18 @@
         function getCurrentHourSeed() { const now = new Date(); return now.getUTCFullYear() * 1000000 + (now.getUTCMonth() + 1) * 10000 + now.getUTCDate() * 100 + now.getUTCHours(); }
         function toggleGameMode() { if (gameData.isGameOver) return; const currentMode = gameData.gameModes[gameData.currentWordIndex]; gameData.gameModes[gameData.currentWordIndex] = currentMode === 'relax' ? 'timed' : 'relax'; updateGameModeDisplay(); saveGame(); }
         function updateGameModeDisplay() { const mode = gameData.gameModes[gameData.currentWordIndex]; const modeLabel = document.getElementById('game-mode-label'); const timerDisplay = document.getElementById('timer-display'); if(!modeLabel || !timerDisplay) return; if (mode === 'timed') { modeLabel.textContent = 'Időfutam'; timerDisplay.style.display = 'inline'; startTimer(gameData.timers[gameData.currentWordIndex]); } else { modeLabel.textContent = 'Relax'; timerDisplay.style.display = 'none'; clearInterval(timerInterval); } }
-        function showRandomGameMessage() { if (gameData.isGameOver || document.querySelector('.overlay.visible') || hintDisplayArea.classList.contains('active') || checkAndDisplayIdleState()) return; showFeedbackMessage(`<i>${RANDOM_GAME_MESSAGES[Math.floor(Math.random() * RANDOM_GAME_MESSAGES.length)]}</i>`); }
+        function showRandomGameMessage() {
+            if (gameData.isGameOver || document.querySelector('.overlay.visible') || hintDisplayArea.classList.contains('active') || checkAndDisplayIdleState()) {
+                return;
+            }
+            const randomMessage = RANDOM_GAME_MESSAGES[Math.floor(Math.random() * RANDOM_GAME_MESSAGES.length)];
+            showFeedbackMessage(`<i>${randomMessage}</i>`);
+            setTimeout(() => {
+                if (infoBar.classList.contains('feedback-message')) {
+                    renderInfoBarFront();
+                }
+            }, 10000); 
+        }
         function startRandomMessageTimer() { clearInterval(randomMessageInterval); randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); }
         function checkAndDisplayIdleState() { clearInterval(idleCountdownInterval); const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); if (allWordsCompleted) { gridContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; setKeyboardVisibility(false); clearInterval(randomMessageInterval); clearInterval(secretCodeFlasherInterval); let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; idleMessageContainer.style.display = 'block'; const countdownElement = document.getElementById('countdown-timer'); function updateCountdown() { const now = new Date(); const nextHour = new Date(now); nextHour.setHours(now.getHours() + 1); nextHour.setMinutes(0); nextHour.setSeconds(0); nextHour.setMilliseconds(0); const timeLeft = nextHour - now; if (timeLeft < 0) { clearInterval(idleCountdownInterval); countdownElement.textContent = "Bármelyik pillanatban!"; return; } const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; } updateCountdown(); idleCountdownInterval = setInterval(updateCountdown, 1000); return true; } else { gridContainer.style.display = 'grid'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; setKeyboardVisibility(keyboardToggleCheckbox.checked); return false; } }
 
@@ -999,7 +1024,13 @@
         spinButton.addEventListener('click', togglePowerMeterAndSpin);
         powerMeterContainer.addEventListener('click', togglePowerMeterAndSpin);
         solveButton.addEventListener('click', solve);
-        closeWheelButton.addEventListener('click', () => { wheelGameOverlay.classList.remove('visible'); updateDailyScoreDisplay(getDailyScore()); checkAndDisplayIdleState(); updateBonusUnlockUI(); });
+        closeWheelButton.addEventListener('click', () => {
+            wheelGameOverlay.classList.remove('visible');
+            updateDailyScoreDisplay(getDailyScore());
+            checkAndDisplayIdleState();
+            updateBonusUnlockUI();
+            codeInputs.forEach(input => input.value = ''); 
+        });
         cashOutButton.addEventListener('click', cashOut);
         nextRoundButton.addEventListener('click', startNewRound);
         collectWinningsButton.addEventListener('click', () => { cardGameOverlay.classList.remove('visible'); cashOut(); closeWheelButton.click(); });

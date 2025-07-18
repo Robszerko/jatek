@@ -16,7 +16,7 @@
             --absent-color: #9e9e9e; --key-bg: #dcd3b8; --key-text: #3d405b;
             --key-shadow: 0 3px 0 #bcaaa4; --font-title: 'Fredoka One', cursive; --font-main: 'Roboto Mono', monospace;
             --difficulty-easy: #388e3c; --difficulty-hard: #f57c00; --difficulty-extra: #d32f2f;
-            --fail-color: #e53935; --insurance-color: #4CAF50;
+            --fail-color: #e53935; --insurance-color: #4CAF50; --surprise-color: #9c27b0;
         }
 
         .theme-forest { --bg-gradient-start: #2d6a4f; --bg-gradient-end: #1b4332; --container-bg: rgba(247, 246, 242, 0.95); --text-color: #081c15; --title-color: #74c69d; --border-color-idle: #b7e4c7; --border-color-active: #95d5b2; --correct-color: #52b788; --present-color: #ffd60a; --absent-color: #9e9e9e; --key-bg: #d8f3dc; --key-text: #1b4332; --key-shadow: 0 3px 0 #b7e4c7; }
@@ -116,8 +116,9 @@
         #reveal-solution-container { margin-left: auto; }
         #reveal-solution-button { background-color: var(--fail-color); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-        #game-mode-toggle { display: flex; align-items: center; cursor: pointer; background-color: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px; }
-        #game-mode-toggle span { font-weight: 700; font-size: 0.9rem; }
+        .mode-choice-button { background-color: var(--key-bg); color: var(--key-text); border: 2px solid var(--border-color-idle); padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 0 5px; }
+        #game-mode-display { display: flex; align-items: center; background-color: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px; }
+        #game-mode-display span { font-weight: 700; font-size: 0.9rem; }
         #timer-display { font-weight: 700; font-size: 1.1em; color: var(--title-color); margin-left: 8px; }
         
         #word-info-container { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
@@ -203,15 +204,69 @@
         }
         @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
         
+        /* Lottó Szekció Stílusai */
+        #lotto-container {
+            display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0;
+            padding: 20px; border: 2px solid var(--border-color-active); border-radius: 15px; width: 100%;
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+        }
+        #lotto-header { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        #lotto-logo-svg { width: 60px; height: 60px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+        #lotto-header h2 { font-family: var(--font-title); color: var(--title-color); font-size: 1.8rem; margin: 0; }
+        #lotto-container p { font-size: 0.9rem; text-align: center; line-height: 1.5; max-width: 90%; }
+        #play-lotto-button { background-color: var(--difficulty-easy); box-shadow: 0 3px 0 #2e7d32; max-width: 300px; }
+        #play-lotto-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 #2e7d32;}
+        #lotto-played-message { color: var(--fail-color); font-weight: bold; margin-top: 10px; min-height: 1.2em; transition: opacity 0.3s; }
+
+        .lotto-ticket-stub {
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 2px dashed var(--border-color-active);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            width: 95%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .lotto-ticket-stub h4 { margin: 0 0 10px 0; font-family: var(--font-title); color: var(--text-color); }
+        .submitted-tickets-container { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
+        .number-display { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .lotto-ball {
+            width: 35px; height: 35px; border-radius: 50%; background-color: var(--key-bg);
+            color: var(--key-text); border: 2px solid var(--border-color-idle);
+            display: flex; justify-content: center; align-items: center; font-weight: bold;
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1), 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .lotto-ball.match { background-color: var(--correct-color); color: white; border-color: #6a9982; animation: pop 0.5s; }
+        #lotto-result-display { margin-top: 15px; font-weight: bold; color: var(--title-color); font-size: 1.1rem; }
+
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s; }
         .overlay.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
         .overlay-content { background-color: var(--container-bg); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; padding: clamp(20px, 4vw, 30px); border-radius: 20px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-width: 95vw; width: auto; max-height: 95vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .overlay-content h2 { font-family: var(--font-title); color: var(--title-color); margin: 0 0 10px 0; font-size: clamp(1.5rem, 6vw, 2.2rem); }
         .overlay-button { background-color: var(--title-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 15px; transition: transform 0.2s ease, background-color 0.3s ease; }
         
+        /* Lottó Overlay & Prize Choice Overlay */
+        #lotto-game-container, #prize-choice-container { display: flex; flex-direction: column; align-items: center; }
+        #lotto-grid-overlay { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 360px; width: 100%; margin: 15px 0; }
+        .lotto-number { width: 40px; height: 40px; border-radius: 50%; background-color: var(--key-bg); color: var(--key-text); border: 2px solid var(--border-color-idle); display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
+        .lotto-number:hover { transform: scale(1.1); background-color: var(--present-color); }
+        .lotto-number.selected { background-color: var(--title-color); color: white; border-color: var(--title-color); transform: scale(1.1); box-shadow: 0 0 8px var(--title-color); }
+        #lotto-selection-counter { font-weight: bold; color: var(--text-color); }
+        #lotto-overlay-buttons { display: flex; gap: 10px; justify-content: center; width: 100%;}
+        #submit-lotto-button-overlay { background-color: var(--correct-color); box-shadow: 0 3px 0 #388e3c; flex-grow: 2; }
+        #close-lotto-overlay-button { background-color: var(--fail-color); box-shadow: 0 3px 0 #b71c1c; flex-grow: 1; }
+        #lotto-overlay-message { min-height: 2em; transition: opacity 0.5s ease; }
+        #lotto-overlay-message .star-icon { font-size: 2rem; color: var(--present-color); display: block; margin-top: 10px; text-shadow: 0 0 5px #000; }
+        #prize-choice-options { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+        .prize-option-button { background-color: var(--key-bg); color: var(--key-text); border: 2px solid var(--border-color-active); padding: 15px; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; text-align: left;}
+        .prize-option-button:hover { background-color: var(--present-color); border-color: var(--title-color); }
+        .prize-option-button .prize-title { font-weight: bold; font-size: 1.1rem; color: var(--title-color); }
+        .prize-option-button .prize-desc { font-size: 0.9rem; margin-top: 5px; }
+
         /* Szerencsekerék */
         #wheel-game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        #wheel-wrapper { position: relative; width: 340px; height: 340px; margin: 10px auto; }
+        #wheel-wrapper { position: relative; width: 360px; height: 360px; margin: 10px auto; }
         #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid var(--fail-color); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; transition: border-top-color 0.3s ease; }
         #wheel { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
         #wheel-game-ui { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
@@ -317,8 +372,12 @@
             </div>
         </header>
         
-        <div id="word-tracker"></div>
+        <div id="daily-winning-numbers-display" class="lotto-ticket-stub" style="display: none;">
+             <!-- Content from JS -->
+        </div>
         
+        <div id="word-tracker"></div>
+
         <div id="bonus-unlock-container">
             <div id="bonus-unlock-header">
                  <svg id="wheel-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -357,13 +416,29 @@
 
         <div id="idle-message-container" style="display: none;"></div>
         
+        <div id="lotto-container">
+            <div id="lotto-header">
+                <svg id="lotto-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M50 2 L61.8 38.2 L98 38.2 L68.1 61.8 L79.9 98 L50 75 L20.1 98 L31.9 61.8 L2 38.2 L38.2 38.2 Z" fill="var(--present-color)" stroke="var(--title-color)" stroke-width="3"/>
+                </svg>
+                <h2>Napi Lottó</h2>
+            </div>
+            <p>Az első szelvény ingyenes, utána 400 pont! Nyereményed másnap éjféltől aktív.</p>
+            <button id="play-lotto-button" class="hint-button">Első ingyenes szelvény</button>
+            <div id="lotto-played-message"></div>
+            
+            <div class="submitted-tickets-container">
+                <!-- Submitted tickets will be rendered here by JS -->
+            </div>
+        </div>
+
         <div id="rules-container">
              <h3>Játékszabályok</h3>
             <ul>
                 <li><strong>Alapjáték:</strong> Óránként 5 új, mindenki számára azonos szót kapsz. A helyes megfejtésért pont jár.</li>
                 <li><strong>Titkos Kód:</strong> Figyeld a kód beviteli mezőit, mert ott villannak fel a titkos számjegyek!</li>
                 <li><strong>Szerencsekerék:</strong> Ha az összes szót megfejted VAGY beírod a helyes kódot, feloldod a bónusz játékot. A kóddal akár többször is játszhatsz egy órában!</li>
-                <li><strong>Csőd & Biztosítás:</strong> Ha CSŐD-öt pörgetsz biztosítás nélkül, a körös pontjaid elvesznek, de a tétedért folytathatod. Ha van biztosításod, felhasználhatod a pontjaid megmentésére. Ha másodszor is csődöt pörgetsz, a játék a tét elvesztésével véget ér.</li>
+                <li><strong>Csőd & Biztosítás:</strong> Ha CSŐD-öt pörgetsz, a játék automatikusan felhasznál egy biztosítást (ha van). Ha nincs, első alkalommal csak a körös pontjaidat veszíted el. A második CSŐD ugyanabban a körben a téted elvesztésével jár és véget vet a játéknak.</li>
                 <li><strong>Biztosítás Limit:</strong> Óránként maximum 3 új biztosítást szerezhetsz a Szerencsekeréken. A meglévők megmaradnak.</li>
                 <li><strong style="color:var(--fail-color)">Újrapróbálás:</strong> Ha nem sikerül egy szó, 15 perc múlva újra próbálkozhatsz, vagy felfedheted a megoldást.</li>
             </ul>
@@ -371,6 +446,39 @@
     </div>
 
     <!-- Overlays -->
+    <div id="lotto-game-overlay" class="overlay">
+        <div class="overlay-content">
+            <div id="lotto-game-container">
+                 <div id="lotto-header">
+                    <svg id="lotto-logo-svg-overlay" class="lotto-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 2 L61.8 38.2 L98 38.2 L68.1 61.8 L79.9 98 L50 75 L20.1 98 L31.9 61.8 L2 38.2 L38.2 38.2 Z" fill="var(--present-color)" stroke="var(--title-color)" stroke-width="3"/>
+                    </svg>
+                    <h2>Napi Lottó</h2>
+                </div>
+                <p>Válassz 5 számot az alábbi rácsból.</p>
+                <div id="lotto-grid-overlay"></div>
+                <p id="lotto-selection-counter">0 / 5 kiválasztva</p>
+                <div id="lotto-overlay-buttons">
+                    <button id="close-lotto-overlay-button" class="hint-button">Mégse</button>
+                    <button id="submit-lotto-button-overlay" class="hint-button">Szelvény feladása</button>
+                </div>
+                <div id="lotto-overlay-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="prize-choice-overlay" class="overlay">
+        <div class="overlay-content">
+            <div id="prize-choice-container">
+                <h2>Gratulálunk, több nyereményt is elértél!</h2>
+                <p>Válassz egyet az alábbiak közül, ami a következő napon éjféltől aktív lesz.</p>
+                <div id="prize-choice-options">
+                    <!-- Options will be generated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="wheel-game-overlay" class="overlay">
         <div class="overlay-content">
             <div id="wheel-game-container">
@@ -379,7 +487,7 @@
                 <div id="wheel-game-ui">
                     <div id="wheel-stats-container">
                         <div id="wheel-stake-display">Tét: <span id="stake-amount">0</span></div>
-                        <div id="wheel-winnings-display">Nyeremény: <span id="player-score">0</span></div>
+                        <div id="wheel-winnings-display">Körös Nyeremény: <span id="player-score">0</span></div>
                         <div id="wheel-insurance-display" title="Biztosítások">
                             <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
                             <span id="wheel-insurance-count">0</span>
@@ -430,74 +538,123 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- FRISSÍTETT ÉS BŐVÍTETT SZÓADATBÁZIS ---
+        // --- TELJESEN ÚJ SZÓADATBÁZIS ---
         const wordData = [
-            // Könnyű
-            {word:"CSÉSZE", category:"Tárgy", difficulty:"Könnyű", hints:["Ebből iszod a forró italt.", "Van egy kis füle.", "A tányérja az alátét."]},
-            {word:"FELHŐ", category:"Természet", difficulty:"Könnyű", hints:["Az égen úszik.", "Fehér és pamacsos.", "Esőt hozhat."]},
-            {word:"SZALMA", category:"Anyag", difficulty:"Könnyű", hints:["Aratás után marad.", "Kalap készülhet belőle.", "Állatok alatt alom."]},
-            {word:"POLC", category:"Bútor", difficulty:"Könnyű", hints:["Tárolásra való.", "A falra szerelik.", "Könyveket vagy dísztárgyakat tesznek rá."]},
-            {word:"VILLA", category:"Eszköz", difficulty:"Könnyű", hints:["Evőeszköz.", "Négy ága van.", "A kanál és a kés társa."]},
-            {word:"CSÓNAK", category:"Jármű", difficulty:"Könnyű", hints:["Vízen használják.", "Evezővel hajtják.", "Horgászni is lehet belőle."]},
-            {word:"TÉGLA", category:"Építőanyag", difficulty:"Könnyű", hints:["Házfalat építenek belőle.", "Vörös színű és nehéz.", "Habarccsal kötik össze."]},
-            {word:"MÁLNA", category:"Gyümölcs", difficulty:"Könnyű", hints:["Piros, apró bogyós gyümölcs.", "Sok magja van.", "Szalagos fánk kedvelt kísérője."]},
-            {word:"BÉLYEG", category:"Posta", difficulty:"Könnyű", hints:["A borítékra ragasztják.", "A küldemény díját fedezi.", "Gyűjteni is lehet."]},
-            {word:"PECSÉT", category:"Eszköz", difficulty:"Könnyű", hints:["Hivatalos dokumentumokon használják.", "Viaszba vagy tintába nyomják.", "Az egyediséget igazolja."]},
-            {word:"PÁRDUC", category:"Állat", difficulty:"Könnyű", hints:["Nagymacska.", "Fekete színű ragadozó.", "A dzsungelben él."]},
-            {word:"CUKOR", category:"Étel", difficulty:"Könnyű", hints:["Édesítőszer.", "Fehér, kristályos anyag.", "A sütemények alapja."]},
-            {word:"TENISZ", category:"Sport", difficulty:"Könnyű", hints:["Ütővel játsszák.", "A pálya közepén háló van.", "Wimbledon a leghíresebb versenye."]},
-            {word:"LISZT", category:"Étel", difficulty:"Könnyű", hints:["Gabonából őrlik.", "A kenyér alapanyaga.", "Fehér por."]},
-            {word:"TOLL", category:"Írószer", difficulty:"Könnyű", hints:["Írásra használják.", "A madárnak is van.", "Lehet golyós- vagy töltő-."]},
+            // Könnyű (15 db)
+            {word:"LÁMPA", category:"Tárgy", difficulty:"Könnyű", hints:["Fényt ad a sötétben.", "Lehet asztali vagy álló.", "Villanykörte van benne.", "Kapcsolóval működik."]},
+            {word:"KULACS", category:"Tárgy", difficulty:"Könnyű", hints:["Italt tárolnak benne.", "Túrázók gyakran viszik magukkal.", "Lehet fémből vagy műanyagból.", "Kupakkal záródik."]},
+            {word:"RADÍR", category:"Iskolaszer", difficulty:"Könnyű", hints:["Ceruza nyomát tünteti el.", "Iskolatáskában lakik.", "Lehet illatos is.", "Használat közben morzsálódik."]},
+            {word:"KANAPÉ", category:"Bútor", difficulty:"Könnyű", hints:["A nappaliban található.", "Több ember is leülhet rá.", "Párnák teszik kényelmessé.", "Lehet ággyá alakítani."]},
+            {word:"VÖDÖR", category:"Eszköz", difficulty:"Könnyű", hints:["Folyadékot vagy szilárd anyagot hordanak benne.", "Van egy füle.", "Homokozóban is használják.", "Felmosáshoz elengedhetetlen."]},
+            {word:"PITE", category:"Étel", difficulty:"Könnyű", hints:["Édes sütemény.", "Gyakran gyümölcs a tölteléke.", "Lehet rácsos a teteje.", "Az almás a legnépszerűbb."]},
+            {word:"TORONY", category:"Épület", difficulty:"Könnyű", hints:["Magasabb, mint a környezete.", "Lehet templom vagy vár része.", "Gyakran óra van rajta.", "Rapunzel ebben raboskodott."]},
+            {word:"CSAVAR", category:"Tárgy", difficulty:"Könnyű", hints:["Dolgok rögzítésére szolgál.", "Menetes a szára.", "Csavarhúzóval lehet behajtani.", "Az anya a párja."]},
+            {word:"SZÉK", category:"Bútor", difficulty:"Könnyű", hints:["Ülésre használják.", "Négy lába van általában.", "Az asztal mellett a helye.", "Van háttámlája."]},
+            {word:"KALÁCS", category:"Étel", difficulty:"Könnyű", hints:["Édes kelt tészta.", "Húsvétkor népszerű.", "Gyakran fonott alakú.", "Lehet kakaós vagy mazsolás."]},
+            {word:"SAJT", category:"Étel", difficulty:"Könnyű", hints:["Tejből készül.", "Lehet lyukas.", "Egerek kedvence a mesékben.", "Pizzára is teszik."]},
+            {word:"FÉSŰ", category:"Tárgy", difficulty:"Könnyű", hints:["Hajápolási eszköz.", "Rendet tesz a gubancos tincsek között.", "Sok foga van.", "Lehet lapos vagy kör alakú."]},
+            {word:"PÁLMA", category:"Növény", difficulty:"Könnyű", hints:["Trópusi fa.", "A tengerpartok jellegzetessége.", "Nagy, legyezőszerű levelei vannak.", "Termése a kókuszdió."]},
+            {word:"GYŰRŰ", category:"Ékszer", difficulty:"Könnyű", hints:["Ujjra húzva viselik.", "Lehet aranyból vagy ezüstből.", "A házasság jelképe.", "A hatalomnak is szimbóluma lehet."]},
+            {word:"BICIKLI", category:"Jármű", difficulty:"Könnyű", hints:["Két kereke van.", "Pedállal kell hajtani.", "A kormányával irányítják.", "Csengő van rajta."]},
 
-            // Nehéz
-            {word:"BROKKOLI", category:"Zöldség", difficulty:"Nehéz", hints:["Zöld színű.", "Kis fákra hasonlít.", "Párolva vagy levesként fogyasztják."]},
-            {word:"ESERNYŐ", category:"Tárgy", difficulty:"Nehéz", hints:["Eső ellen véd.", "Kinyitod, ha elered.", "A szél könnyen kifordíthatja."]},
-            {word:"FÖLDGÖMB", category:"Tárgy", difficulty:"Nehéz", hints:["A Föld bolygó kicsinyített mása.", "Forgatni lehet a tengelye körül.", "Kontinensek és óceánok vannak rajta."]},
-            {word:"SZÖCSKE", category:"Állat", difficulty:"Nehéz", hints:["Ugráló rovar.", "Hangosan ciripel.", "A mezők lakója."]},
-            {word:"KARAMELL", category:"Édesség", difficulty:"Nehéz", hints:["Olvasztott cukorból készül.", "Aranybarna és ragadós.", "Pudingok és desszertek öntete."]},
-            {word:"SZOBOR", category:"Művészet", difficulty:"Nehéz", hints:["Háromdimenziós alkotás.", "Kőből, fémből vagy fából faragják.", "Köztereken gyakran áll."]},
-            {word:"VIADUKT", category:"Építmény", difficulty:"Nehéz", hints:["Völgy felett átívelő híd.", "Gyakran vasútvonal halad rajta.", "Magas, boltíves pillérei vannak."]},
-            {word:"PUDING", category:"Édesség", difficulty:"Nehéz", hints:["Krémes desszert.", "Tejből és porból főzik.", "Lehet vaníliás vagy csokoládés."]},
-            {word:"LEKVÁR", category:"Étel", difficulty:"Nehéz", hints:["Gyümölcsből főzik.", "Kenyérre kenik.", "A barack a leggyakoribb alapanyaga."]},
-            {word:"MOZAIK", category:"Művészet", difficulty:"Nehéz", hints:["Apró darabokból összeállított kép.", "Lehet üveg, kő vagy kerámia.", "Padlót vagy falat díszítenek vele."]},
-            {word:"KOMPASZ", category:"Eszköz", difficulty:"Nehéz", hints:["Iránytű.", "Mindig észak felé mutat.", "Tájékozódáshoz elengedhetetlen."]},
-            {word:"SERLEG", category:"Díj", difficulty:"Nehéz", hints:["A győztes kapja.", "Kupa alakú.", "Gravírozni szokták."]},
-            {word:"HERNYÓ", category:"Állat", difficulty:"Nehéz", hints:["A lepke lárvája.", "Levelekkel táplálkozik.", "Bebábozódik, mielőtt átalakul."]},
-            {word:"SZEMPILLA", category:"Testrész", difficulty:"Nehéz", hints:["A szemet védi a portól.", "A szemhéj szélén nő.", "Spirállal festik."]},
-            {word:"MÁGNES", category:"Tárgy", difficulty:"Nehéz", hints:["Vonzza a vasat.", "Van északi és déli pólusa.", "A hűtő ajtaján is tart dolgokat."]},
-            {word:"AKVARELL", category:"Festészet", difficulty:"Nehéz", hints:["Vízfesték.", "Áttetsző, lazúros hatást kelt.", "Papírra festenek vele."]},
-            {word:"PÁFRÁNY", category:"Növény", difficulty:"Nehéz", hints:["Nincs virága.", "Levelei nagyok és összetettek.", "Az erdők aljnövényzetében gyakori."]},
-
-            // Extra Nehéz
-            {word:"FOTOSZINTÉZIS", category:"Biológia", difficulty:"Extra Nehéz", hints:["Növényi folyamat.", "Fényenergiát alakít át kémiai energiává.", "Oxigént termel."]},
-            {word:"CSILLAGVIZSGÁLÓ", category:"Épület", difficulty:"Extra Nehéz", hints:["Égitesteket tanulmányoznak itt.", "Hatalmas távcső van benne.", "Kupolája elforgatható."]},
-            {word:"KOLOSTOR", category:"Épület", difficulty:"Extra Nehéz", hints:["Szerzetesek lakhelye.", "Elvonultan élnek a világtól.", "Csend és imádság jellemzi."]},
-            {word:"ANTIKVÁRIUM", category:"Üzlet", difficulty:"Extra Nehéz", hints:["Használt könyveket árul.", "Jellegzetes papírillata van.", "Ritka kincsekre lehet itt bukkanni."]},
-            {word:"KARIKATÚRA", category:"Művészet", difficulty:"Extra Nehéz", hints:["Gúnyos vagy humoros célú portré.", "A jellegzetes vonásokat eltúlozza.", "Újságokban gyakran megjelenik."]},
-            {word:"HIEROGLIFA", category:"Írás", difficulty:"Extra Nehéz", hints:["Ókori egyiptomi írásrendszer.", "Képszerű jelekből áll.", "A megfejtése Jean-François Champollion nevéhez fűződik."]},
-            {word:"LABIRINTUS", category:"Építmény", difficulty:"Extra Nehéz", hints:["Bonyolult útvonalrendszer.", "A közepét kell megtalálni.", "A minotaurusz lakhelye a mitológiában."]},
-            {word:"SZENÁTOR", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["Törvényhozó testület tagja.", "A római birodalomban is létezett.", "A felsőház képviselője."]},
-            {word:"METAFORA", category:"Irodalom", difficulty:"Extra Nehéz", hints:["Költői kép, névátvitel.", "Két dolog azonosításán alapul.", "Például: 'a szeme két csillag'."]},
-            {word:"AMPLITÚDÓ", category:"Fizika", difficulty:"Extra Nehéz", hints:["A rezgés legnagyobb kitérése.", "A hullám 'magasságát' jelöli.", "Nagyobb értéke nagyobb energiát jelent."]},
-            {word:"KALLIGRÁFIA", category:"Művészet", difficulty:"Extra Nehéz", hints:["Díszes, művészi kézírás.", "Különleges tollat vagy ecsetet használnak hozzá.", "Kelet-Ázsiában nagy hagyománya van."]},
-            {word:"OBELISZK", category:"Építmény", difficulty:"Extra Nehéz", hints:["Magas, négyzet alapú, felfelé keskenyedő oszlop.", "A csúcsa piramis alakú.", "Az ókori Egyiptomban volt népszerű."]},
-            {word:"PARADOXON", category:"Logika", difficulty:"Extra Nehéz", hints:["Látszólagos ellentmondás.", "Olyan állítás, ami önmagának mond ellent.", "A hazug paradoxona egy híres példa."]},
-            {word:"AMNESZTIA", category:"Jog", difficulty:"Extra Nehéz", hints:["Közkegyelem.", "Bizonyos bűncselekmények elkövetőinek büntetését elengedik.", "Államfői jogkör."]},
-            {word:"AKUPUNKTÚRA", category:"Gyógyászat", difficulty:"Extra Nehéz", hints:["Hagyományos kínai gyógymód.", "Vékony tűket szúrnak a test bizonyos pontjaiba.", "Az energiaáramlást (csí) hivatott helyreállítani."]}
+            // Nehéz (17 db)
+            {word:"ZONGORA", category:"Hangszer", difficulty:"Nehéz", hints:["Billentyűkkel szólaltatják meg.", "Fekete és fehér billentyűi vannak.", "Koncerttermek gyakori szereplője.", "A kalapácsok húrokat ütnek benne."]},
+            {word:"TELESZKÓP", category:"Eszköz", difficulty:"Nehéz", hints:["Égitestek megfigyelésére használják.", "Lencsék vagy tükrök segítségével nagyít.", "Csillagvizsgálókban található.", "Galilei is használta."]},
+            {word:"KÖNYVTÁR", category:"Hely", difficulty:"Nehéz", hints:["Nagyon sok könyv található itt.", "Csendben kell lenni benne.", "Kölcsönözni lehet belőle.", "Egyik fajtája a digitális."]},
+            {word:"REKLÁM", category:"Média", difficulty:"Nehéz", hints:["Termékek vagy szolgáltatások népszerűsítésére szolgál.", "Megszakíthatja a filmet.", "Lehet óriásplakáton is.", "A célja a vásárlásra ösztönzés."]},
+            {word:"RENDEZŐ", category:"Foglalkozás", difficulty:"Nehéz", hints:["Filmek vagy színdarabok alkotója.", "Ő irányítja a színészeket.", "Instrukciókat ad a stábnak.", "A neve a stáblista elején szerepel."]},
+            {word:"SZIMFÓNIA", category:"Zene", difficulty:"Nehéz", hints:["Nagyzenekarra írt, több tételből álló mű.", "Beethoven híreseket komponált.", "A koncertteremben hallható.", "A karmester vezényli."]},
+            {word:"VÍZESÉS", category:"Természet", difficulty:"Nehéz", hints:["A folyóvíz hirtelen esése a mélybe.", "Nagy robajjal járhat.", "A Niagara a leghíresebb.", "Látványos természeti képződmény."]},
+            {word:"PIRAMIS", category:"Építmény", difficulty:"Nehéz", hints:["Gúla alakú építmény.", "Az ókori Egyiptomban építették.", "A fáraók temetkezési helye volt.", "A gízai a legnagyobb."]},
+            {word:"GYÉMÁNT", category:"Ásvány", difficulty:"Nehéz", hints:["A legkeményebb természetes anyag.", "Ékszereket készítenek belőle.", "Nagy nyomáson keletkezik a szénből.", "Az eljegyzési gyűrűk köve."]},
+            {word:"BAJNOKSÁG", category:"Sport", difficulty:"Nehéz", hints:["Sportcsapatok vagy egyének versenysorozata.", "A győztes kupát kap.", "Lehet országos vagy világ-.", "A végén tabellát hirdetnek."]},
+            {word:"GALAXIS", category:"Csillagászat", difficulty:"Nehéz", hints:["Csillagok, gáz és por hatalmas rendszere.", "A Tejútrendszer a miénk.", "Lehet spirál vagy elliptikus alakú.", "Az Androméda a szomszédunk."]},
+            {word:"ROBOT", category:"Technológia", difficulty:"Nehéz", hints:["Programozott feladatokat hajt végre.", "Lehet emberi alakja.", "Az iparban gyakran használják.", "A mesterséges intelligencia működteti."]},
+            {word:"FŐVÁROS", category:"Földrajz", difficulty:"Nehéz", hints:["Egy ország központi, legfontosabb városa.", "Itt található a kormány.", "Budapest Magyarországé.", "Általában a legnagyobb település."]},
+            {word:"SIVATAG", category:"Természet", difficulty:"Nehéz", hints:["Száraz, csapadékszegény terület.", "A Szahara a legnagyobb a Földön.", "A tevék jól bírják.", "Nappal forróság, éjjel fagy jellemzi."]},
+            {word:"UNIVERZUM", category:"Tudomány", difficulty:"Nehéz", hints:["Minden létező összessége.", "Csillagászok kutatják a méretét.", "Az ősrobbanással keletkezett elméletileg.", "Tágulóban van."]},
+            {word:"LEGENDA", category:"Irodalom", difficulty:"Nehéz", hints:["Történelmi alappal rendelkező, de csodás elemekkel átszőtt történet.", "Hősökről vagy szentekről szólhat.", "Szájhagyomány útján terjed.", "Artúr király története egy híres példa."]},
+            {word:"HORIZONT", category:"Fogalom", difficulty:"Nehéz", hints:["A látható ég és a föld találkozási vonala.", "A tengeren egyenes vonalnak látszik.", "Minél magasabban vagy, annál távolabbi.", "Soha nem lehet elérni."]},
+            
+            // Extra Nehéz (15 db)
+            {word:"KRONOLÓGIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Időrendi sorrend.", "Történelmi eseményeknél fontos.", "Segít megérteni az ok-okozati viszonyokat.", "Az események időbeli egymásutánisága."]},
+            {word:"DEMOKRÁCIA", category:"Társadalom", difficulty:"Extra Nehéz", hints:["Népuralom.", "Az ókori Görögországból származik.", "A polgárok választásokon döntenek.", "Ellentéte a diktatúra."]},
+            {word:"ABSZTRAKT", category:"Művészet", difficulty:"Extra Nehéz", hints:["Nem ábrázol konkrét tárgyakat vagy alakokat.", "A formák és színek játéka a lényeg.", "Piet Mondrian és Vaszilij Kandinszkij híres képviselője.", "Nonfiguratív művészet."]},
+            {word:"ALGORITMUS", category:"Informatika", difficulty:"Extra Nehéz", hints:["Véges számú lépésből álló, egyértelmű utasítássorozat.", "Egy probléma megoldására szolgál.", "A számítógépes programok alapja.", "A receptek is hasonlítanak rá."]},
+            {word:"JURISPRUDENCIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Jogtudomány.", "A törvényekkel és a jogrendszerrel foglalkozik.", "Az egyetemeken oktatják.", "A jogszabályok értelmezésének és alkalmazásának elmélete."]},
+            {word:"METAMORFÓZIS", category:"Biológia", difficulty:"Extra Nehéz", hints:["Átalakulás.", "A hernyó bábbá, majd pillangóvá válik.", "Az ebihal békává fejlődik.", "Jelentős formai és szerkezeti változás az egyedfejlődés során."]},
+            {word:"INFLÁCIÓ", category:"Gazdaság", difficulty:"Extra Nehéz", hints:["A pénz vásárlóerejének romlása.", "Az árak általános és tartós emelkedése.", "Százalékban mérik.", "A jegybank kamatemeléssel küzdhet ellene."]},
+            {word:"SZIMBIÓZIS", category:"Biológia", difficulty:"Extra Nehéz", hints:["Két különböző fajú élőlény kölcsönösen előnyös együttélése.", "A bohóchal és a tengeri rózsa esete.", "A zuzmók gombákból és algákból állnak.", "Az 'együttélés' görög szóból származik."]},
+            {word:"EUFEMIZMUS", category:"Irodalom", difficulty:"Extra Nehéz", hints:["Szépítő, enyhítő kifejezés.", "Durva vagy kellemetlen dolgok körülírására használják.", "Például 'elhunyt' a 'meghalt' helyett.", "'Megbízatása megszűnt' a 'kirúgták' helyett."]},
+            {word:"PARADIGMA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Egy adott korban uralkodó tudományos nézetrendszer.", "Kuhn vezette be a tudományfilozófiába.", "Egy...-váltás forradalmasíthatja a tudományt.", "A newtoni fizika egy példa erre."]},
+            {word:"AMBIVALENS", category:"Pszichológia", difficulty:"Extra Nehéz", hints:["Ellentétes érzéseket, gondolatokat tartalmazó.", "Kettős, ellentmondásos.", "Szeret is valakit, meg nem is.", "Vonzza is valami, és taszítja is."]},
+            {word:"KVARC", category:"Ásvány", difficulty:"Extra Nehéz", hints:["A földkéreg egyik leggyakoribb ásványa.", "Az órákban is használják a pontossága miatt.", "Szilícium-dioxidból áll.", "Hegyi... a legismertebb átlátszó változata."]},
+            {word:"FILANTRÓP", category:"Társadalom", difficulty:"Extra Nehéz", hints:["Emberbarát, jótékonykodó személy.", "Vagyonát vagy idejét a közjó szolgálatába állítja.", "Adományoz, alapítványokat támogat.", "Ellentéte a mizantróp."]},
+            {word:"GENEALÓGIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Családfakutatás.", "A származással, az ősökkel foglalkozik.", "Segítségével felderíthető a családi háttér.", "A nemesi családoknál különösen fontos volt."]},
+            {word:"AKROPOLISZ", category:"Történelem", difficulty:"Extra Nehéz", hints:["Ókori görög városok fellegvára.", "Magaslatra épült, fallal körülvett rész.", "Az athéni a leghíresebb.", "A Parthenón is itt található."]}
         ];
 
-        // --- ADATOK (szerencsekerek_feladvanyok.js tartalma) ---
+        // --- TELJESEN ÚJ SZERENCSEKERÉK FELADVÁNYOK ---
         const wheelPuzzles = [
-            { category: "Közmondás", puzzle: "ADDIG JÁR A KORSÓ A KÚTRA AMÍG EL NEM TÖRIK" }, { category: "Film & Rendező", puzzle: "QUENTIN TARANTINO PULP FICTION" }, { category: "Élőlény", puzzle: "AZ EMBERI TEST LEGKISEBB CSILLÁMA" }, { category: "Tárgy", puzzle: "AUTOMATA NARANCSFACSARÓ GÉP" }, { category: "Fogalom", puzzle: "AZ IDŐ MINDENT MEGOLD" }, { category: "Étel & Ital", puzzle: "BÉCSI SZELET KRUMPLISALÁTÁVAL" }, { category: "Zene", puzzle: "QUEEN BOHEMIAN RHAPSODY" }, { category: "Híres Ember", puzzle: "MUNKÁCSY MIHÁLY" }, { category: "Földrajz", puzzle: "A MARIANNA ÁROK MÉLYSÉGE" }, { category: "Történelem", puzzle: "A MÁSODIK VILÁGHÁBORÚ VÉGE" }, { category: "Irodalom", puzzle: "JÓKAI MÓR AZ ARANY EMBER" }, { category: "Sport", puzzle: "PAPP LÁSZLÓ HÁROMSZOROS OLIMPIAI BAJNOK" }, { category: "Tudomány", puzzle: "ALBERT EINSTEIN RELATIVITÁSELMÉLETE" }, { category: "Márkanév", puzzle: "MERCEDES BENZ" }, { category: "Mindennapi élet", puzzle: "A BLUETOOTH CSATLAKOZTATÁSA SIKERTELEN" }, { category: "Növény", puzzle: "JAPÁN CSERESZNYEVIRÁGZÁS" }, { category: "Dalszöveg", puzzle: "AZÉRT VANNAK A JÓBARÁTOK" }, { category: "Tárgy", puzzle: "ZSEBKÉS" }, { category: "Fogalom", puzzle: "VÉGTELEN" }, { category: "Élőlény", puzzle: "KIRÁLYPINGVIN" },
-            { category: "Közmondás", puzzle: "KI KORÁN KEL ARANYAT LEL" }, { category: "Közmondás", puzzle: "JOBB FÉLNI MINT MEGIJEDNI" }, { category: "Közmondás", puzzle: "SOK LÚD DISZNÓT GYŐZ" }, { category: "Közmondás", puzzle: "AJÁNDÉK LÓNAK NE NÉZD A FOGÁT" }, { category: "Közmondás", puzzle: "NEM MIND ARANY AMI FÉNYLIK" }, { category: "Közmondás", puzzle: "A SZÜKSÉG TÖRVÉNYT BONT" }, { category: "Közmondás", puzzle: "AHÁNY HÁZ ANNYI SZOKÁS" }, { category: "Közmondás", puzzle: "AKI MÁSNAK VERMET ÁS MAGA ESIK BELE" }, { category: "Közmondás", puzzle: "LASSÚ VÍZ PARTOT MOS" }, { category: "Közmondás", puzzle: "AZ ALMA NEM ESIK MESSZE A FÁJÁTÓL" },
-            { category: "Film & Rendező", puzzle: "STEVEN SPIELBERG E T A FÖLDÖNKÍVÜLI" }, { category: "Irodalom", puzzle: "MOLNÁR FERENC A PÁL UTCAI FIÚK" }, { category: "Zene", puzzle: "LGT A KICSI A NAGY AZ ARTÚR ÉS AZ INDIÁN" }, { category: "Híres Ember", puzzle: "PETŐFI SÁNDOR" }, { category: "Földrajz", puzzle: "A DUNA EURÓPA MÁSODIK LEGHOSSZABB FOLYÓJA" }, { category: "Történelem", puzzle: "A MAGYAR HONFOGLALÁS" }, { category: "Tudomány", puzzle: "A DNS KETTŐS SPIRÁL SZERKEZETE" }, { category: "Étel & Ital", puzzle: "GULYÁSLEVES CSIPETKÉVEL" }, { category: "Élőlény", puzzle: "KÉK BÁLNA A LEGNAGYOBB EMLŐS" }, { category: "Növény", puzzle: "TÖLGYFA" }, { category: "Tárgy", puzzle: "OKOSTELEFON TÖLTŐKÁBEL" }, { category: "Sport", puzzle: "OLIMPIAI JÁTÉKOK" }, { category: "Márkanév", puzzle: "COCA COLA" }, { category: "Mindennapi élet", puzzle: "HOLNAP REGGEL KORÁN KELL KELNEM" }, { category: "Fogalom", puzzle: "A SZABADSÁG ÉS A SZERELEM" }, { category: "Foglalkozás", puzzle: "TŰZOLTÓ" }, { category: "Csillagászat", puzzle: "TEJÚTRENDSZER" },
-            { category: "Irodalom", puzzle: "ARANY JÁNOS TOLDI" }, { category: "Közmondás", puzzle: "A HAZUG EMBERT HAMARABB UTOLÉRIk MINT A SÁNTA KUTYÁT" }, { category: "Közmondás", puzzle: "AKI KÍVÁNCSI HAMAR MEGSÖREGSZIK" }, { category: "Történelem", puzzle: "A REFORMÁCIÓ" }, { category: "Tudomány", puzzle: "AZ ŐSROBBANÁS ELMÉLETE" }, { category: "Étel & Ital", puzzle: "FEKETEERDŐ TORTA" }, { category: "Film", puzzle: "A BÁRÁNYOK HALLGATNAK" }, { category: "Zene", puzzle: "ANNA AND THE BARBIES MÁRTI" }, { category: "Tudomány", puzzle: "A RADIOAKTÍV SUGÁRZÁS" }, { category: "Történelem", puzzle: "A PÜNKÖSDI KIRÁLYSÁG" }, { category: "Közmondás", puzzle: "AKI KERES AZ TALÁL" }, { category: "Tudomány", puzzle: "A HIGGS-BOZON" }, { category: "Élőlény", puzzle: "TENGERI TEKNŐS" }, { category: "Élőlény", puzzle: "GEPÁRD" }
+            { category: "Közmondás", puzzle: "JOBB KÉSŐN MINT SOHA" },
+            { category: "Film & Rendező", puzzle: "JAMES CAMERON TITANIC" },
+            { category: "Élőlény", puzzle: "PÁVAKAKAS" },
+            { category: "Tárgy", puzzle: "ELEKTROMOS FOGKEFE" },
+            { category: "Fogalom", puzzle: "A TUDÁS HATALOM" },
+            { category: "Étel & Ital", puzzle: "RÁNTOTT CSIRKECOMB HASÁBBURGONYÁVAL" },
+            { category: "Zene", puzzle: "THE BEATLES HEY JUDE" },
+            { category: "Híres Ember", puzzle: "SZÉCHENYI ISTVÁN" },
+            { category: "Földrajz", puzzle: "AZ AMAZONAS ESŐERDŐ" },
+            { category: "Történelem", puzzle: "A KÖNYVNYOMTATÁS FELTALÁLÁSA" },
+            { category: "Irodalom", puzzle: "GÁRDONYI GÉZA EGRI CSILLAGOK" },
+            { category: "Sport", puzzle: "FORMA EGY VILÁGBAJNOKSÁG" },
+            { category: "Tudomány", puzzle: "CHARLES DARWIN EVOLÚCIÓELMÉLETE" },
+            { category: "Márkanév", puzzle: "LEGO" },
+            { category: "Mindennapi élet", puzzle: "LEKÉSTEM A REGGELI BUSZT" },
+            { category: "Növény", puzzle: "NAPRAFORGÓ" },
+            { category: "Dalszöveg", puzzle: "NEM VAGYOK IDEGES CSAK AZ IDEGEIMRE MEGY" },
+            { category: "Tárgy", puzzle: "TÁVIRÁNYÍTÓ" },
+            { category: "Fogalom", puzzle: "VÉLETLEN EGYBEESÉS" },
+            { category: "Élőlény", puzzle: "SZIBÉRIAI TIGRIS" },
+            { category: "Közmondás", puzzle: "A PÉNZ NEM BOLDOGÍT" },
+            { category: "Közmondás", puzzle: "SOK KICSI SOKRA MEGY" },
+            { category: "Közmondás", puzzle: "A TÜRELEM RÓZSÁT TEREM" },
+            { category: "Közmondás", puzzle: "REND A LELKE MINDENNEK" },
+            { category: "Közmondás", puzzle: "KIVÉTEL ERŐSÍTI A SZABÁLYT" },
+            { category: "Film & Rendező", puzzle: "PETER JACKSON A GYŰRŰK URA" },
+            { category: "Irodalom", puzzle: "MIKSZÁTH KÁLMÁN A FEKETE VÁROS" },
+            { category: "Zene", puzzle: "TANKCSAPDA MENNYORSZÁG TOURIST" },
+            { category: "Híres Ember", puzzle: "MÁTYÁS KIRÁLY" },
+            { category: "Földrajz", puzzle: "A KÍNAI NAGY FAL" },
+            { category: "Történelem", puzzle: "A RÓMAI BIRODALOM BUKÁSA" },
+            { category: "Tudomány", puzzle: "A VÍZ FORRÁSPONTJA" },
+            { category: "Étel & Ital", puzzle: "CSOKOLÁDÉ FELFÚJT" },
+            { category: "Élőlény", puzzle: "KOLIBRI" },
+            { category: "Növény", puzzle: "LEVENDULA" },
+            { category: "Tárgy", puzzle: "VEZETÉK NÉLKÜLI FÜLHALLGATÓ" },
+            { category: "Sport", puzzle: "BAJNOKOK LIGÁJA DÖNTŐ" },
+            { category: "Márkanév", puzzle: "SAMSUNG" },
+            { category: "Mindennapi élet", puzzle: "NEM TALÁLOM A KULCSOMAT" },
+            { category: "Fogalom", puzzle: "DÉJÀ VU ÉRZÉS" },
+            { category: "Foglalkozás", puzzle: "ŰRHAJÓS" },
+            { category: "Csillagászat", puzzle: "A NAPRENDSZER BOLYGÓI" },
+            { category: "Irodalom", puzzle: "SHAKESPEARE RÓMEÓ ÉS JÚLIA" },
+            { category: "Közmondás", puzzle: "A REMÉNY HAL MEG UTOLJÁRA" },
+            { category: "Történelem", puzzle: "AZ AMERIKAI FÜGGETLENSÉGI HÁBORÚ" },
+            { category: "Tudomány", puzzle: "A FOTOSZINTÉZIS FOLYAMATA" },
+            { category: "Étel & Ital", puzzle: "CSÜLKÖS BABGULYÁS" },
+            { category: "Film", puzzle: "VISSZA A JÖVŐBE" },
+            { category: "Zene", puzzle: "MICHAEL JACKSON THRILLER" },
+            { category: "Tudomány", puzzle: "PERIODUSOS RENDSZER" },
+            { category: "Történelem", puzzle: "A TITANIC ELSÜLLYEDÉSE" },
+            { category: "Közmondás", puzzle: "A SZOKÁS RABJA" },
+            { category: "Élőlény", puzzle: "OROSZLÁNKIRÁLY" },
+            { category: "Híres Hely", puzzle: "AZ EIFFEL TORONY PÁRIZSBAN" }
         ];
 
         // --- KONSTANSOK ÉS VÁLTOZÓK ---
         const MAX_GUESSES = 6; let gameData = {}; let timerInterval; let cooldownIntervals = {}; let wheelMessageTimeout = null; let randomMessageInterval = null; let idleCountdownInterval = null; let secretCodeFlasherInterval = null;
         let activeHints = { text: [], letterIndices: [], usedCount: 0 };
-        const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
         const RETRY_COOLDOWN_MS = 15 * 60 * 1000;
         
         // DOM Elemek
@@ -520,17 +677,38 @@
         const cardGameMessage = document.getElementById('card-game-message');
         const collectWinningsButton = document.getElementById('collect-winnings-button');
         const cardPrizesList = document.getElementById('card-prizes-list');
+        // Lotto DOM
+        const lottoGameOverlay = document.getElementById('lotto-game-overlay');
+        const prizeChoiceOverlay = document.getElementById('prize-choice-overlay');
+        const playLottoButton = document.getElementById('play-lotto-button');
+        const lottoPlayedMessage = document.getElementById('lotto-played-message');
+        const lottoGridOverlay = document.getElementById('lotto-grid-overlay');
+        const lottoSelectionCounter = document.getElementById('lotto-selection-counter');
+        const submitLottoButtonOverlay = document.getElementById('submit-lotto-button-overlay');
+        const lottoOverlayMessage = document.getElementById('lotto-overlay-message');
+        const closeLottoOverlayButton = document.getElementById('close-lotto-overlay-button');
+        const submittedTicketsContainer = document.querySelector('.submitted-tickets-container');
+        const winningLottoNumbersContainer = document.querySelector('#daily-winning-numbers-display');
+        let selectedLottoNumbers = [];
         
         const themes = [ { name: "Klasszikus", className: "theme-classic", color: "#3d405b" }, { name: "Erdei", className: "theme-forest", color: "#2d6a4f" }, { name: "Óceán", className: "theme-ocean", color: "#0077b6" }, { name: "Naplemente", className: "theme-sunset", color: "#f77f00" }, { name: "Éjszakai", className: "theme-night", color: "#232526" }, { name: "Rózsa", className: "theme-rose", color: "#c9184a" }, { name: "Vintage", className: "theme-vintage", color: "#a27b5c" }, { name: "Rét", className: "theme-meadow", color: "#7cb518" }, { name: "Királyi", className: "theme-royal", color: "#5a189a" }, { name: "Hacker", className: "theme-hacker", color: "#00ff00" } ];
         const KEY_LAYOUT = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ő', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
-        const wheelSegmentsR1 = [ { label: '500', value: 500, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '750', value: 750, color: '#b39ddb' }, { label: '1000', value: 1000, color: '#f2cc8f' }, { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: '1500', value: 1500, color: '#81b29a' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '2000', value: 2000, color: '#e07a5f' }];
-        const wheelSegmentsR2 = [ { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'DUPLÁZÓ', value: 'double', color: '#ffeb3b' }, { label: '1500', value: 1500, color: '#b39ddb' }, { label: '2500', value: 2500, color: '#f2cc8f' }, { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '3000', value: 3000, color: '#81b29a' }, { label: '5000', value: 5000, color: '#e07a5f' }];
-        const wheelSegmentsR3 = [ { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: 'JOKER', value: 'joker_wheel', color: '#9c27b0' }, { label: '7500', value: 7500, color: '#b39ddb' }, { label: 'DUPLÁZÓ', value: 'double', color: '#ffeb3b' }, { label: '10000', value: 10000, color: '#81b29a' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '15000', value: 15000, color: '#f2cc8f' }, { label: '25000', value: 25000, color: '#e07a5f' }];
+        const wheelSegmentsR1 = [ { label: '250', value: 250, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '500', value: 500, color: '#b39ddb' }, { label: '750', value: 750, color: '#f2cc8f' }, { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: '1000', value: 1000, color: '#81b29a' }, { label: '250', value: 250, color: '#a5d6a7' }, { label: '500', value: 500, color: '#b39ddb' }, { label: 'TIPP +', value: 'free_hint', color: '#00bcd4' }, { label: '1500', value: 1500, color: '#e07a5f' }];
+        const wheelSegmentsR2 = [ { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '1500', value: 1500, color: '#b39ddb' }, { label: '2500', value: 2500, color: '#f2cc8f' }, { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: '3000', value: 3000, color: '#81b29a' }, { label: 'SZERENCSEVÁLTÁS', value: 're_spin', color: '#ffeb3b' }, { label: '1000', value: 1000, color: '#a5d6a7' }, { label: 'DUPLÁZÓ', value: 'double', color: '#ff9800' }, { label: '5000', value: 5000, color: '#e07a5f' }];
+        const wheelSegmentsR3 = [ { label: '5000', value: 5000, color: '#a5d6a7' }, { label: 'CSŐD', value: 'bankrupt', color: 'var(--fail-color)' }, { label: '7500', value: 7500, color: '#b39ddb' }, { label: '10000', value: 10000, color: '#f2cc8f' }, { label: 'BIZTOSÍTÁS', value: 'insurance', color: 'var(--insurance-color)' }, { label: '15000', value: 15000, color: '#81b29a' }, { label: 'MEGLEPETÉS', value: 'surprise', color: 'var(--surprise-color)' }, { label: 'JOKER', value: 'joker_wheel', color: '#7e57c2' }, { label: 'DUPLÁZÓ', value: 'double', color: '#ff9800' }, { label: '25000', value: 25000, color: '#e07a5f' }];
         const wheelSegmentSets = [null, wheelSegmentsR1, wheelSegmentsR2, wheelSegmentsR3];
         let wheelState = {};
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
+        const LOTTO_PRIZES_META = {
+            1: { title: "1 Találat", desc: "+1 ingyen szöveges segítség" },
+            2: { title: "2 Találat", desc: "+3 ingyen magánhangzó a Szerencsekerékben" },
+            3: { title: "3 Találat", desc: "Korlátlan biztosítás a Szerencsekerékben" },
+            4: { title: "4 Találat", desc: "Csődmentesség a Szerencsekerékben" },
+            5: { title: "5 Találat", desc: "Ingyenes segítség és kód nélküli Szerencsekerék" }
+        };
+
         const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
         const RANDOM_GAME_MESSAGES = [
             "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.",
@@ -549,17 +727,23 @@
             guess_vowel: [ "Vásárolj magánhangzót 250 pontért!", "Melyik magánhangzóra esik a választásod?"],
             correct_guess: [ "Ez telitalálat!", "Tökéletes tipp!", "Benne van!", "Eltaláltad!"],
             wrong_guess: [ "Sajnos ez nincs benne.", "Ez a betű most nem segített.", "Rossz tipp, de ne add fel!"],
-            bankrupt: [ "Ó, ne! Csőd!", "A bank mindent visz!", "Lenulláztad a körös nyereményed!", "Ez fájni fog... CSŐD!"],
-            bankrupt_final: [ "Újra csőd! A játékodnak sajnos vége. Elvesztetted a tétet is.", "A második csőd végzetes volt. A tét elúszott." ],
+            bankrupt_round_lost: [ "CSŐD! Elvesztetted a körben szerzett pontjaidat, de a téted biztonságban!", "A CSŐD elvitte a körös nyereményt! Folytathatod." ],
+            bankrupt_stake_lost: [ "Újra csőd! A játékodnak sajnos vége. Elvesztetted a tétet is.", "A második csőd végzetes volt. A tét elúszott." ],
+            bankrupt_immune: ["CSŐD! De szerencséd van, ma csődmentességet élvezel a lottónyereményednek köszönhetően!", "Megúsztad a csődöt a lottó segítségével!"],
             insurance_win: [ "BIZTOSÍTÁS! Nyertél egy védelmet a csőd ellen!", "Szuper! Van egy biztosításod!"],
             insurance_limit_reached: [ "Elérted az óránkénti biztosítás limidet!", "Ebben az órában már nem szerezhetsz többet." ],
-            insurance_used: [ "Felhasználtál egy biztosítást és megmenekültél!", "A biztosítás megmentett a csődtől!"],
+            insurance_used: [ "Felhasználtál egy biztosítást és megmenekültél a csődtől!", "A biztosítás megmentett, minden pontod biztonságban!"],
             double: ["DUPLÁZÓ! A kör nyereményed megduplázódott!", "Fantasztikus, dupla pontszám a körben!"],
-            joker_wheel: ["JOKER! Kapsz egy kis segítséget...", "A Joker a te oldaladon áll! Felfedek egy mássalhangzót."],
+            free_hint: ["TIPP+! Kaptál egy ingyen tippet az alapjátékhoz!", "Egy ingyen tipp a zsebben!"],
+            re_spin: ["SZERENCSEVÁLTÁS! Ha a következő pörgetés nem tetszik, újra próbálkozhatsz.", "Nem tetszik az eredmény? Pörgess újra!"],
+            surprise_good: ["MEGLEPETÉS! Kaptál +1000 pontot!", "A szerencse melléd szegődött! +1000 pont!"],
+            surprise_bad: ["MEGLEPETÉS! Hoppá, -500 pont levonás.", "Ez a meglepetés most nem esett jól... -500 pont."],
+            surprise_vowel: ["MEGLEPETÉS! Kapsz egy ingyen magánhangzót!", "A ház ajándéka egy magánhangzó!"],
+            joker_wheel: ["JOKER! A Joker a te oldaladon áll! Felfedek egy mássalhangzót.", "JOKER! Kapsz egy kis segítséget..."],
             solve_success: [ "Hihetetlen! Helyes a megfejtés!", "Gratulálunk, zseniális vagy!", "Megcsináltad! Tiéd a nyeremény!"],
             solve_fail: [ "Sajnos ez nem a helyes megfejtés. A játék véget ért.", "Ez most nem jött össze. A helyes megfejtés: <strong>{solution}</strong>. Elbuktad a tétet.", "Rossz válasz. A megoldás: <strong>{solution}</strong>. A nyeremény elszállt."],
             cash_out: [ "Okos döntés! A nyeremény a zsebedben.", "Gratulálunk a nyereményedhez!", "Szép volt!"],
-            next_round: [ "Jöhet a következő, nehezebb kör!", "A java még csak most jön!", "Jöhet a következő kör!"],
+            next_round: [ "Jöhet a következő, nehezebb kör!", "A java még csak most jön!", "Készülj a következő körre!"],
             not_enough_points: [ "Nincs elég pontod magánhangzót venni!", "Ehhez több pontra lesz szükséged!"],
             no_more_consonants: ["Nincs több mássalhangzó a feladványban!", "Minden mássalhangzót feltártál már!"],
             vowel_limit: ["Ebben a körben már nem vehetsz több magánhangzót.", "Elérted a magánhangzó vásárlási limitet."]
@@ -593,9 +777,11 @@
         function setKeyboardVisibility(useDevice) { keyboardContainer.style.display = useDevice ? 'none' : 'flex'; if (useDevice) { setTimeout(() => hiddenInput.focus(), 100); } else { hiddenInput.blur(); } }
         keyboardToggleCheckbox.addEventListener('change', (e) => { const useDevice = e.target.checked; localStorage.setItem('szonyomozo_use_device_keyboard', useDevice); setKeyboardVisibility(useDevice); });
         
-        // --- BIZTOSÍTÁS LOGIKA ---
-        function getInsuranceCount() { const stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); return stats ? stats.insurance || 0 : 0; }
-        function updateInsuranceCount(change) { let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.insurance = Math.max(0, (stats.insurance || 0) + change); localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateInsuranceDisplay(stats.insurance); }
+        // --- ADATKEZELŐ FÜGGVÉNYEK ---
+        function getDailyStats() { return JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); }
+        function saveDailyStats(stats) { localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); }
+        function getInsuranceCount() { const stats = getDailyStats(); return stats ? stats.insurance || 0 : 0; }
+        function updateInsuranceCount(change) { let stats = getDailyStats(); stats.insurance = Math.max(0, (stats.insurance || 0) + change); saveDailyStats(stats); updateInsuranceDisplay(stats.insurance); }
         function updateInsuranceDisplay(count) { if(insuranceDisplayCount) insuranceDisplayCount.textContent = count; if(wheelInsuranceCountEl) wheelInsuranceCountEl.textContent = count; }
 
         // --- SZERENCSEKERÉK ÉS KÁRTYA JÁTÉK ---
@@ -634,10 +820,10 @@
                 text.setAttribute("fill", "white");
                 text.setAttribute("transform", `rotate(${textAngle + 90} ${textPos.x} ${textPos.y})`);
 
-                if (segment.label === 'BIZTOSÍTÁS') {
-                    text.setAttribute("font-size", "4.5");
+                if (segment.label === 'BIZTOSÍTÁS' || segment.label === 'SZERENCSEVÁLTÁS' || segment.label === 'MEGLEPETÉS') {
+                    text.setAttribute("font-size", "4");
                 } else {
-                    text.setAttribute("font-size", "6");
+                    text.setAttribute("font-size", "5.5");
                 }
                 
                 text.textContent = segment.label;
@@ -672,15 +858,78 @@
             }
             addPointsToDailyScore(-stake);
             updateBonusUnlockUI(); 
-            wheelState = { currentRound: 0, totalWinnings: 0, initialStake: stake, roundScore: 0, spinResult: null, isSpinning: false, isPoweringUp: false, guessedLetters: [], roundBankrupt: false, jokerText: jokerText, vowelsBoughtThisRound: 0, consonantMisses: 0 };
-            stakeAmountEl.textContent = stake;
+            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0 };
             startNewRound();
             wheelGameOverlay.classList.add('visible');
             checkAndDisplayIdleState();
         }
-        function startNewRound() { wheelState.currentRound++; wheelState.guessedLetters = []; wheelState.roundScore = 0; wheelState.roundBankrupt = false; wheelState.vowelsBoughtThisRound = 0; wheelState.consonantMisses = 0; wheelHelpButton.style.display = 'none'; wheelHelpButton.classList.remove('pulse-purple'); wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; const seed = getCurrentHourSeed() + wheelState.currentRound; const puzzleIndex = Math.floor(seededRandom(seed) * wheelPuzzles.length); wheelState.puzzle = wheelPuzzles[puzzleIndex]; drawWheel(wheelState.currentRound); setupPuzzleBoard(); createAlphabetPanel(); updateUIForGameState('start_round'); showWheelMessage('start_round'); }
+        
+        function startNewRound() { 
+            wheelState.currentRound++; 
+            wheelState.roundScore = 0; 
+            wheelState.guessedLetters = []; 
+            wheelState.isSpinning = false;
+            wheelState.isPoweringUp = false;
+            wheelState.spinResult = null;
+            wheelState.roundBankrupt = false; // <<< FONTOS: Kör elején nullázzuk a csődöt
+            wheelState.vowelsBoughtThisRound = 0; 
+            wheelState.consonantMisses = 0; 
+            wheelHelpButton.style.display = 'none'; 
+            wheelHelpButton.classList.remove('pulse-purple'); 
+            wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; 
+            const seed = getCurrentHourSeed() + wheelState.currentRound; 
+            const puzzleIndex = Math.floor(seededRandom(seed) * wheelPuzzles.length); 
+            wheelState.puzzle = wheelPuzzles[puzzleIndex]; 
+            drawWheel(wheelState.currentRound); 
+            setupPuzzleBoard(); 
+            createAlphabetPanel(); 
+            updateWheelPlayerScore();
+            updateUIForGameState('start_round'); 
+            showWheelMessage('start_round'); 
+        }
+
         function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); key.title = "Magánhangzó (250 pont)"; } else { key.title = "Mássalhangzó"; } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
-        function handleAlphabetClick(letter) { if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; const isVowel = VOWELS.includes(letter); if (isVowel) { if(wheelState.spinResult !== null && wheelState.spinResult > 0) { showWheelMessage("Előbb tippelj a mássalhangzóra pörgetés után!"); return; } if (wheelState.vowelsBoughtThisRound >= 2) { showWheelMessage('vowel_limit'); return; } const effectiveWinnings = wheelState.totalWinnings + wheelState.initialStake; if (effectiveWinnings < 250) { showWheelMessage('not_enough_points'); return; } if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { addPointsToDailyScore(-250); wheelState.vowelsBoughtThisRound++; guessLetter(letter); } } else { const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (wheelState.spinResult > 0) { guessLetter(letter); } else { showWheelMessage('spin_prompt'); } } }
+        
+        function handleAlphabetClick(letter) { 
+            if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; 
+            const isVowel = VOWELS.includes(letter); 
+            let stats = getDailyStats(); 
+            if (isVowel) { 
+                if(wheelState.spinResult !== null && wheelState.spinResult > 0) { showWheelMessage("Előbb tippelj a mássalhangzóra pörgetés után!"); return; } 
+                if (wheelState.vowelsBoughtThisRound >= 2) { showWheelMessage('vowel_limit'); return; } 
+                if (stats.freeVowels > 0) { 
+                    if(confirm(`Felhasználsz egyet a ${stats.freeVowels} ingyenes magánhangzódból?`)) { 
+                        stats.freeVowels--; 
+                        saveDailyStats(stats); 
+                        guessLetter(letter); 
+                    } 
+                    return; 
+                } 
+                const effectiveWinnings = wheelState.totalWinnings + wheelState.roundScore + wheelState.initialStake; 
+                if (effectiveWinnings < 250) { 
+                    showWheelMessage('not_enough_points'); 
+                    return; 
+                } 
+                if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { 
+                    // Pontlevonás logikája: először a körös, majd a teljes, végül a tétből
+                    if(wheelState.roundScore >= 250) {
+                        wheelState.roundScore -= 250;
+                    } else if (wheelState.totalWinnings >= 250) {
+                         wheelState.totalWinnings -= 250;
+                    } else {
+                        addPointsToDailyScore(-250); // Ha sehol máshol nincs elég, a fő pontszámból vonja le
+                    }
+                    wheelState.vowelsBoughtThisRound++; 
+                    guessLetter(letter); 
+                } 
+            } else { 
+                const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); 
+                if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } 
+                if (wheelState.spinResult > 0) { guessLetter(letter); } else { showWheelMessage('spin_prompt'); } 
+            } 
+            updateWheelPlayerScore();
+        }
+
         function updateAlphabetPanel() { wheelState.guessedLetters.forEach(letter => { const key = wheelAlphabetPanel.querySelector(`[data-letter="${letter}"]`); if(key) key.classList.add('guessed'); }); }
         function setupPuzzleBoard() { puzzleBoardEl.innerHTML = ''; puzzleCategoryEl.textContent = wheelState.puzzle.category; const puzzleText = wheelState.puzzle.puzzle.toUpperCase(); for(const char of puzzleText) { const tile = document.createElement('div'); if (char === ' ') { tile.className = 'puzzle-tile space'; } else { tile.className = 'puzzle-tile'; tile.innerHTML = `<div class="tile-inner"><div class="tile-face tile-front"></div><div class="tile-face tile-back">${char}</div></div>`; tile.dataset.letter = char.toUpperCase(); } puzzleBoardEl.appendChild(tile); } }
         function togglePowerMeterAndSpin() { if (wheelState.isSpinning) return; const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (!wheelState.isPoweringUp) { showWheelMessage('power_up_prompt'); wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
@@ -690,7 +939,7 @@
             showWheelMessage('spin_prompt');
             const baseRotations = 2; 
             const randomExtra = Math.random(); 
-            const powerRotation = 6 * power; 
+            const powerRotation = (4 * power + 4 * (power * power)); 
             const totalRotation = (baseRotations + randomExtra + powerRotation) * 360;
             const currentRotation = parseFloat(wheel.dataset.rotation || 0);
             const newRotation = currentRotation + totalRotation;
@@ -704,26 +953,42 @@
                 handleSpinResult(segments[segmentIndex].value);
             }, 4000);
         }
+
+        // <<< TELJESEN ÚJ CSŐD LOGIKA >>>
         function handleSpinResult(result) {
             wheelState.isSpinning = false;
+            let stats = getDailyStats();
+
             if (result === 'bankrupt') {
-                if (wheelState.roundBankrupt) {
-                    showWheelMessage('bankrupt_final', { duration: 4000 });
-                    loseGame();
+                if(stats.activeLottoPrize && stats.activeLottoPrize.noBankrupt) {
+                    showWheelMessage('bankrupt_immune');
+                    updateUIForGameState('start_round');
                     return;
                 }
+                
+                // 1. Van biztosítás?
+                const useUnlimitedInsurance = stats.activeLottoPrize && stats.activeLottoPrize.unlimitedInsurance;
                 const insuranceCount = getInsuranceCount();
-                if (insuranceCount > 0 && confirm(`CSŐD! Felhasználsz egyet a(z) ${insuranceCount} biztosításodból, hogy megmentsd a körös pontjaid?`)) {
-                    updateInsuranceCount(-1);
+                if (useUnlimitedInsurance || insuranceCount > 0) {
+                    if (!useUnlimitedInsurance) {
+                        updateInsuranceCount(-1);
+                    }
                     showWheelMessage('insurance_used');
                     updateUIForGameState('start_round'); 
-                } else {
-                    showWheelMessage('bankrupt', { duration: 4000 });
-                    wheelState.totalWinnings -= wheelState.roundScore; 
-                    wheelState.roundScore = 0;
-                    wheelState.roundBankrupt = true;
+                    return; // Megmenekült, nincs további teendő
+                }
+
+                // 2. Nincs biztosítás. Ez az első csőd a körben?
+                if (!wheelState.roundBankrupt) {
+                    showWheelMessage('bankrupt_round_lost');
+                    wheelState.roundScore = 0; // Csak a körös nyeremény veszik el
+                    wheelState.roundBankrupt = true; // Jelöljük, hogy ebben a körben már volt csőd
                     updateWheelPlayerScore();
                     updateUIForGameState('start_round');
+                } else {
+                // 3. Nincs biztosítás ÉS ez már a MÁSODIK csőd a körben.
+                    showWheelMessage('bankrupt_stake_lost', { duration: 5000 });
+                    loseGame(); // Játék vége, tét elveszik
                 }
             } else if (result === 'insurance') {
                 if (gameData.insurancesGainedThisHour < 3) {
@@ -736,10 +1001,36 @@
                 }
                 updateUIForGameState('start_round');
             } else if (result === 'double') {
-                const roundDoubled = wheelState.roundScore * 2;
-                wheelState.totalWinnings += wheelState.roundScore; 
-                wheelState.roundScore = roundDoubled;
+                wheelState.roundScore *= 2; 
                 showWheelMessage('double');
+                updateWheelPlayerScore();
+                updateUIForGameState('start_round');
+            } else if (result === 're_spin') {
+                showWheelMessage('re_spin');
+                wheelState.reSpinAvailable = true; // Ezt a logikát még implementálni kell a pörgetés gombnál
+                updateUIForGameState('start_round'); 
+            } else if (result === 'free_hint') {
+                showWheelMessage('free_hint');
+                stats.freeHints = (stats.freeHints || 0) + 1;
+                saveDailyStats(stats);
+                updateUIForGameState('start_round');
+            } else if (result === 'surprise') {
+                const outcomes = ['good', 'bad', 'vowel'];
+                const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+                if (outcome === 'good') {
+                    showWheelMessage('surprise_good');
+                    wheelState.roundScore += 1000;
+                } else if (outcome === 'bad') {
+                    showWheelMessage('surprise_bad');
+                    wheelState.roundScore = Math.max(0, wheelState.roundScore - 500);
+                } else {
+                    showWheelMessage('surprise_vowel');
+                    const unrevealedVowels = VOWELS.split('').filter(v => !wheelState.guessedLetters.includes(v) && wheelState.puzzle.puzzle.includes(v));
+                    if(unrevealedVowels.length > 0) {
+                        const randomVowel = unrevealedVowels[Math.floor(Math.random() * unrevealedVowels.length)];
+                        setTimeout(() => guessLetter(randomVowel, true), 1500);
+                    }
+                }
                 updateWheelPlayerScore();
                 updateUIForGameState('start_round');
             } else if (result === 'joker_wheel') {
@@ -757,57 +1048,466 @@
                 showWheelMessage('guess_consonant', {duration: 6000});
             }
         }
-        function guessLetter(letter, fromJoker = false) { letter = letter.toUpperCase(); wheelState.guessedLetters.push(letter); let foundCount = 0; document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); if (foundCount > 0) { if (!VOWELS.includes(letter) && !fromJoker) { let pointsEarned = foundCount * wheelState.spinResult; wheelState.roundScore += pointsEarned; wheelState.totalWinnings += pointsEarned; } showWheelMessage('correct_guess'); } else { if(!VOWELS.includes(letter)) { wheelState.consonantMisses++; if(wheelState.consonantMisses >= 5) { wheelHelpButton.style.display = 'block'; wheelHelpButton.classList.add('pulse-purple'); } } showWheelMessage('wrong_guess'); } updateWheelPlayerScore(); updateAlphabetPanel(); updateUIForGameState('start_round'); checkWheelWin(); }
-        function solve() { const solution = prompt("Kérlek, add meg a teljes megfejtést:"); if (solution === null) return; if (solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { showWheelMessage('solve_success'); document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); updateUIForGameState('puzzle_solved'); } else { loseGame(); } }
-        function loseGame() {
-            addPointsToDailyScore(wheelState.initialStake); // Visszaadja a tétet, de a nyeremény elvész
+
+        function guessLetter(letter, fromJoker = false) { 
+            letter = letter.toUpperCase(); 
+            if (wheelState.guessedLetters.includes(letter)) return;
+            wheelState.guessedLetters.push(letter); 
+            let foundCount = 0; 
+            document.querySelectorAll(`.puzzle-tile[data-letter="${letter}"]`).forEach(tile => { if(!tile.classList.contains('revealed')) {tile.classList.add('revealed'); foundCount++;} }); 
+            if (foundCount > 0) { 
+                if (!VOWELS.includes(letter) && !fromJoker) { 
+                    let pointsEarned = foundCount * wheelState.spinResult; 
+                    wheelState.roundScore += pointsEarned; 
+                } 
+                showWheelMessage('correct_guess'); 
+            } else { 
+                if(!VOWELS.includes(letter)) { wheelState.consonantMisses++; if(wheelState.consonantMisses >= 5) { wheelHelpButton.style.display = 'block'; wheelHelpButton.classList.add('pulse-purple'); } } 
+                showWheelMessage('wrong_guess'); 
+            } 
+            wheelState.spinResult = null;
+            updateWheelPlayerScore(); 
+            updateAlphabetPanel(); 
+            updateUIForGameState('start_round'); 
+            checkWheelWin(); 
+        }
+        
+        function solve() { 
+            const solution = prompt("Kérlek, add meg a teljes megfejtést:"); 
+            if (solution === null) return; 
+            if (solution.toUpperCase().trim().replace(/\s+/g, ' ') === wheelState.puzzle.puzzle.toUpperCase()) { 
+                showWheelMessage('solve_success'); 
+                document.querySelectorAll('.puzzle-tile[data-letter]').forEach(tile => tile.classList.add('revealed')); 
+                handleRoundWin();
+            } else { 
+                loseGame(true); // A 'true' jelzi, hogy rossz megoldás miatt van vége
+            } 
+        }
+
+        function loseGame(fromSolveAttempt = false) {
+            if(fromSolveAttempt){
+                showWheelMessage('solve_fail', {duration: 8000, solution: wheelState.puzzle.puzzle});
+            }
+            // A tét már a játék elején le lett vonva, itt csak jelezzük, hogy nem kapja vissza.
             wheelState.totalWinnings = 0;
             wheelState.initialStake = 0;
             updateWheelPlayerScore();
-            showWheelMessage('solve_fail', {duration: 8000, solution: wheelState.puzzle.puzzle});
             updateUIForGameState('game_over');
         }
-        function cashOut() { showWheelMessage('cash_out', {duration: 5000}); addPointsToDailyScore(wheelState.totalWinnings + wheelState.initialStake); updateUIForGameState('game_over'); }
-        function updateWheelPlayerScore() { playerScoreEl.textContent = wheelState.totalWinnings; stakeAmountEl.textContent = wheelState.initialStake; }
+
+        function handleRoundWin() {
+            wheelState.totalWinnings += wheelState.roundScore;
+            wheelState.roundScore = 0;
+            updateUIForGameState('puzzle_solved');
+        }
+        
+        function cashOut() { 
+            showWheelMessage('cash_out', {duration: 5000}); 
+            const finalWinnings = wheelState.totalWinnings + wheelState.roundScore + wheelState.initialStake;
+            addPointsToDailyScore(finalWinnings); 
+            updateUIForGameState('game_over'); 
+        }
+
+        function updateWheelPlayerScore() { 
+            const totalScore = wheelState.totalWinnings + wheelState.roundScore;
+            document.querySelector('#wheel-winnings-display span').textContent = totalScore;
+            playerScoreEl.textContent = wheelState.roundScore; 
+            stakeAmountEl.textContent = wheelState.initialStake; 
+        }
+
         function updateUIForGameState(state) { const controls = document.getElementById('wheel-controls'); controls.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; solveButton.disabled = true; powerMeterContainer.style.pointerEvents = 'none'; if (state === 'start_round' || state === 'guess_consonant') { controls.style.display = 'flex'; spinButton.disabled = false; powerMeterContainer.style.pointerEvents = 'auto'; solveButton.disabled = false; wheelState.spinResult = (state === 'start_round') ? null : wheelState.spinResult; } else if (state === 'spinning') { controls.style.display = 'flex'; } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; } else { wheelGameOverlay.classList.remove('visible'); initCardGame(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
-        function checkWheelWin() { const allTiles = document.querySelectorAll('.puzzle-tile[data-letter]'); const revealedTiles = document.querySelectorAll('.puzzle-tile.revealed[data-letter]'); if(allTiles.length > 0 && allTiles.length === revealedTiles.length) { updateUIForGameState('puzzle_solved'); } }
+        function checkWheelWin() { const allTiles = document.querySelectorAll('.puzzle-tile[data-letter]'); const revealedTiles = document.querySelectorAll('.puzzle-tile.revealed[data-letter]'); if(allTiles.length > 0 && allTiles.length === revealedTiles.length) { handleRoundWin(); } }
 
         function shuffleArraySeeded(array, seed) { let currentIndex = array.length, temporaryValue, randomIndex; const newArray = [...array]; while (0 !== currentIndex) { randomIndex = Math.floor(seededRandom(seed + currentIndex) * currentIndex); currentIndex -= 1; temporaryValue = newArray[currentIndex]; newArray[currentIndex] = newArray[randomIndex]; newArray[randomIndex] = temporaryValue; } return newArray; }
-        function initCardGame() { cardGameMessage.textContent = "Válassz egy lapot!"; cardBoard.innerHTML = ''; collectWinningsButton.style.display = 'none'; cardGameOverlay.classList.add('visible'); const seed = getCurrentHourSeed(); const shuffledCards = shuffleArraySeeded(CARD_DATA, seed); wheelState.picksLeft = 1; cardPrizesList.innerHTML = ''; CARD_DATA.forEach(card => { cardPrizesList.innerHTML += `<li>${card.label}</li>`; }); shuffledCards.forEach((cardData, index) => { const cardElement = document.createElement('div'); cardElement.className = 'game-card'; cardElement.dataset.index = index; cardElement.innerHTML = ` <div class="card-inner"> <div class="card-face card-face-front"> <svg class="card-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"> <circle class="logo-circle" cx="50" cy="50" r="40" stroke-width="12"/> <line class="logo-handle" x1="32" y1="72" x2="5" y2="95" stroke-width="16" stroke-linecap="round"/> <text class="logo-text" x="50" y="62" font-family="Fredoka One, cursive" font-size="38" text-anchor="middle">Szó</text> </svg> </div> <div class="card-face card-face-back ${cardData.cssClass || ''}"> <div class="card-title">${cardData.label}</div> <div class="card-desc">${cardData.description}</div> </div> </div> `; cardElement.addEventListener('click', () => handleCardClick(cardElement, cardData)); cardBoard.appendChild(cardElement); }); }
+        
+        function initCardGame() { 
+            cardGameMessage.textContent = "Válassz egy lapot!"; 
+            cardBoard.innerHTML = ''; 
+            collectWinningsButton.style.display = 'none'; 
+            cardGameOverlay.classList.add('visible'); 
+            const seed = getCurrentHourSeed(); 
+            const shuffledCards = shuffleArraySeeded(CARD_DATA, seed); 
+            wheelState.picksLeft = 1; 
+            cardPrizesList.innerHTML = ''; 
+            CARD_DATA.forEach(card => { cardPrizesList.innerHTML += `<li>${card.label}</li>`; }); 
+            shuffledCards.forEach((cardData, index) => { 
+                const cardElement = document.createElement('div'); 
+                cardElement.className = 'game-card'; 
+                cardElement.dataset.index = index; 
+                cardElement.innerHTML = ` <div class="card-inner"> <div class="card-face card-face-front"> <svg class="card-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"> <circle class="logo-circle" cx="50" cy="50" r="40" stroke-width="12"/> <line class="logo-handle" x1="32" y1="72" x2="5" y2="95" stroke-width="16" stroke-linecap="round"/> <text class="logo-text" x="50" y="62" font-family="Fredoka One, cursive" font-size="38" text-anchor="middle">Szó</text> </svg> </div> <div class="card-face card-face-back ${cardData.cssClass || ''}"> <div class="card-title">${cardData.label}</div> <div class="card-desc">${cardData.description}</div> </div> </div> `; 
+                cardElement.addEventListener('click', () => handleCardClick(cardElement, cardData)); 
+                cardBoard.appendChild(cardElement); 
+            }); 
+        }
+        
         function handleCardClick(cardElement, cardData) { if (cardElement.classList.contains('flipped') || wheelState.picksLeft <= 0) return; wheelState.picksLeft--; cardElement.classList.add('flipped'); applyCardEffect(cardData); if (wheelState.picksLeft <= 0) { document.querySelectorAll('.game-card:not(.flipped)').forEach(c => c.classList.add('disabled')); setTimeout(() => { collectWinningsButton.style.display = 'block'; }, 1500); } }
-        function applyCardEffect(cardData) { cardGameMessage.textContent = `A te kártyád: ${cardData.label}!`; switch(cardData.type) { case 'total_bankrupt': let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.totalScore = 0; localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateDailyScoreDisplay(0); wheelState.totalWinnings = 0; wheelState.initialStake = 0; break; case 'bankrupt': wheelState.totalWinnings = 0; wheelState.initialStake = 0; break; case 'half': wheelState.totalWinnings = Math.floor(wheelState.totalWinnings / 2); break; case 'add_points': wheelState.totalWinnings += cardData.value; break; case 'add_points_tiny': wheelState.totalWinnings += cardData.value; break; case 'joker': cardGameMessage.textContent = `A Joker üzeneted: "${wheelState.jokerText}"`; break; case 'pick_again': wheelState.picksLeft++; cardGameMessage.textContent += " Válassz még egyet!"; break; case 'pick_two': wheelState.picksLeft += 2; cardGameMessage.textContent += " Válassz még kettőt!"; break; } updateWheelPlayerScore(); }
+        
+        function applyCardEffect(cardData) { 
+            cardGameMessage.textContent = `A te kártyád: ${cardData.label}!`; 
+            let stats = getDailyStats(); 
+            let finalWinnings = wheelState.totalWinnings + wheelState.roundScore;
+            switch(cardData.type) { 
+                case 'total_bankrupt': 
+                    stats.totalScore = 0; 
+                    saveDailyStats(stats); 
+                    updateDailyScoreDisplay(0); 
+                    finalWinnings = 0; 
+                    wheelState.initialStake = 0;
+                    break; 
+                case 'bankrupt': 
+                    finalWinnings = 0; 
+                    wheelState.initialStake = 0;
+                    break; 
+                case 'half': 
+                    finalWinnings = Math.floor(finalWinnings / 2); 
+                    break; 
+                case 'add_points': 
+                    finalWinnings += cardData.value; 
+                    break; 
+                case 'add_points_tiny': 
+                    finalWinnings += cardData.value; 
+                    break; 
+                case 'joker': 
+                    cardGameMessage.textContent = `A Joker üzeneted: "${wheelState.jokerText}"`; 
+                    break; 
+                case 'pick_again': 
+                    wheelState.picksLeft++; 
+                    cardGameMessage.textContent += " Válassz még egyet!"; 
+                    break; 
+                case 'pick_two': 
+                    wheelState.picksLeft += 2; 
+                    cardGameMessage.textContent += " Válassz még kettőt!"; 
+                    break; 
+            } 
+            wheelState.totalWinnings = finalWinnings;
+            wheelState.roundScore = 0;
+            updateWheelPlayerScore(); 
+        }
+        
+        // --- LOTTÓ LOGIKA ---
+        function initLotto() {
+            // This function now primarily updates the view, as data integrity is ensured in initGame.
+            updateMainLottoView();
+        }
+
+        function generateWinningLottoNumbers() { 
+            if (!gameData.lotto) return; // Safety check
+            const numbers = Array.from({length: 35}, (_, i) => i + 1); 
+            let winning = []; 
+            for(let i=0; i<5; i++) { 
+                const randomIndex = Math.floor(seededRandom(getCurrentDaySeed() + i) * numbers.length); 
+                winning.push(numbers.splice(randomIndex, 1)[0]);
+            } 
+            gameData.lotto.winningNumbers = winning.sort((a,b)=>a-b); 
+        }
+        
+        function openLottoOverlay() {
+            if (!gameData || !gameData.lotto || !Array.isArray(gameData.lotto.tickets)) {
+                alert("Hiba történt a lottó játék betöltésekor. Kérjük, frissítse az oldalt.");
+                console.error("A lottó adatstruktúrája érvénytelen vagy nem létezik a gombnyomáskor:", gameData);
+                return;
+            }
+
+            if (gameData.lotto.tickets.length >= 4) {
+                lottoPlayedMessage.textContent = 'Elérted a napi 4 szelvényes limitet.';
+                setTimeout(() => { lottoPlayedMessage.textContent = ''; }, 10000);
+                return;
+            }
+            lottoGameOverlay.classList.add('visible');
+            selectedLottoNumbers = [];
+            createOverlayLottoGrid();
+            updateLottoSelectionCounter();
+            lottoOverlayMessage.innerHTML = '';
+            
+            const buttonsContainer = document.getElementById('lotto-overlay-buttons');
+            buttonsContainer.style.display = 'flex';
+            const messageContainer = document.getElementById('lotto-game-container').querySelector('p:nth-of-type(1)');
+            messageContainer.style.display = 'block';
+            lottoGridOverlay.style.display = 'grid';
+            lottoSelectionCounter.style.display = 'block';
+
+            closeLottoOverlayButton.onclick = closeLottoOverlay;
+            closeLottoOverlayButton.textContent = "Mégse";
+            closeLottoOverlayButton.style.display = 'block'; 
+        }
+
+        function createOverlayLottoGrid() {
+            lottoGridOverlay.innerHTML = ''; 
+            for(let i=1; i<=35; i++){ 
+                const numberEl = document.createElement('div'); 
+                numberEl.className = 'lotto-number'; 
+                numberEl.textContent = i; 
+                numberEl.dataset.number = i; 
+                numberEl.addEventListener('click', () => toggleLottoNumber(i)); 
+                lottoGridOverlay.appendChild(numberEl); 
+            }
+        }
+        
+        function toggleLottoNumber(num) { 
+            const index = selectedLottoNumbers.indexOf(num); 
+            if (index > -1) { 
+                selectedLottoNumbers.splice(index, 1); 
+            } else { 
+                if(selectedLottoNumbers.length < 5) { 
+                    selectedLottoNumbers.push(num); 
+                } else { 
+                    alert("Már kiválasztottál 5 számot!"); 
+                } 
+            } 
+            updateOverlayLottoGrid();
+            updateLottoSelectionCounter();
+        }
+
+        function updateLottoSelectionCounter() {
+            lottoSelectionCounter.textContent = `${selectedLottoNumbers.length} / 5 kiválasztva`;
+        }
+
+        function updateOverlayLottoGrid() { 
+            lottoGridOverlay.querySelectorAll('.lotto-number').forEach(el => { 
+                const num = parseInt(el.dataset.number); 
+                if (selectedLottoNumbers.includes(num)) { 
+                    el.classList.add('selected'); 
+                } else { 
+                    el.classList.remove('selected'); 
+                }
+            });
+        }
+
+        function submitLottoTicketOverlay() {
+            if (selectedLottoNumbers.length !== 5) { alert("Kérlek, válassz ki pontosan 5 számot!"); return; } 
+            const currentTickets = gameData.lotto.tickets.length;
+            const cost = currentTickets === 0 ? 0 : 400;
+            const currentScore = getDailyScore();
+
+            if(currentScore < cost) {
+                alert(`Nincs elég pontod a szelvény feladásához! Szükséges: ${cost} pont.`);
+                return;
+            }
+
+            if(cost > 0 && !confirm(`Ez a szelvény ${cost} pontba kerül. Biztosan megveszed?`)) {
+                return;
+            }
+
+            addPointsToDailyScore(-cost);
+            
+            gameData.lotto.tickets.push({ numbers: selectedLottoNumbers.sort((a,b)=>a-b) });
+            saveGame(); 
+            
+            lottoOverlayMessage.innerHTML = `Szelvényed feladva! Várd a sorsolást este 7 után. Sok szerencsét!<span class="star-icon">★</span>`;
+            
+            setTimeout(() => {
+                lottoOverlayMessage.style.opacity = '0';
+                setTimeout(() => { lottoOverlayMessage.innerHTML = ''; lottoOverlayMessage.style.opacity = '1';}, 500);
+            }, 8000);
+
+            document.getElementById('lotto-overlay-buttons').style.display = 'none';
+            document.getElementById('lotto-game-container').querySelector('p:nth-of-type(1)').style.display = 'none';
+            lottoGridOverlay.style.display = 'none';
+            lottoSelectionCounter.style.display = 'none';
+            
+            closeLottoOverlayButton.textContent = "Bezárás";
+            closeLottoOverlayButton.style.display = 'block'; 
+        }
+
+        function closeLottoOverlay() {
+            lottoGameOverlay.classList.remove('visible');
+            updateMainLottoView();
+        }
+
+        function updateMainLottoView() {
+            if (!gameData || !gameData.lotto || !Array.isArray(gameData.lotto.tickets)) {
+                return;
+            }
+
+            const now = new Date();
+            const isAfterDrawing = now.getHours() >= 19;
+            const ticketsSubmitted = gameData.lotto.tickets.length;
+
+            if (ticketsSubmitted >= 4) {
+                playLottoButton.disabled = true;
+                playLottoButton.textContent = 'Napi limit elérve (4/4)';
+            } else if (ticketsSubmitted > 0) {
+                 playLottoButton.disabled = false;
+                 playLottoButton.textContent = `Új szelvény (${ticketsSubmitted}/4) - 400 pont`;
+            } else {
+                 playLottoButton.disabled = false;
+                 playLottoButton.textContent = 'Első ingyenes szelvény';
+            }
+            
+            submittedTicketsContainer.innerHTML = '';
+            if(ticketsSubmitted > 0) {
+                gameData.lotto.tickets.forEach((ticket, index) => {
+                    const stub = document.createElement('div');
+                    stub.className = 'lotto-ticket-stub';
+                    let headerText = `<h4>${index + 1}. Szelvényed:</h4>`;
+                    if (isAfterDrawing && ticket.matches !== undefined) {
+                        headerText = `<h4>${index + 1}. Szelvényed (${ticket.matches} találat):</h4>`;
+                    }
+                    stub.innerHTML = headerText + '<div class="number-display"></div>';
+                    const display = stub.querySelector('.number-display');
+                    ticket.numbers.forEach(num => {
+                        const ball = document.createElement('div');
+                        ball.className = 'lotto-ball';
+                        ball.textContent = num;
+                        if(isAfterDrawing && gameData.lotto.winningNumbers.includes(num)) {
+                            ball.classList.add('match');
+                        }
+                        display.appendChild(ball);
+                    });
+                    submittedTicketsContainer.appendChild(stub);
+                });
+            }
+
+            if(isAfterDrawing) {
+                winningLottoNumbersContainer.style.display = 'block';
+                winningLottoNumbersContainer.innerHTML = '<h4>Mai nyerőszámok:</h4><div class="number-display"></div>';
+                const display = winningLottoNumbersContainer.querySelector('.number-display');
+                gameData.lotto.winningNumbers.forEach(num => {
+                    const ball = document.createElement('div');
+                    ball.className = 'lotto-ball';
+                    ball.textContent = num;
+                    display.appendChild(ball);
+                });
+                
+                if(!gameData.lotto.prizesEvaluated) {
+                    evaluateLottoPrizes();
+                }
+            } else {
+                 winningLottoNumbersContainer.style.display = 'none';
+            }
+        }
+
+        function evaluateLottoPrizes() {
+            if (!gameData.lotto || gameData.lotto.prizesEvaluated) return;
+
+            let wonTiers = new Set();
+            gameData.lotto.tickets.forEach(ticket => {
+                const matches = ticket.numbers.filter(num => gameData.lotto.winningNumbers.includes(num));
+                ticket.matches = matches.length;
+                if (ticket.matches > 0) {
+                    wonTiers.add(ticket.matches);
+                }
+            });
+
+            gameData.lotto.prizesEvaluated = true;
+            saveGame();
+
+            const uniqueTiers = Array.from(wonTiers);
+            if(uniqueTiers.length > 1) {
+                promptPrizeChoice(uniqueTiers);
+            } else if (uniqueTiers.length === 1) {
+                savePendingPrize(uniqueTiers[0]);
+                alert(`Nyertél! A(z) ${uniqueTiers[0]}-találatos nyereményed holnap éjféltől lesz aktív.`);
+            }
+            updateMainLottoView(); 
+        }
+
+        function promptPrizeChoice(tiers) {
+            const optionsContainer = document.getElementById('prize-choice-options');
+            optionsContainer.innerHTML = '';
+            tiers.sort((a,b) => b-a).forEach(tier => {
+                const prize = LOTTO_PRIZES_META[tier];
+                const button = document.createElement('button');
+                button.className = 'prize-option-button';
+                button.innerHTML = `<div class="prize-title">${prize.title}</div><div class="prize-desc">${prize.desc}</div>`;
+                button.onclick = () => {
+                    savePendingPrize(tier);
+                    prizeChoiceOverlay.classList.remove('visible');
+                    alert(`A(z) ${tier}-találatos nyereményt választottad. Holnap éjféltől lesz aktív.`);
+                };
+                optionsContainer.appendChild(button);
+            });
+            prizeChoiceOverlay.classList.add('visible');
+        }
+
+        function savePendingPrize(tier) {
+            let stats = getDailyStats();
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            stats.pendingPrize = {
+                targetDate: tomorrow.toDateString(),
+                tier: tier
+            };
+            saveDailyStats(stats);
+        }
         
         // --- FŐ JÁTÉKLOGIKA ---
         function checkDailyReset() {
             const today = new Date().toDateString();
-            let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats'));
+            let stats = getDailyStats();
             if (!stats || stats.lastResetDate !== today) {
-                stats = { totalScore: 200, lastResetDate: today, insurance: 0 };
-                localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats));
-            } else if (stats.insurance === undefined) { 
-                stats.insurance = 0;
-                localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats));
+                const oldStats = stats || {};
+                stats = { 
+                    totalScore: 200, 
+                    lastResetDate: today, 
+                    insurance: 0, 
+                    freeHints: 0, 
+                    freeVowels: 0, 
+                    activeLottoPrize: {},
+                    pendingPrize: oldStats.pendingPrize || null
+                };
+                
+                // Napi lottó adatok nullázása
+                gameData.lotto = { date: today, tickets: [], winningNumbers: [], prizesEvaluated: false };
+                generateWinningLottoNumbers();
+                saveGame();
+            } 
+            
+            if (stats.pendingPrize && stats.pendingPrize.targetDate === today) {
+                const tier = stats.pendingPrize.tier;
+                stats.activeLottoPrize = { tier: tier };
+                switch(tier) {
+                    case 1: stats.freeHints = (stats.freeHints || 0) + 1; break;
+                    case 2: stats.freeVowels = (stats.freeVowels || 0) + 3; break;
+                    case 3: stats.activeLottoPrize.unlimitedInsurance = true; break;
+                    case 4: stats.activeLottoPrize.noBankrupt = true; break;
+                    case 5: stats.activeLottoPrize.freeWheel = true; break;
+                }
+                stats.pendingPrize = null;
+                alert("A tegnapi lottónyereményed mára aktiválódott! Sok sikert a felhasználásához!");
             }
+            saveDailyStats(stats);
+
             updateDailyScoreDisplay(stats.totalScore);
             updateInsuranceDisplay(stats.insurance);
         }
-        function getDailyScore() { const stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); return stats ? stats.totalScore : 0; }
-        function addPointsToDailyScore(points) { let stats = JSON.parse(localStorage.getItem('szonyomozo_daily_stats')); stats.totalScore = Math.max(0, stats.totalScore + points); localStorage.setItem('szonyomozo_daily_stats', JSON.stringify(stats)); updateDailyScoreDisplay(stats.totalScore); }
+
+        function getDailyScore() { const stats = getDailyStats(); return stats ? stats.totalScore : 0; }
+        function addPointsToDailyScore(points) { let stats = getDailyStats(); stats.totalScore = Math.max(0, stats.totalScore + points); saveDailyStats(stats); updateDailyScoreDisplay(stats.totalScore); }
         function updateDailyScoreDisplay(score) { dailyScoreDisplaySpan.textContent = Math.round(score); }
+        
+        // JAVÍTOTT FŐ INDÍTÓ FÜGGVÉNY
         function initGame() {
+            // 1. Adatok betöltése vagy inicializálása
+            const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
+            if (storedData) { 
+                gameData = storedData; 
+            } else {
+                gameData = {}; // Kezdés üres objektummal
+            }
+
+            // 2. Lottó adatok garantált létrehozása/ellenőrzése
+            const today = new Date().toDateString();
+            if (!gameData.lotto || typeof gameData.lotto !== 'object' || gameData.lotto.date !== today) {
+                gameData.lotto = { date: today, tickets: [], winningNumbers: [], prizesEvaluated: false };
+                generateWinningLottoNumbers(); // Generáljunk is számokat, ha új nap van
+            }
+
+            // 3. További inicializálási lépések
             checkDailyReset();
             loadKeyboardSetting();
             const hourSeed = getCurrentHourSeed();
-            const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
-            if (storedData && storedData.seed === hourSeed) {
-                gameData = storedData;
-            } else {
+            
+            // 4. Óránkénti szavak frissítése (ha szükséges)
+            if (!gameData.seed || gameData.seed !== hourSeed) {
+                const oldLottoData = gameData.lotto;
                 gameData = {
                     seed: hourSeed,
                     hourlySet: [],
                     progress: [],
                     timers: {},
                     gameModes: {},
+                    modeLocked: Array(5).fill(false),
                     secretCode: [],
                     insurancesGainedThisHour: 0,
                     bonusUnlocked: false,
@@ -815,7 +1515,8 @@
                     currentWordIndex: 0,
                     currentRow: 0,
                     currentCol: 0,
-                    isGameOver: false
+                    isGameOver: false,
+                    lotto: oldLottoData // Lottó adatok megőrzése óraváltáskor
                 };
                 const allIndices = Array.from(Array(wordData.length).keys());
                 let chosenIndices = [];
@@ -832,13 +1533,17 @@
                 gameData.gameModes = Array(5).fill('relax');
                 saveGame();
             }
+
+            // 5. Felhasználói felület frissítése és játék indítása
             renderWordTracker();
             updateBonusUnlockUI();
             if (!checkAndDisplayIdleState()) {
                 loadWord(gameData.currentWordIndex);
             }
             startSecretCodeFlasher();
+            initLotto(); // Ez most már csak a UI-t frissíti
         }
+
         function loadWord(indexInSet) { if(indexInSet >= gameData.hourlySet.length) return; activeHints = { text: [], letterIndices: [], usedCount: 0 }; hintDisplayArea.innerHTML = ''; hintDisplayArea.classList.remove('active'); clearInterval(timerInterval); clearInterval(randomMessageInterval); Object.values(cooldownIntervals).forEach(clearInterval); cooldownIntervals = {}; gameData.currentWordIndex = indexInSet; const wordProgress = gameData.progress[indexInSet]; gameData.isGameOver = (wordProgress.status !== 'pending'); gameData.currentRow = 0; gameData.currentCol = 0; renderInfoBarFront(); initializeGrid(wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length); initializeKeyboard(); renderWordTracker(); updateHintButtons(); if (gameData.isGameOver) { keyboardContainer.classList.add('disabled'); showEndMessage(); } else { keyboardContainer.classList.remove('disabled'); startRandomMessageTimer(); if (keyboardToggleCheckbox.checked) { setTimeout(() => hiddenInput.focus(), 100); } } }
         function startSecretCodeFlasher() { clearInterval(secretCodeFlasherInterval); secretCodeFlasherInterval = setInterval(flashRandomDigit, Math.random() * 20000 + 15000); }
         function flashRandomDigit() { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const digitIndex = Math.floor(Math.random() * 4); const targetInput = codeInputs[digitIndex]; if (targetInput.dataset.isFlashing === 'true' || targetInput.disabled) return; const digit = gameData.secretCode[digitIndex]; const originalValue = targetInput.value; targetInput.disabled = true; targetInput.classList.add('flashing-code'); targetInput.dataset.isFlashing = 'true'; targetInput.dataset.originalValue = originalValue; targetInput.value = digit; setTimeout(() => { targetInput.value = targetInput.dataset.originalValue; targetInput.disabled = false; targetInput.classList.remove('flashing-code'); targetInput.dataset.isFlashing = 'false'; }, 2000); }
@@ -890,11 +1595,25 @@
             saveGame();
         }
         function calculateHintCost(isLetterHint = false) { let baseCost; switch (wordData[gameData.hourlySet[gameData.currentWordIndex]].difficulty) { case "Könnyű": baseCost = 25; break; case "Nehéz": baseCost = 50; break; case "Extra Nehéz": baseCost = 75; break; default: baseCost = 25; } const score = getDailyScore(); const dynamicCost = Math.floor(score * 0.05); baseCost += dynamicCost; const costMultiplier = activeHints.usedCount >= 2 ? 2 : 1; const letterMultiplier = isLetterHint ? 1.5 : 1; return Math.round(baseCost * costMultiplier * letterMultiplier); }
-        function spendPointsForHint(isLetterHint = false) { const cost = calculateHintCost(isLetterHint); const currentScore = getDailyScore(); if (currentScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${currentScore} pontod van.`); return false; } if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToDailyScore(-cost); return true; } return false; }
+        function spendPointsForHint(isLetterHint = false) { 
+            let stats = getDailyStats();
+            const freebie = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            if (freebie) { return true; }
+
+            if (stats.freeHints > 0 && !isLetterHint) {
+                stats.freeHints--;
+                saveDailyStats(stats);
+                alert("Felhasználtál egy ingyenes szöveges segítséget!");
+                return true;
+            }
+            const cost = calculateHintCost(isLetterHint); 
+            if (stats.totalScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${stats.totalScore} pontod van.`); return false; } 
+            if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToDailyScore(-cost); return true; } return false; 
+        }
         
         // --- SEGÉD- ÉS RENDERELŐ FÜGGVÉNYEK ---
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
-        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.dataset.index = index; const progress = gameData.progress[index]; item.classList.remove('solved', 'failed', 'failed-revealed', 'active'); if (progress.status === 'solved') { item.classList.add('solved'); } else if (progress.status === 'failed-revealed') { item.classList.add('failed-revealed'); } else if (progress.status === 'failed') { item.classList.add('failed'); const remainingTime = (progress.failTimestamp || 0) + RETRY_COOLDOWN_MS - Date.now(); if (remainingTime > 0) { item.innerHTML = `${index + 1}. szó <div class="cooldown-timer"></div>`; updateCooldownTimer(item.querySelector('.cooldown-timer'), progress.failTimestamp); item.style.cursor = 'not-allowed'; } else { item.textContent = `${index + 1}. szó (Újra)`; item.style.cursor = 'pointer'; item.addEventListener('click', () => { gameData.progress[index] = {status: 'pending', scored: false}; gameData.timers[index] = 180; gameData.gameModes[index] = 'relax'; saveGame(); if (!checkAndDisplayIdleState()) { loadWord(index); } }); } } else { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && gameData.progress[index].status === 'pending') loadWord(index); }); } item.textContent = item.textContent || `${index + 1}. szó`; if (index === gameData.currentWordIndex && !checkAndDisplayIdleState()) { item.classList.add('active'); } wordTrackerContainer.appendChild(item); }); }
+        function renderWordTracker() { wordTrackerContainer.innerHTML = ''; gameData.hourlySet.forEach((_, index) => { const item = document.createElement('div'); item.className = 'tracker-item'; item.dataset.index = index; const progress = gameData.progress[index]; item.classList.remove('solved', 'failed', 'failed-revealed', 'active'); if (progress.status === 'solved') { item.classList.add('solved'); } else if (progress.status === 'failed-revealed') { item.classList.add('failed-revealed'); } else if (progress.status === 'failed') { item.classList.add('failed'); const remainingTime = (progress.failTimestamp || 0) + RETRY_COOLDOWN_MS - Date.now(); if (remainingTime > 0) { item.innerHTML = `${index + 1}. szó <div class="cooldown-timer"></div>`; updateCooldownTimer(item.querySelector('.cooldown-timer'), progress.failTimestamp); item.style.cursor = 'not-allowed'; } else { item.textContent = `${index + 1}. szó (Újra)`; item.style.cursor = 'pointer'; item.addEventListener('click', () => { gameData.progress[index] = {status: 'pending', scored: false}; gameData.timers[index] = 180; gameData.gameModes[index] = 'relax'; gameData.modeLocked[index] = false; saveGame(); if (!checkAndDisplayIdleState()) { loadWord(index); } }); } } else { item.addEventListener('click', () => { if(index !== gameData.currentWordIndex && gameData.progress[index].status === 'pending') loadWord(index); }); } item.textContent = item.textContent || `${index + 1}. szó`; if (index === gameData.currentWordIndex && !checkAndDisplayIdleState()) { item.classList.add('active'); } wordTrackerContainer.appendChild(item); }); }
         function updateCooldownTimer(element, failTimestamp) { if (!element) return; const intervalId = setInterval(() => { const remaining = failTimestamp + RETRY_COOLDOWN_MS - Date.now(); if (remaining <= 0) { clearInterval(intervalId); renderWordTracker(); return; } const minutes = Math.floor((remaining / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((remaining / 1000) % 60).toString().padStart(2, '0'); element.textContent = `${minutes}:${seconds}`; }, 1000); cooldownIntervals[element.parentElement.dataset.index] = intervalId; }
         function updateTimerDisplay(timeLeft) { if (timeLeft < 0) timeLeft = 0; const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const seconds = (timeLeft % 60).toString().padStart(2, '0'); const timeString = `${minutes}:${seconds}`; const timerDisplayEl = document.getElementById('timer-display'); if (timerDisplayEl) timerDisplayEl.textContent = timeString; }
         function startTimer(duration) { clearInterval(timerInterval); let timeLeft = duration; updateTimerDisplay(timeLeft); timerInterval = setInterval(() => { if (gameData.isGameOver) { clearInterval(timerInterval); return; } timeLeft--; gameData.timers[gameData.currentWordIndex] = timeLeft; saveGame(); updateTimerDisplay(timeLeft); if (timeLeft <= 0) { clearInterval(timerInterval); clearInterval(randomMessageInterval); failWord(); } }, 1000); }
@@ -946,19 +1665,107 @@
         function handleKeyPress(key) { if (gameData.isGameOver || document.querySelector('.overlay.visible')) return; const upperKey = key.toUpperCase(); if (upperKey === 'ENTER') { submitGuess(); } else if (upperKey === 'BACKSPACE' || upperKey === 'BACK') { deleteLetter(); } else if (upperKey.length === 1 && FULL_ALPHABET.includes(upperKey)) { addLetter(upperKey); } }
         function addLetter(letter) { const wordLength = wordData[gameData.hourlySet[gameData.currentWordIndex]].word.length; if (gameData.currentCol >= wordLength) return; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { gameData.currentCol++; if (gameData.currentCol < wordLength) addLetter(letter); else gameData.currentCol = wordLength; return; } if (cell) { cell.querySelector('.cell-front').textContent = letter; cell.classList.add('filled'); gameData.currentCol++; } }
         function deleteLetter() { if (gameData.currentCol <= 0) return; gameData.currentCol--; const cell = document.querySelector(`#row-${gameData.currentRow}`).children[gameData.currentCol]; if (cell.querySelector('.cell-front').classList.contains('cell-revealed')) { if(gameData.currentCol > 0) deleteLetter(); return; } if (cell) { cell.querySelector('.cell-front').textContent = ''; cell.classList.remove('filled'); } }
-        function renderInfoBarFront(isFailure = false) { infoBar.classList.remove('feedback-message'); infoBar.innerHTML = ''; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const { word, category, difficulty } = wordObject; if(isFailure) { infoBar.innerHTML = `<div id="word-info-container"><span>Sajnos nem sikerült.</span></div><div id="reveal-solution-container"><button id="reveal-solution-button">Megoldás felfedése</button></div>`; document.getElementById('reveal-solution-button').addEventListener('click', () => { gameData.progress[gameData.currentWordIndex].status = 'failed-revealed'; saveGame(); renderWordTracker(); showFeedbackMessage(`A megoldás: <strong>${wordObject.word}</strong>.`); }); } else { infoBar.innerHTML = `<div id="word-info-container"><span id="word-info">${category} | ${word.length} betűs</span><span id="difficulty-display" class="difficulty-${difficulty.toLowerCase().replace(/ /g, '-')}">${difficulty}</span></div><div id="game-mode-toggle"><span id="game-mode-label">Relax</span><span id="timer-display"></span></div>`; const gameModeToggle = document.getElementById('game-mode-toggle'); gameModeToggle.addEventListener('click', toggleGameMode); updateGameModeDisplay(); } }
+        function renderInfoBarFront(isFailure = false) {
+            infoBar.classList.remove('feedback-message');
+            infoBar.innerHTML = '';
+            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            const { word, category, difficulty } = wordObject;
+
+            if (isFailure) {
+                infoBar.innerHTML = `<div id="word-info-container"><span>Sajnos nem sikerült.</span></div><div id="reveal-solution-container"><button id="reveal-solution-button">Megoldás felfedése</button></div>`;
+                document.getElementById('reveal-solution-button').addEventListener('click', () => {
+                    gameData.progress[gameData.currentWordIndex].status = 'failed-revealed';
+                    saveGame();
+                    renderWordTracker();
+                    showFeedbackMessage(`A megoldás: <strong>${wordObject.word}</strong>.`);
+                });
+            } else {
+                const infoContainer = `<div id="word-info-container"><span id="word-info">${category} | ${word.length} betűs</span><span id="difficulty-display" class="difficulty-${difficulty.toLowerCase().replace(/ /g, '-')}">${difficulty}</span></div>`;
+
+                if (gameData.modeLocked[gameData.currentWordIndex]) {
+                    infoBar.innerHTML = `${infoContainer}<div id="game-mode-display"><span id="game-mode-label">${gameData.gameModes[gameData.currentWordIndex] === 'timed' ? 'Időfutam' : 'Relax'}</span><span id="timer-display"></span></div>`;
+                    updateGameModeDisplay();
+                } else {
+                    infoBar.innerHTML = `${infoContainer}<div id="game-mode-choice"><button class="mode-choice-button" data-mode="relax">Relax</button><button class="mode-choice-button" data-mode="timed">Időfutam</button></div>`;
+                    document.querySelectorAll('.mode-choice-button').forEach(button => button.addEventListener('click', (e) => setGameMode(e.target.dataset.mode)));
+                }
+            }
+        }
         function showFeedbackMessage(message) { infoBar.classList.add('feedback-message'); infoBar.innerHTML = message; }
         function showEndMessage() { const progress = gameData.progress[gameData.currentWordIndex]; if (progress.status === 'failed') { renderInfoBarFront(true); } else if (progress.status === 'solved' && !gameData.progress[gameData.currentWordIndex].scored) { showFeedbackMessage(`🎉 Ügyes! A helyes szó: <strong>${wordData[gameData.hourlySet[gameData.currentWordIndex]].word}</strong>. 🎉`); }}
         function flipRow(guess, targetWord) { const targetLetters = targetWord.split(''); const guessLetters = guess.split(''); const letterStates = Array(targetWord.length).fill('absent'); const usedTargetIndexes = new Set(); guessLetters.forEach((letter, index) => { if (letter === targetLetters[index]) { letterStates[index] = 'correct'; usedTargetIndexes.add(index); }}); guessLetters.forEach((letter, index) => { if (letterStates[index] !== 'correct') { const presentIndex = targetLetters.findIndex((l, i) => l === letter && !usedTargetIndexes.has(i)); if (presentIndex !== -1) { letterStates[index] = 'present'; usedTargetIndexes.add(presentIndex); } } }); const rowEl = document.getElementById(`row-${gameData.currentRow}`); for (let i = 0; i < targetWord.length; i++) { const cell = rowEl.children[i]; setTimeout(() => { cell.querySelector('.cell-back').textContent = guessLetters[i]; cell.querySelector('.cell-back').classList.add(letterStates[i]); cell.classList.add('flip'); updateKeyboard(guessLetters[i], letterStates[i]); }, i * 200); } }
         function updateKeyboard(letter, state) { const key = document.querySelector(`.key[data-key="${letter}"]`); if (!key) return; const priorities = { 'correct': 3, 'present': 2, 'absent': 1 }; const currentClass = key.classList.contains('correct') ? 'correct' : key.classList.contains('present') ? 'present' : 'absent'; if (!currentClass || priorities[state] > (priorities[currentClass] || 0)) { key.classList.remove('correct', 'present', 'absent'); key.classList.add(state); } }
         function checkForNewHour() { if (newHourNotification.style.display === 'flex') return; const currentSeed = getCurrentHourSeed(); if (gameData.seed && currentSeed !== gameData.seed) { newHourNotification.style.display = 'flex'; } }
-        function updateHintButtons() { if (gameData.isGameOver) { requestTextHintButton.disabled = true; requestLetterHintButton.disabled = true; return; } const hintsUsed = activeHints.usedCount || 0; const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; const textHintsAvailable = activeHints.text.length < wordObject.hints.length; const areHintsExhausted = hintsUsed >= 3; requestTextHintButton.disabled = areHintsExhausted || !textHintsAvailable; requestLetterHintButton.disabled = areHintsExhausted; const textHintCost = calculateHintCost(false); const letterHintCost = calculateHintCost(true); requestTextHintButton.textContent = `Szöveges segítség (${textHintCost}p)`; requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; }
-        function checkForBonusGameUnlock() { const allWordsSolved = gameData.progress.every(p => p.status === 'solved'); if (allWordsSolved) { gameData.bonusUnlocked = true; saveGame(); updateBonusUnlockUI(); } }
-        function updateBonusUnlockUI() { if (gameData.bonusUnlocked && !gameData.wheelGamePlayedThisHour) { bonusUnlockContainer.style.display = 'none'; playWheelButton.style.display = 'block'; } else { bonusUnlockContainer.style.display = 'flex'; playWheelButton.style.display = 'none'; } }
+        
+        function updateHintButtons() { 
+            let stats = getDailyStats();
+            if (gameData.isGameOver) { 
+                requestTextHintButton.disabled = true; 
+                requestLetterHintButton.disabled = true; 
+                return; 
+            } 
+            
+            const freebie = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            const hintsUsed = activeHints.usedCount || 0; 
+            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; 
+            
+            // A szöveges segítség gomb letiltása, ha elfogytak a tippek
+            const textHintsAvailable = activeHints.text.length < wordObject.hints.length; 
+            requestTextHintButton.disabled = !textHintsAvailable;
+
+            // A betűsegítség gomb mindig aktív, amíg van mit felfedni (a költség más kérdés)
+            requestLetterHintButton.disabled = false;
+            
+            const freeTextHints = stats.freeHints || 0;
+            const textHintCost = calculateHintCost(false); 
+            const letterHintCost = calculateHintCost(true); 
+
+            if (freebie) {
+                requestTextHintButton.textContent = `Szöveges segítség (INGYENES)`;
+                requestLetterHintButton.textContent = `Betű felfedése (INGYENES)`;
+                requestTextHintButton.disabled = !textHintsAvailable;
+            } else {
+                requestTextHintButton.textContent = `Szöveges segítség (${freeTextHints > 0 ? freeTextHints+' INGYENES' : textHintCost+'p'})`; 
+                requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; 
+            }
+        }
+
+        function checkForBonusGameUnlock() { 
+            const allWordsSolved = gameData.progress.every(p => p.status === 'solved'); 
+            if (allWordsSolved) { 
+                gameData.bonusUnlocked = true; 
+                saveGame(); 
+                updateBonusUnlockUI(); 
+            } 
+        }
+        function updateBonusUnlockUI() { 
+            const stats = getDailyStats();
+            const freeAccess = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            if ((gameData.bonusUnlocked || freeAccess) && !gameData.wheelGamePlayedThisHour) { 
+                bonusUnlockContainer.style.display = 'none'; 
+                playWheelButton.style.display = 'block'; 
+            } else { 
+                bonusUnlockContainer.style.display = (freeAccess) ? 'none' : 'flex'; 
+                playWheelButton.style.display = 'none'; 
+            } 
+        }
         function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
-        function getCurrentHourSeed() { const now = new Date(); return now.getUTCFullYear() * 1000000 + (now.getUTCMonth() + 1) * 10000 + now.getUTCDate() * 100 + now.getUTCHours(); }
-        function toggleGameMode() { if (gameData.isGameOver) return; const currentMode = gameData.gameModes[gameData.currentWordIndex]; gameData.gameModes[gameData.currentWordIndex] = currentMode === 'relax' ? 'timed' : 'relax'; updateGameModeDisplay(); saveGame(); }
-        function updateGameModeDisplay() { const mode = gameData.gameModes[gameData.currentWordIndex]; const modeLabel = document.getElementById('game-mode-label'); const timerDisplay = document.getElementById('timer-display'); if(!modeLabel || !timerDisplay) return; if (mode === 'timed') { modeLabel.textContent = 'Időfutam'; timerDisplay.style.display = 'inline'; startTimer(gameData.timers[gameData.currentWordIndex]); } else { modeLabel.textContent = 'Relax'; timerDisplay.style.display = 'none'; clearInterval(timerInterval); } }
+        function getCurrentHourSeed() { const now = new Date(); return now.getFullYear() * 1000000 + (now.getMonth() + 1) * 10000 + now.getDate() * 100 + now.getHours(); }
+        function getCurrentDaySeed() { const now = new Date(); return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate(); }
+        function setGameMode(mode) {
+            gameData.gameModes[gameData.currentWordIndex] = mode;
+            gameData.modeLocked[gameData.currentWordIndex] = true;
+            saveGame();
+            renderInfoBarFront();
+        }
+        function updateGameModeDisplay() {
+            const mode = gameData.gameModes[gameData.currentWordIndex];
+            if (mode === 'timed') {
+                startTimer(gameData.timers[gameData.currentWordIndex]);
+            } else {
+                clearInterval(timerInterval);
+            }
+        }
         function showRandomGameMessage() {
             if (gameData.isGameOver || document.querySelector('.overlay.visible') || hintDisplayArea.classList.contains('active') || checkAndDisplayIdleState()) {
                 return;
@@ -1032,17 +1839,58 @@
             codeInputs.forEach(input => input.value = ''); 
         });
         cashOutButton.addEventListener('click', cashOut);
-        nextRoundButton.addEventListener('click', startNewRound);
-        collectWinningsButton.addEventListener('click', () => { cardGameOverlay.classList.remove('visible'); cashOut(); closeWheelButton.click(); });
-        requestTextHintButton.addEventListener('click', () => { const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; if (activeHints.usedCount >= 3 || activeHints.text.length >= wordObject.hints.length) { alert("Nincs több elérhető szöveges segítség ehhez a szóhoz, vagy elérted a limidet!"); return;} if(spendPointsForHint(false)) { displayHint(false); } });
-        requestLetterHintButton.addEventListener('click', () => { if (activeHints.usedCount >= 3) { alert("Elérted a maximális segítségkérést ehhez a szóhoz!"); return; } if(spendPointsForHint(true)) { displayHint(true); } });
-        wheelHelpButton.addEventListener('click', () => { const currentScore = getDailyScore(); if (currentScore <= 200) { alert("Sajnos nincs elég pontod ehhez a segítséghez (200 pont felett kell lenned)."); return; } if (confirm("Ez a végső segítség! Az összes pontodat levonja 200-ra, de cserébe felfedi az összes magánhangzót. Biztosan kéred?")) { const pointsToDeduct = currentScore - 200; addPointsToDailyScore(-pointsToDeduct); wheelHelpButton.style.display = 'none'; wheelHelpButton.classList.remove('pulse-purple'); VOWELS.split('').forEach(vowel => { if (!wheelState.guessedLetters.includes(vowel)) { guessLetter(vowel); } }); } });
+        nextRoundButton.addEventListener('click', () => {
+            handleRoundWin();
+            startNewRound();
+        });
+        collectWinningsButton.addEventListener('click', () => { 
+            cardGameOverlay.classList.remove('visible'); 
+            cashOut(); // A kártyajáték után a cashOut funkcióval írjuk jóvá a pontokat
+        });
+        requestTextHintButton.addEventListener('click', () => { 
+            const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            if(activeHints.text.length >= wordObject.hints.length) {
+                alert("Nincs több elérhető szöveges segítség ehhez a szóhoz!");
+                return;
+            }
+            if(spendPointsForHint(false)) { 
+                displayHint(false); 
+            } 
+        });
+        requestLetterHintButton.addEventListener('click', () => { 
+            if(spendPointsForHint(true)) { 
+                displayHint(true); 
+            } 
+        });
+        wheelHelpButton.addEventListener('click', () => {
+            const currentScore = getDailyScore();
+            if (currentScore <= 200) {
+                alert(`Sajnos nincs elég pontod ehhez a segítséghez. A mai pontszámodnak (nem a bónusz nyereménynek) 200 pont felett kell lennie. Jelenlegi pontszámod: ${currentScore}.`);
+                return;
+            }
+            if (confirm("Ez a végső segítség! Az összes pontodat levonja 200-ra, de cserébe felfedi az összes magánhangzót. Biztosan kéred?")) {
+                const pointsToDeduct = currentScore - 200;
+                addPointsToDailyScore(-pointsToDeduct);
+                wheelHelpButton.style.display = 'none';
+                wheelHelpButton.classList.remove('pulse-purple');
+                VOWELS.split('').forEach(vowel => {
+                    if (!wheelState.guessedLetters.includes(vowel)) {
+                        guessLetter(vowel);
+                    }
+                });
+            }
+        });
+        
+        playLottoButton.addEventListener('click', openLottoOverlay);
+        submitLottoButtonOverlay.addEventListener('click', submitLottoTicketOverlay);
+        closeLottoOverlayButton.addEventListener('click', closeLottoOverlay);
         
         // --- INDÍTÁS ---
         populateThemePicker();
         loadTheme();
         initGame();
         setInterval(checkForNewHour, 1000 * 30);
+        setInterval(() => { updateMainLottoView(); }, 60000);
     });
     </script>
 </body>

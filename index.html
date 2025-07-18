@@ -858,7 +858,7 @@
             }
             addPointsToDailyScore(-stake);
             updateBonusUnlockUI(); 
-            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0 };
+            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0, jokerText: jokerText };
             startNewRound();
             wheelGameOverlay.classList.add('visible');
             checkAndDisplayIdleState();
@@ -1274,39 +1274,41 @@
         }
 
         function submitLottoTicketOverlay() {
-            if (selectedLottoNumbers.length !== 5) { alert("Kérlek, válassz ki pontosan 5 számot!"); return; } 
+            if (selectedLottoNumbers.length !== 5) {
+                alert("Kérlek, válassz ki pontosan 5 számot!");
+                return;
+            }
             const currentTickets = gameData.lotto.tickets.length;
             const cost = currentTickets === 0 ? 0 : 400;
             const currentScore = getDailyScore();
 
-            if(currentScore < cost) {
+            if (currentScore < cost) {
                 alert(`Nincs elég pontod a szelvény feladásához! Szükséges: ${cost} pont.`);
                 return;
             }
 
-            if(cost > 0 && !confirm(`Ez a szelvény ${cost} pontba kerül. Biztosan megveszed?`)) {
+            if (cost > 0 && !confirm(`Ez a szelvény ${cost} pontba kerül. Biztosan megveszed?`)) {
                 return;
             }
 
             addPointsToDailyScore(-cost);
-            
-            gameData.lotto.tickets.push({ numbers: selectedLottoNumbers.sort((a,b)=>a-b) });
-            saveGame(); 
-            
-            lottoOverlayMessage.innerHTML = `Szelvényed feladva! Várd a sorsolást este 7 után. Sok szerencsét!<span class="star-icon">★</span>`;
-            
-            setTimeout(() => {
-                lottoOverlayMessage.style.opacity = '0';
-                setTimeout(() => { lottoOverlayMessage.innerHTML = ''; lottoOverlayMessage.style.opacity = '1';}, 500);
-            }, 8000);
 
+            gameData.lotto.tickets.push({
+                numbers: selectedLottoNumbers.sort((a, b) => a - b)
+            });
+            saveGame();
+
+            // Siker üzenet és UI elemek elrejtése
+            lottoOverlayMessage.innerHTML = `Szelvényed rögzítésre került. Sok szerencsét!<span class="star-icon">★</span>`;
             document.getElementById('lotto-overlay-buttons').style.display = 'none';
             document.getElementById('lotto-game-container').querySelector('p:nth-of-type(1)').style.display = 'none';
             lottoGridOverlay.style.display = 'none';
             lottoSelectionCounter.style.display = 'none';
-            
-            closeLottoOverlayButton.textContent = "Bezárás";
-            closeLottoOverlayButton.style.display = 'block'; 
+
+            // Automatikus bezárás 8 másodperc múlva
+            setTimeout(() => {
+                closeLottoOverlay();
+            }, 8000);
         }
 
         function closeLottoOverlay() {
@@ -1320,18 +1322,21 @@
             }
 
             const now = new Date();
-            const isAfterDrawing = now.getHours() >= 19;
             const ticketsSubmitted = gameData.lotto.tickets.length;
+            const isLottoPaused = now.getHours() >= 19; // A fogadás szünetel este 7-től éjfélig.
 
-            if (ticketsSubmitted >= 4) {
+            if (isLottoPaused) {
+                playLottoButton.disabled = true;
+                playLottoButton.textContent = 'A fogadás 19:00 és 23:59 között szünetel.';
+            } else if (ticketsSubmitted >= 4) {
                 playLottoButton.disabled = true;
                 playLottoButton.textContent = 'Napi limit elérve (4/4)';
             } else if (ticketsSubmitted > 0) {
-                 playLottoButton.disabled = false;
-                 playLottoButton.textContent = `Új szelvény (${ticketsSubmitted}/4) - 400 pont`;
+                playLottoButton.disabled = false;
+                playLottoButton.textContent = `Új szelvény (${ticketsSubmitted}/4) - 400 pont`;
             } else {
-                 playLottoButton.disabled = false;
-                 playLottoButton.textContent = 'Első ingyenes szelvény';
+                playLottoButton.disabled = false;
+                playLottoButton.textContent = 'Első ingyenes szelvény';
             }
             
             submittedTicketsContainer.innerHTML = '';
@@ -1340,7 +1345,7 @@
                     const stub = document.createElement('div');
                     stub.className = 'lotto-ticket-stub';
                     let headerText = `<h4>${index + 1}. Szelvényed:</h4>`;
-                    if (isAfterDrawing && ticket.matches !== undefined) {
+                    if (now.getHours() >= 19 && ticket.matches !== undefined) {
                         headerText = `<h4>${index + 1}. Szelvényed (${ticket.matches} találat):</h4>`;
                     }
                     stub.innerHTML = headerText + '<div class="number-display"></div>';
@@ -1349,7 +1354,7 @@
                         const ball = document.createElement('div');
                         ball.className = 'lotto-ball';
                         ball.textContent = num;
-                        if(isAfterDrawing && gameData.lotto.winningNumbers.includes(num)) {
+                        if(now.getHours() >= 19 && gameData.lotto.winningNumbers.includes(num)) {
                             ball.classList.add('match');
                         }
                         display.appendChild(ball);
@@ -1358,7 +1363,7 @@
                 });
             }
 
-            if(isAfterDrawing) {
+            if(now.getHours() >= 19) {
                 winningLottoNumbersContainer.style.display = 'block';
                 winningLottoNumbersContainer.innerHTML = '<h4>Mai nyerőszámok:</h4><div class="number-display"></div>';
                 const display = winningLottoNumbersContainer.querySelector('.number-display');
@@ -1894,4 +1899,4 @@
     });
     </script>
 </body>
-</html>
+</html>```

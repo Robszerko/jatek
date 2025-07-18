@@ -228,6 +228,31 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
+        /* ÚJ: Diszkrétebb stílus a nyerőszámoknak */
+        #daily-winning-numbers-display {
+            background-color: rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color-idle);
+            padding: 10px 15px;
+            box-shadow: none;
+        }
+        #daily-winning-numbers-display .winning-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        #daily-winning-numbers-display .winning-header .lotto-logo-svg {
+            width: 35px; /* Kisebb logó itt */
+            height: 35px;
+        }
+        #daily-winning-numbers-display h4 {
+            margin: 0;
+            font-family: var(--font-main);
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 700;
+        }
         .lotto-ticket-stub h4 { margin: 0 0 10px 0; font-family: var(--font-title); color: var(--text-color); }
         .submitted-tickets-container { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
         .number-display { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
@@ -296,6 +321,9 @@
         .alphabet-key.vowel { border-color: var(--present-color); }
         #wheel-controls, #wheel-decision-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
         #wheel-controls button, #wheel-decision-controls button, #wheel-help-button { padding: 10px 15px; font-size: 1rem; }
+        /* ÚJ: Láthatóbb gombok a Szerencsekeréknél */
+        #spin-button { background-color: var(--difficulty-easy); box-shadow: 0 3px 0 #2e7d32; }
+        #solve-button { background-color: var(--difficulty-hard); box-shadow: 0 3px 0 #c46400; }
         #wheel-help-button { background-color: #9c27b0; color: white; box-shadow: 0 3px 0 #7b1fa2; }
         #wheel-help-button.pulse-purple { animation: pulse-purple 1.5s infinite; }
         @keyframes pulse-purple { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); } }
@@ -1298,14 +1326,12 @@
             });
             saveGame();
 
-            // Siker üzenet és UI elemek elrejtése
             lottoOverlayMessage.innerHTML = `Szelvényed rögzítésre került. Sok szerencsét!<span class="star-icon">★</span>`;
             document.getElementById('lotto-overlay-buttons').style.display = 'none';
             document.getElementById('lotto-game-container').querySelector('p:nth-of-type(1)').style.display = 'none';
             lottoGridOverlay.style.display = 'none';
             lottoSelectionCounter.style.display = 'none';
 
-            // Automatikus bezárás 8 másodperc múlva
             setTimeout(() => {
                 closeLottoOverlay();
             }, 8000);
@@ -1316,6 +1342,17 @@
             updateMainLottoView();
         }
 
+        function getFormattedDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const monthNames = ["január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"];
+            const dayNames = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
+            const month = monthNames[now.getMonth()];
+            const day = now.getDate();
+            const dayName = dayNames[now.getDay()];
+            return `${year}. ${month} ${day}. ${dayName}`;
+        }
+
         function updateMainLottoView() {
             if (!gameData || !gameData.lotto || !Array.isArray(gameData.lotto.tickets)) {
                 return;
@@ -1323,7 +1360,8 @@
 
             const now = new Date();
             const ticketsSubmitted = gameData.lotto.tickets.length;
-            const isLottoPaused = now.getHours() >= 19; // A fogadás szünetel este 7-től éjfélig.
+            const isLottoPaused = now.getHours() >= 19;
+            const isAfterDrawing = isLottoPaused;
 
             if (isLottoPaused) {
                 playLottoButton.disabled = true;
@@ -1332,11 +1370,11 @@
                 playLottoButton.disabled = true;
                 playLottoButton.textContent = 'Napi limit elérve (4/4)';
             } else if (ticketsSubmitted > 0) {
-                playLottoButton.disabled = false;
-                playLottoButton.textContent = `Új szelvény (${ticketsSubmitted}/4) - 400 pont`;
+                 playLottoButton.disabled = false;
+                 playLottoButton.textContent = `Új szelvény (${ticketsSubmitted}/4) - 400 pont`;
             } else {
-                playLottoButton.disabled = false;
-                playLottoButton.textContent = 'Első ingyenes szelvény';
+                 playLottoButton.disabled = false;
+                 playLottoButton.textContent = 'Első ingyenes szelvény';
             }
             
             submittedTicketsContainer.innerHTML = '';
@@ -1345,7 +1383,7 @@
                     const stub = document.createElement('div');
                     stub.className = 'lotto-ticket-stub';
                     let headerText = `<h4>${index + 1}. Szelvényed:</h4>`;
-                    if (now.getHours() >= 19 && ticket.matches !== undefined) {
+                    if (isAfterDrawing && ticket.matches !== undefined) {
                         headerText = `<h4>${index + 1}. Szelvényed (${ticket.matches} találat):</h4>`;
                     }
                     stub.innerHTML = headerText + '<div class="number-display"></div>';
@@ -1354,7 +1392,7 @@
                         const ball = document.createElement('div');
                         ball.className = 'lotto-ball';
                         ball.textContent = num;
-                        if(now.getHours() >= 19 && gameData.lotto.winningNumbers.includes(num)) {
+                        if(isAfterDrawing && gameData.lotto.winningNumbers.includes(num)) {
                             ball.classList.add('match');
                         }
                         display.appendChild(ball);
@@ -1363,9 +1401,15 @@
                 });
             }
 
-            if(now.getHours() >= 19) {
+            if(isAfterDrawing) {
                 winningLottoNumbersContainer.style.display = 'block';
-                winningLottoNumbersContainer.innerHTML = '<h4>Mai nyerőszámok:</h4><div class="number-display"></div>';
+                const lottoLogoHTML = document.getElementById('lotto-logo-svg').outerHTML;
+                winningLottoNumbersContainer.innerHTML = `
+                    <div class="winning-header">
+                        ${lottoLogoHTML}
+                        <h4>Napi Lottó mai nyerőszámok ${getFormattedDate()}</h4>
+                    </div>
+                    <div class="number-display"></div>`;
                 const display = winningLottoNumbersContainer.querySelector('.number-display');
                 gameData.lotto.winningNumbers.forEach(num => {
                     const ball = document.createElement('div');
@@ -1787,7 +1831,20 @@
         function checkAndDisplayIdleState() { clearInterval(idleCountdownInterval); const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); if (allWordsCompleted) { gridContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; setKeyboardVisibility(false); clearInterval(randomMessageInterval); clearInterval(secretCodeFlasherInterval); let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; idleMessageContainer.style.display = 'block'; const countdownElement = document.getElementById('countdown-timer'); function updateCountdown() { const now = new Date(); const nextHour = new Date(now); nextHour.setHours(now.getHours() + 1); nextHour.setMinutes(0); nextHour.setSeconds(0); nextHour.setMilliseconds(0); const timeLeft = nextHour - now; if (timeLeft < 0) { clearInterval(idleCountdownInterval); countdownElement.textContent = "Bármelyik pillanatban!"; return; } const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; } updateCountdown(); idleCountdownInterval = setInterval(updateCountdown, 1000); return true; } else { gridContainer.style.display = 'grid'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; setKeyboardVisibility(keyboardToggleCheckbox.checked); return false; } }
 
         // --- ESEMÉNYKEZELŐK ---
-        document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && !e.target.classList.contains('code-input')) return; if (!e.target.classList.contains('code-input')) { handleKeyPress(e.key); } });
+        document.addEventListener('keydown', (e) => {
+            // Ne fusson le, ha egy input mezőben vagyunk (kivéve a rejtett inputot)
+            if (e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && e.target.id !== 'hidden-input') {
+                return;
+            }
+            
+            // ÚJ: Enter lenyomására tipp beküldése
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Megakadályozza a gombok (ha fókuszban vannak) újra-kattintását
+                submitGuess();
+            } else {
+                handleKeyPress(e.key);
+            }
+        });
         hiddenInput.addEventListener('input', (e) => { if (e.target.value) { handleKeyPress(e.target.value.slice(-1)); e.target.value = ''; } });
         gridContainer.addEventListener('click', () => { if (keyboardToggleCheckbox.checked) { hiddenInput.focus(); } });
         document.getElementById('new-hour-refresh-button').addEventListener('click', () => location.reload());
@@ -1899,4 +1956,4 @@
     });
     </script>
 </body>
-</html>```
+</html>

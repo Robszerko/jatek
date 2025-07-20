@@ -205,18 +205,27 @@
         @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
         
         /* Lottó Szekció Stílusai */
-        #lotto-container {
+        #lotto-container, #weekly-lotto-container {
             display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0;
             padding: 20px; border: 2px solid var(--border-color-active); border-radius: 15px; width: 100%;
             background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
         }
-        #lotto-header { display: flex; align-items: center; gap: 15px; cursor: pointer; }
-        #lotto-logo-svg { width: 60px; height: 60px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
-        #lotto-header h2 { font-family: var(--font-title); color: var(--title-color); font-size: 1.8rem; margin: 0; }
-        #lotto-container p { font-size: 0.9rem; text-align: center; line-height: 1.5; max-width: 90%; }
+        #weekly-lotto-container {
+             border: 2px solid var(--surprise-color);
+        }
+        #lotto-header, #weekly-lotto-header { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        #lotto-logo-svg, #weekly-lotto-logo-svg { width: 60px; height: 60px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+        #lotto-header h2, #weekly-lotto-header h2 { font-family: var(--font-title); color: var(--title-color); font-size: 1.8rem; margin: 0; }
+        #weekly-lotto-header h2 { color: var(--surprise-color); }
+
+        #lotto-container p, #weekly-lotto-container p { font-size: 0.9rem; text-align: center; line-height: 1.5; max-width: 90%; }
         #play-lotto-button { background-color: var(--difficulty-easy); box-shadow: 0 3px 0 #2e7d32; max-width: 300px; }
+        #play-weekly-lotto-button { background-color: var(--surprise-color); box-shadow: 0 3px 0 #7b1fa2; max-width: 300px; }
+
         #play-lotto-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 #2e7d32;}
-        #lotto-played-message { color: var(--fail-color); font-weight: bold; margin-top: 10px; min-height: 1.2em; transition: opacity 0.3s; }
+        #play-weekly-lotto-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 #7b1fa2;}
+
+        #lotto-played-message, #weekly-lotto-played-message { color: var(--fail-color); font-weight: bold; margin-top: 10px; min-height: 1.2em; transition: opacity 0.3s; }
 
         .lotto-ticket-stub {
             background-color: rgba(255, 255, 255, 0.4);
@@ -228,24 +237,28 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
-        #daily-winning-numbers-display {
+        #daily-winning-numbers-display, #weekly-winning-numbers-display {
             background-color: rgba(0,0,0,0.02);
             border: 1px solid var(--border-color-idle);
             padding: 10px 15px;
             box-shadow: none;
         }
-        #daily-winning-numbers-display .winning-header {
+        #weekly-winning-numbers-display {
+            border-color: var(--surprise-color);
+        }
+
+        #daily-winning-numbers-display .winning-header, #weekly-winning-numbers-display .winning-header {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
             margin-bottom: 10px;
         }
-        #daily-winning-numbers-display .winning-header .lotto-logo-svg {
+        #daily-winning-numbers-display .winning-header .lotto-logo-svg, #weekly-winning-numbers-display .winning-header .weekly-lotto-logo-svg {
             width: 35px;
             height: 35px;
         }
-        #daily-winning-numbers-display h4 {
+        #daily-winning-numbers-display h4, #weekly-winning-numbers-display h4 {
             margin: 0;
             font-family: var(--font-main);
             color: var(--text-color);
@@ -253,7 +266,7 @@
             font-weight: 700;
         }
         .lotto-ticket-stub h4 { margin: 0 0 10px 0; font-family: var(--font-title); color: var(--text-color); }
-        .submitted-tickets-container { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
+        .submitted-tickets-container, .submitted-weekly-tickets-container { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
         .number-display { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
         .lotto-ball {
             width: 35px; height: 35px; border-radius: 50%; background-color: var(--key-bg);
@@ -400,6 +413,8 @@
         
         <div id="daily-winning-numbers-display" class="lotto-ticket-stub" style="display: none;">
         </div>
+        <div id="weekly-winning-numbers-display" class="lotto-ticket-stub" style="display: none;">
+        </div>
         
         <div id="word-tracker"></div>
 
@@ -455,6 +470,31 @@
             </div>
         </div>
 
+        <div id="weekly-lotto-container">
+            <div id="weekly-lotto-header">
+                 <svg id="weekly-lotto-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"></feGaussianBlur>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"></feMergeNode>
+                                <feMergeNode in="SourceGraphic"></feMergeNode>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <path d="M50 12 L60 42 L92 42 L66 62 L76 92 L50 75 L24 92 L34 62 L8 42 L40 42 Z" fill="rgba(255, 255, 255, 0.5)" transform="rotate(5 50 50)"/>
+                    <path d="M50 2 L61.8 38.2 L98 38.2 L68.1 61.8 L79.9 98 L50 75 L20.1 98 L31.9 61.8 L2 38.2 L38.2 38.2 Z" fill="var(--surprise-color)" stroke="var(--title-color)" stroke-width="4" style="filter: url(#glow);" />
+                </svg>
+                <h2>Heti Extra Lottó</h2>
+            </div>
+            <p>Tedd próbára a szerencséd a főnyereményért! A szelvény ára 100,000 pont. Sorsolás vasárnap 19:00-kor!</p>
+            <button id="play-weekly-lotto-button" class="hint-button">Szelvény 100,000 pontért</button>
+            <div id="weekly-lotto-played-message"></div>
+            
+            <div class="submitted-weekly-tickets-container">
+            </div>
+        </div>
+
         <div id="rules-container">
              <h3>Játékszabályok</h3>
             <ul>
@@ -474,13 +514,9 @@
     <div id="lotto-game-overlay" class="overlay">
         <div class="overlay-content">
             <div id="lotto-game-container">
-                 <div id="lotto-header">
-                    <svg id="lotto-logo-svg-overlay" class="lotto-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M50 2 L61.8 38.2 L98 38.2 L68.1 61.8 L79.9 98 L50 75 L20.1 98 L31.9 61.8 L2 38.2 L38.2 38.2 Z" fill="var(--present-color)" stroke="var(--title-color)" stroke-width="3"/>
-                    </svg>
-                    <h2>Napi Lottó</h2>
-                </div>
-                <p>Válassz 5 számot az alábbi rácsból.</p>
+                 <div id="lotto-header-overlay">
+                 </div>
+                <p id="lotto-prompt-text">Válassz 5 számot az alábbi rácsból.</p>
                 <div id="lotto-grid-overlay"></div>
                 <p id="lotto-selection-counter">0 / 5 kiválasztva</p>
                 <div id="lotto-overlay-buttons">
@@ -496,7 +532,7 @@
         <div class="overlay-content">
             <div id="prize-choice-container">
                 <h2>Gratulálunk, több nyereményt is elértél!</h2>
-                <p>Válassz egyet az alábbiak közül, ami a következő napon éjféltől aktív lesz.</p>
+                <p>Válassz egyet az alábbiak közül.</p>
                 <div id="prize-choice-options">
                 </div>
             </div>
@@ -700,15 +736,21 @@
         const lottoGameOverlay = document.getElementById('lotto-game-overlay');
         const prizeChoiceOverlay = document.getElementById('prize-choice-overlay');
         const playLottoButton = document.getElementById('play-lotto-button');
+        const playWeeklyLottoButton = document.getElementById('play-weekly-lotto-button');
         const lottoPlayedMessage = document.getElementById('lotto-played-message');
+        const weeklyLottoPlayedMessage = document.getElementById('weekly-lotto-played-message');
         const lottoGridOverlay = document.getElementById('lotto-grid-overlay');
         const lottoSelectionCounter = document.getElementById('lotto-selection-counter');
         const submitLottoButtonOverlay = document.getElementById('submit-lotto-button-overlay');
         const lottoOverlayMessage = document.getElementById('lotto-overlay-message');
         const closeLottoOverlayButton = document.getElementById('close-lotto-overlay-button');
         const submittedTicketsContainer = document.querySelector('.submitted-tickets-container');
+        const submittedWeeklyTicketsContainer = document.querySelector('.submitted-weekly-tickets-container');
         const winningLottoNumbersContainer = document.querySelector('#daily-winning-numbers-display');
+        const winningWeeklyLottoNumbersContainer = document.querySelector('#weekly-winning-numbers-display');
+
         let selectedLottoNumbers = [];
+        let currentLottoType = 'daily';
         
         const themes = [ { name: "Klasszikus", className: "theme-classic", color: "#3d405b" }, { name: "Erdei", className: "theme-forest", color: "#2d6a4f" }, { name: "Óceán", className: "theme-ocean", color: "#0077b6" }, { name: "Naplemente", className: "theme-sunset", color: "#f77f00" }, { name: "Éjszakai", className: "theme-night", color: "#232526" }, { name: "Rózsa", className: "theme-rose", color: "#c9184a" }, { name: "Vintage", className: "theme-vintage", color: "#a27b5c" }, { name: "Rét", className: "theme-meadow", color: "#7cb518" }, { name: "Királyi", className: "theme-royal", color: "#5a189a" }, { name: "Hacker", className: "theme-hacker", color: "#00ff00" } ];
         const KEY_LAYOUT = [ ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ő', 'Ö', 'Ü', 'Ó'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'É', 'Á', 'Ű'], ['Enter', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Í', 'Backspace'] ];
@@ -728,6 +770,15 @@
             4: { title: "4 Találat", desc: "Csődmentesség a Szerencsekerékben" },
             5: { title: "5 Találat", desc: "Ingyenes segítség és kód nélküli Szerencsekerék" }
         };
+        
+        const WEEKLY_LOTTO_PRIZES_META = {
+            1: { title: "1 Találat: Napi Ingyen Tipp", desc: "A következő héten minden nap kapsz +1 ingyen szöveges tippet." },
+            2: { title: "2 Találat: Napi Dupla Pont", desc: "A következő héten minden helyes megfejtésért dupla pont jár." },
+            3: { title: "3 Találat: Korlátlan Szerencsekerék", desc: "A következő héten a Szerencsekerék ingyenes és mindig elérhető." },
+            4: { title: "4 Találat: Heti Szuper Joker", desc: "A következő héten minden szöveges és betűs segítség ingyenes." },
+            5: { title: "5 Találat: FŐNYEREMÉNY", desc: "Azonnali 5,000,000 pont!" }
+        };
+
 
         const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
         const RANDOM_GAME_MESSAGES = [
@@ -868,23 +919,30 @@
         
         function initWheelGame() {
             let stake = 0;
-            const currentScore = getWeeklyScore();
+            let stats = getWeeklyStats();
+            const hasUnlimitedWheel = stats.activeWeeklyPrize && stats.activeWeeklyPrize.unlimitedWheel;
 
-            while (true) {
-                const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi heti pontszám: ${currentScore})`, "100");
-                if (stakeInput === null) {
-                    return; 
+            if (!hasUnlimitedWheel) {
+                 const currentScore = getWeeklyScore();
+                while (true) {
+                    const stakeInput = prompt(`Mennyi pontot szeretnél kockáztatni a Szerencsekeréken? (Jelenlegi heti pontszám: ${currentScore})`, "100");
+                    if (stakeInput === null) {
+                        return; 
+                    }
+                    stake = parseInt(stakeInput);
+                    if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; }
+                    alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg.");
                 }
-                stake = parseInt(stakeInput);
-                if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; }
-                alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg.");
+                addPointsToWeeklyScore(-stake);
+            } else {
+                alert("A heti lottónyereményednek köszönhetően a Szerencsekerék most ingyenes!");
             }
-            addPointsToWeeklyScore(-stake);
+            
             gameData.bonusUnlocked = false; // Felhasználjuk a lehetőséget
             saveGame();
             updateBonusUnlockUI(); 
              
-            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0 };
+            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0, unlimitedWheel: hasUnlimitedWheel };
             updateInsuranceDisplay(getInsuranceCount());
             startNewRound();
             wheelGameOverlay.classList.add('visible');
@@ -1356,6 +1414,11 @@
         
         function initLotto() {
             updateMainLottoView();
+            initWeeklyLotto();
+        }
+
+        function initWeeklyLotto() {
+            updateMainWeeklyLottoView();
         }
 
         function generateWinningLottoNumbers() { 
@@ -1369,16 +1432,40 @@
             gameData.lotto.winningNumbers = winning.sort((a,b)=>a-b); 
         }
         
-        function openLottoOverlay() {
-            if (!gameData || !gameData.lotto || !Array.isArray(gameData.lotto.tickets)) {
-                alert("Hiba történt a lottó játék betöltésekor. Kérjük, frissítse az oldalt.");
+        function generateWeeklyWinningNumbers() {
+            if (!gameData.weeklyLotto) return;
+            const numbers = Array.from({length: 35}, (_, i) => i + 1);
+            let winning = [];
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(seededRandom(getWeekSeed() + i) * numbers.length);
+                winning.push(numbers.splice(randomIndex, 1)[0]);
+            }
+            gameData.weeklyLotto.winningNumbers = winning.sort((a, b) => a - b);
+        }
+
+        function openLottoOverlay(lottoType) {
+            currentLottoType = lottoType;
+            const lottoData = (lottoType === 'daily') ? gameData.lotto : gameData.weeklyLotto;
+            const maxTickets = (lottoType === 'daily') ? 4 : 1;
+            const cost = (lottoType === 'daily') ? (lottoData.tickets.length === 0 ? 0 : 400) : 100000;
+            const messageArea = (lottoType === 'daily') ? lottoPlayedMessage : weeklyLottoPlayedMessage;
+
+            if (lottoData.tickets.length >= maxTickets) {
+                messageArea.textContent = `Elérted a ${lottoType === 'daily' ? 'napi' : 'heti'} ${maxTickets} szelvényes limitet.`;
+                setTimeout(() => { messageArea.textContent = ''; }, 4000);
                 return;
             }
-            if (gameData.lotto.tickets.length >= 4) {
-                lottoPlayedMessage.textContent = 'Elérted a napi 4 szelvényes limitet.';
-                setTimeout(() => { lottoPlayedMessage.textContent = ''; }, 10000);
-                return;
+
+            const overlayHeader = document.getElementById('lotto-header-overlay');
+            const overlayPrompt = document.getElementById('lotto-prompt-text');
+            if (lottoType === 'daily') {
+                overlayHeader.innerHTML = document.getElementById('lotto-header').innerHTML;
+                overlayPrompt.textContent = "Válassz 5 számot az alábbi rácsból.";
+            } else {
+                overlayHeader.innerHTML = document.getElementById('weekly-lotto-header').innerHTML;
+                overlayPrompt.textContent = `Válassz 5 számot. A szelvény ára: ${cost.toLocaleString()} pont.`;
             }
+
             lottoGameOverlay.classList.add('visible');
             selectedLottoNumbers = [];
             createOverlayLottoGrid();
@@ -1390,7 +1477,7 @@
             lottoSelectionCounter.style.display = 'block';
             closeLottoOverlayButton.onclick = closeLottoOverlay;
             closeLottoOverlayButton.textContent = "Mégse";
-            closeLottoOverlayButton.style.display = 'block'; 
+            closeLottoOverlayButton.style.display = 'block';
         }
 
         function createOverlayLottoGrid() {
@@ -1440,18 +1527,22 @@
                 alert("Kérlek, válassz ki pontosan 5 számot!");
                 return;
             }
-            const currentTickets = gameData.lotto.tickets.length;
-            const cost = currentTickets === 0 ? 0 : 400;
+            
+            const isDaily = currentLottoType === 'daily';
+            const lottoData = isDaily ? gameData.lotto : gameData.weeklyLotto;
+            const cost = isDaily ? (lottoData.tickets.length === 0 ? 0 : 400) : 100000;
             const currentScore = getWeeklyScore();
+            
             if (currentScore < cost) {
-                alert(`Nincs elég pontod a szelvény feladásához! Szükséges: ${cost} pont.`);
+                alert(`Nincs elég pontod a szelvény feladásához! Szükséges: ${cost.toLocaleString()} pont.`);
                 return;
             }
-            if (cost > 0 && !confirm(`Ez a szelvény ${cost} pontba kerül. Biztosan megveszed?`)) {
+            if (cost > 0 && !confirm(`Ez a szelvény ${cost.toLocaleString()} pontba kerül. Biztosan megveszed?`)) {
                 return;
             }
+
             addPointsToWeeklyScore(-cost);
-            gameData.lotto.tickets.push({
+            lottoData.tickets.push({
                 numbers: selectedLottoNumbers.sort((a, b) => a - b)
             });
             saveGame();
@@ -1462,22 +1553,22 @@
             lottoSelectionCounter.style.display = 'none';
             setTimeout(() => {
                 closeLottoOverlay();
-            }, 8000);
+            }, 3000);
         }
 
         function closeLottoOverlay() {
             lottoGameOverlay.classList.remove('visible');
             updateMainLottoView();
+            updateMainWeeklyLottoView();
         }
 
-        function getFormattedDate() {
-            const now = new Date();
-            const year = now.getFullYear();
+        function getFormattedDate(date = new Date()) {
+            const year = date.getFullYear();
             const monthNames = ["január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"];
             const dayNames = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
-            const month = monthNames[now.getMonth()];
-            const day = now.getDate();
-            const dayName = dayNames[now.getDay()];
+            const month = monthNames[date.getMonth()];
+            const day = date.getDate();
+            const dayName = dayNames[date.getDay()];
             return `${year}. ${month} ${day}. ${dayName}`;
         }
 
@@ -1491,7 +1582,7 @@
             const isAfterDrawing = isLottoPaused;
             if (isLottoPaused) {
                 playLottoButton.disabled = true;
-                playLottoButton.textContent = 'A fogadás 19:00 és 23:59 között szünetel.';
+                playLottoButton.textContent = 'Fogadás 19:00 után szünetel';
             } else if (ticketsSubmitted >= 4) {
                 playLottoButton.disabled = true;
                 playLottoButton.textContent = 'Napi limit elérve (4/4)';
@@ -1507,9 +1598,9 @@
                 gameData.lotto.tickets.forEach((ticket, index) => {
                     const stub = document.createElement('div');
                     stub.className = 'lotto-ticket-stub';
-                    let headerText = `<h4>${index + 1}. Szelvényed:</h4>`;
+                    let headerText = `<h4>${index + 1}. Napi Szelvényed:</h4>`;
                     if (isAfterDrawing && ticket.matches !== undefined) {
-                        headerText = `<h4>${index + 1}. Szelvényed (${ticket.matches} találat):</h4>`;
+                        headerText = `<h4>${index + 1}. Napi Szelvényed (${ticket.matches} találat):</h4>`;
                     }
                     stub.innerHTML = headerText + '<div class="number-display"></div>';
                     const display = stub.querySelector('.number-display');
@@ -1532,7 +1623,7 @@
                 winningLottoNumbersContainer.innerHTML = `
                     <div class="winning-header">
                         ${lottoLogoHTML}
-                        <h4>Napi Lottó mai nyerőszámok ${getFormattedDate()}</h4>
+                        <h4>Mai nyerőszámok (${getFormattedDate()})</h4>
                     </div>
                     <div class="number-display"></div>`;
                 const display = winningLottoNumbersContainer.querySelector('.number-display');
@@ -1544,61 +1635,158 @@
                 });
                 
                 if(!gameData.lotto.prizesEvaluated) {
-                    evaluateLottoPrizes();
+                    evaluateLottoPrizes('daily');
                 }
             } else {
                  winningLottoNumbersContainer.style.display = 'none';
             }
         }
+        
+        function updateMainWeeklyLottoView() {
+            if (!gameData || !gameData.weeklyLotto) return;
+            const now = new Date();
+            const ticketsSubmitted = gameData.weeklyLotto.tickets.length;
+            const isSunday = now.getDay() === 0;
+            const isBettingClosed = isSunday && now.getHours() >= 19;
+            const isAfterWeeklyDrawing = isSunday && now.getHours() >= 19;
+            
+            if (isBettingClosed) {
+                playWeeklyLottoButton.disabled = true;
+                playWeeklyLottoButton.textContent = 'Heti fogadás vasárnap 19:00 után szünetel';
+            } else if (ticketsSubmitted >= 1) {
+                playWeeklyLottoButton.disabled = true;
+                playWeeklyLottoButton.textContent = 'Heti szelvényed már megjátszottad';
+            } else {
+                playWeeklyLottoButton.disabled = false;
+                playWeeklyLottoButton.textContent = 'Szelvény 100,000 pontért';
+            }
+            
+            submittedWeeklyTicketsContainer.innerHTML = '';
+            if (ticketsSubmitted > 0) {
+                gameData.weeklyLotto.tickets.forEach((ticket, index) => {
+                    const stub = document.createElement('div');
+                    stub.className = 'lotto-ticket-stub';
+                    let headerText = `<h4>Heti Extra Szelvényed:</h4>`;
+                    if (isAfterWeeklyDrawing && ticket.matches !== undefined) {
+                        headerText = `<h4>Heti Extra Szelvényed (${ticket.matches} találat):</h4>`;
+                    }
+                    stub.innerHTML = headerText + '<div class="number-display"></div>';
+                    const display = stub.querySelector('.number-display');
+                    ticket.numbers.forEach(num => {
+                        const ball = document.createElement('div');
+                        ball.className = 'lotto-ball';
+                        ball.textContent = num;
+                        if (isAfterWeeklyDrawing && gameData.weeklyLotto.winningNumbers.includes(num)) {
+                            ball.classList.add('match');
+                        }
+                        display.appendChild(ball);
+                    });
+                    submittedWeeklyTicketsContainer.appendChild(stub);
+                });
+            }
 
-        function evaluateLottoPrizes() {
-            if (!gameData.lotto || gameData.lotto.prizesEvaluated) return;
+            if (isAfterWeeklyDrawing) {
+                winningWeeklyLottoNumbersContainer.style.display = 'block';
+                const weeklyLottoLogoHTML = document.getElementById('weekly-lotto-logo-svg').outerHTML;
+                winningWeeklyLottoNumbersContainer.innerHTML = `
+                    <div class="winning-header">
+                        ${weeklyLottoLogoHTML.replace('id="weekly-lotto-logo-svg"', '')}
+                        <h4>Heti nyerőszámok (${getFormattedDate()})</h4>
+                    </div>
+                    <div class="number-display"></div>`;
+                const display = winningWeeklyLottoNumbersContainer.querySelector('.number-display');
+                gameData.weeklyLotto.winningNumbers.forEach(num => {
+                    const ball = document.createElement('div');
+                    ball.className = 'lotto-ball';
+                    ball.textContent = num;
+                    display.appendChild(ball);
+                });
+
+                if (!gameData.weeklyLotto.prizesEvaluated) {
+                    evaluateLottoPrizes('weekly');
+                }
+            } else {
+                winningWeeklyLottoNumbersContainer.style.display = 'none';
+            }
+        }
+
+
+        function evaluateLottoPrizes(lottoType) {
+            const isDaily = lottoType === 'daily';
+            const lottoData = isDaily ? gameData.lotto : gameData.weeklyLotto;
+
+            if (!lottoData || lottoData.prizesEvaluated) return;
             let wonTiers = new Set();
-            gameData.lotto.tickets.forEach(ticket => {
-                const matches = ticket.numbers.filter(num => gameData.lotto.winningNumbers.includes(num));
+            lottoData.tickets.forEach(ticket => {
+                const matches = ticket.numbers.filter(num => lottoData.winningNumbers.includes(num));
                 ticket.matches = matches.length;
                 if (ticket.matches > 0) {
                     wonTiers.add(ticket.matches);
                 }
             });
-            gameData.lotto.prizesEvaluated = true;
+            lottoData.prizesEvaluated = true;
             saveGame();
+
             const uniqueTiers = Array.from(wonTiers);
-            if(uniqueTiers.length > 1) {
-                promptPrizeChoice(uniqueTiers);
+            if (uniqueTiers.length > 1) {
+                promptPrizeChoice(uniqueTiers, lottoType);
             } else if (uniqueTiers.length === 1) {
-                savePendingPrize(uniqueTiers[0]);
-                alert(`Nyertél! A(z) ${uniqueTiers[0]}-találatos nyereményed holnap éjféltől lesz aktív.`);
+                savePendingPrize(uniqueTiers[0], lottoType);
+                const prizeName = isDaily ? LOTTO_PRIZES_META[uniqueTiers[0]].title : WEEKLY_LOTTO_PRIZES_META[uniqueTiers[0]].title;
+                alert(`Nyertél! A(z) "${prizeName}" nyereményed a következő időszaktól lesz aktív.`);
             }
-            updateMainLottoView(); 
+            if(isDaily) updateMainLottoView();
+            else updateMainWeeklyLottoView();
         }
 
-        function promptPrizeChoice(tiers) {
+        function promptPrizeChoice(tiers, lottoType) {
+            const isDaily = lottoType === 'daily';
+            const prizeMeta = isDaily ? LOTTO_PRIZES_META : WEEKLY_LOTTO_PRIZES_META;
             const optionsContainer = document.getElementById('prize-choice-options');
             optionsContainer.innerHTML = '';
+            document.querySelector('#prize-choice-container p').textContent = `Válassz egyet az alábbiak közül. A nyereményed ${isDaily ? 'másnap éjféltől' : 'a következő héttől'} lesz aktív.`;
+
+
             tiers.sort((a,b) => b-a).forEach(tier => {
-                const prize = LOTTO_PRIZES_META[tier];
+                const prize = prizeMeta[tier];
                 const button = document.createElement('button');
                 button.className = 'prize-option-button';
                 button.innerHTML = `<div class="prize-title">${prize.title}</div><div class="prize-desc">${prize.desc}</div>`;
                 button.onclick = () => {
-                    savePendingPrize(tier);
+                    savePendingPrize(tier, lottoType);
                     prizeChoiceOverlay.classList.remove('visible');
-                    alert(`A(z) ${tier}-találatos nyereményt választottad. Holnap éjféltől lesz aktív.`);
+                    alert(`A(z) "${prize.title}" nyereményt választottad. A következő időszaktól lesz aktív.`);
                 };
                 optionsContainer.appendChild(button);
             });
             prizeChoiceOverlay.classList.add('visible');
         }
 
-        function savePendingPrize(tier) {
+        function savePendingPrize(tier, lottoType) {
             let stats = getWeeklyStats();
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            stats.pendingPrize = {
-                targetDate: tomorrow.toDateString(),
-                tier: tier
-            };
+            if (lottoType === 'daily') {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                stats.pendingPrize = {
+                    targetDate: tomorrow.toDateString(),
+                    tier: tier
+                };
+            } else { // weekly
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + (7 - nextWeek.getDay() + 1) % 7); // Go to next Monday
+                 if (nextWeek.getDay() === 0) { // If it's Sunday, go to tomorrow (Monday)
+                    nextWeek.setDate(nextWeek.getDate() + 1);
+                }
+                stats.pendingWeeklyPrize = {
+                    targetWeek: getWeekStartDate(nextWeek),
+                    tier: tier
+                }
+                // Handle instant weekly prize
+                if (tier === 5) { // Jackpot
+                    addPointsToWeeklyScore(5000000);
+                    alert("Azonnali FŐNYEREMÉNY! 5,000,000 pont hozzáadva a heti pontszámodhoz!");
+                }
+            }
             saveWeeklyStats(stats);
         }
         
@@ -1609,6 +1797,11 @@
             return new Date(d.setDate(diff)).toDateString();
         }
 
+        function getWeekSeed(date = new Date()) {
+            const d = new Date(getWeekStartDate(date));
+            return d.getFullYear() * 1000 + d.getMonth() * 50 + Math.floor(d.getDate() / 7);
+        }
+
         function checkResets() {
             const now = new Date();
             const today = now.toDateString();
@@ -1616,7 +1809,6 @@
 
             let stats = getWeeklyStats();
             
-            // Heti pontszám nullázás
             if (!stats || stats.lastResetWeek !== currentWeekStart) {
                 const oldStats = stats || {};
                 stats = { 
@@ -1627,19 +1819,25 @@
                     freeVowels: 0,
                     weeklyJokerActive: false,
                     activeLottoPrize: {},
-                    pendingPrize: oldStats.pendingPrize || null
+                    activeWeeklyPrize: {},
+                    pendingPrize: oldStats.pendingPrize || null,
+                    pendingWeeklyPrize: oldStats.pendingWeeklyPrize || null,
+                    dailyBonusApplied: ''
                 };
+                 // Heti lottó nullázás
+                gameData.weeklyLotto = { week: currentWeekStart, tickets: [], winningNumbers: [], prizesEvaluated: false };
+                generateWeeklyWinningNumbers();
+                saveGame();
             }
 
-            // Napi lottó nullázás
             const lottoday = gameData.lotto ? gameData.lotto.date : null;
             if (!lottoday || lottoday !== today) {
                 gameData.lotto = { date: today, tickets: [], winningNumbers: [], prizesEvaluated: false };
                 generateWinningLottoNumbers();
                 saveGame();
+                stats.dailyBonusApplied = '';
             }
             
-            // Napi lottónyeremény aktiválás
             if (stats.pendingPrize && stats.pendingPrize.targetDate === today) {
                 const tier = stats.pendingPrize.tier;
                 stats.activeLottoPrize = { tier: tier };
@@ -1651,8 +1849,30 @@
                     case 5: stats.activeLottoPrize.freeWheel = true; break;
                 }
                 stats.pendingPrize = null;
-                alert("A tegnapi lottónyereményed mára aktiválódott! Sok sikert a felhasználásához!");
+                alert("A tegnapi napi lottónyereményed mára aktiválódott!");
             }
+
+            if (stats.pendingWeeklyPrize && stats.pendingWeeklyPrize.targetWeek === currentWeekStart) {
+                const tier = stats.pendingWeeklyPrize.tier;
+                stats.activeWeeklyPrize = { tier: tier };
+                 switch(tier) {
+                    case 3: stats.activeWeeklyPrize.unlimitedWheel = true; break;
+                    case 4: stats.activeWeeklyPrize.superJoker = true; break;
+                }
+                stats.pendingWeeklyPrize = null;
+                 alert("A múlt heti extra lottónyereményed erre a hétre aktiválódott!");
+            }
+            
+            // Apply daily-repeating weekly prizes
+            if (stats.activeWeeklyPrize.tier && stats.dailyBonusApplied !== today) {
+                 switch(stats.activeWeeklyPrize.tier) {
+                    case 1: stats.freeHints = (stats.freeHints || 0) + 1; break;
+                    case 2: stats.activeWeeklyPrize.doublePoints = true; break; // This is a flag to check on solve
+                }
+                stats.dailyBonusApplied = today;
+            }
+
+
             saveWeeklyStats(stats);
 
             updateWeeklyScoreDisplay(stats.totalScore);
@@ -1660,8 +1880,8 @@
         }
 
         function getWeeklyScore() { const stats = getWeeklyStats(); return stats ? stats.totalScore : 0; }
-        function addPointsToWeeklyScore(points) { let stats = getWeeklyStats(); stats.totalScore = Math.max(0, stats.totalScore + points); saveWeeklyStats(stats); updateWeeklyScoreDisplay(stats.totalScore); }
-        function updateWeeklyScoreDisplay(score) { weeklyScoreDisplaySpan.textContent = Math.round(score); }
+        function addPointsToWeeklyScore(points) { let stats = getWeeklyStats(); if (stats.activeWeeklyPrize && stats.activeWeeklyPrize.doublePoints) { points *= 2; } stats.totalScore = Math.max(0, stats.totalScore + points); saveWeeklyStats(stats); updateWeeklyScoreDisplay(stats.totalScore); }
+        function updateWeeklyScoreDisplay(score) { weeklyScoreDisplaySpan.textContent = Math.round(score).toLocaleString('hu-HU'); }
         
         function initGame() {
             const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
@@ -1677,6 +1897,7 @@
             
             if (!gameData.seed || gameData.seed !== hourSeed) {
                 const oldLottoData = gameData.lotto;
+                const oldWeeklyLottoData = gameData.weeklyLotto;
                 gameData = {
                     seed: hourSeed,
                     hourlySet: [],
@@ -1691,7 +1912,8 @@
                     currentRow: 0,
                     currentCol: 0,
                     isGameOver: false,
-                    lotto: oldLottoData
+                    lotto: oldLottoData,
+                    weeklyLotto: oldWeeklyLottoData
                 };
                 const allIndices = Array.from(Array(wordData.length).keys());
                 let chosenIndices = [];
@@ -1783,8 +2005,12 @@
                 if(!gameData.progress[gameData.currentWordIndex].scored) {
                     let points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0));
                     if (gameData.gameModes[gameData.currentWordIndex] === 'timed') { points = Math.round(points * 1.5); }
-                    addPointsToWeeklyScore(points);
-                    showFeedbackMessage(`Helyes! +${points} pont!`);
+                    let stats = getWeeklyStats();
+                    const doublePointsActive = stats.activeWeeklyPrize && stats.activeWeeklyPrize.doublePoints;
+                    
+                    addPointsToWeeklyScore(points); // addPoints handles the doubling internally
+                    showFeedbackMessage(`Helyes! +${doublePointsActive ? points*2 : points} pont! ${doublePointsActive ? '(Heti bónusz!)' : ''}`);
+
                     gameData.progress[gameData.currentWordIndex].scored = true;
                 }
                 gameData.progress[gameData.currentWordIndex].status = 'solved';
@@ -1819,6 +2045,10 @@
         }
         function calculateHintCost(isLetterHint = false) { 
             let stats = getWeeklyStats();
+            if ((stats.activeLottoPrize && stats.activeLottoPrize.freeWheel) || (stats.activeWeeklyPrize && stats.activeWeeklyPrize.superJoker)) {
+                return 0;
+            }
+
             let baseCost; 
             switch (wordData[gameData.hourlySet[gameData.currentWordIndex]].difficulty) { 
                 case "Könnyű": baseCost = 25; break; 
@@ -1827,7 +2057,7 @@
                 default: baseCost = 25; 
             } 
             const score = getWeeklyScore(); 
-            const dynamicCost = Math.floor(score * 0.05); 
+            const dynamicCost = Math.floor(score * 0.005); 
             baseCost += dynamicCost; 
             const costMultiplier = activeHints.usedCount >= 2 ? 2 : 1; 
             const letterMultiplier = isLetterHint ? 1.5 : 1; 
@@ -1837,8 +2067,9 @@
         }
         function spendPointsForHint(isLetterHint = false) { 
             let stats = getWeeklyStats();
-            const freebie = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
-            if (freebie) { return true; }
+            const cost = calculateHintCost(isLetterHint);
+            
+            if (cost === 0) return true; // From a joker/prize
 
             if (stats.freeHints > 0 && !isLetterHint) {
                 stats.freeHints--;
@@ -1846,7 +2077,7 @@
                 alert("Felhasználtál egy ingyenes szöveges segítséget!");
                 return true;
             }
-            const cost = calculateHintCost(isLetterHint); 
+
             if (stats.totalScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${stats.totalScore} pontod van.`); return false; } 
             if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToWeeklyScore(-cost); return true; } return false; 
         }
@@ -1975,33 +2206,35 @@
                 return; 
             } 
             
-            const freebie = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            const costText = calculateHintCost(false);
+            const costLetter = calculateHintCost(true);
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]]; 
             
             const textHintsAvailable = activeHints.text.length < wordObject.hints.length; 
+            
             requestTextHintButton.disabled = !textHintsAvailable;
-
             requestLetterHintButton.disabled = false;
             
-            const freeTextHints = stats.freeHints || 0;
-            const textHintCost = calculateHintCost(false); 
-            const letterHintCost = calculateHintCost(true); 
-
-            if (freebie) {
-                requestTextHintButton.textContent = `Szöveges segítség (INGYENES)`;
-                requestLetterHintButton.textContent = `Betű felfedése (INGYENES)`;
-                requestTextHintButton.disabled = !textHintsAvailable;
+            if (costText === 0) {
+                 requestTextHintButton.textContent = `Szöveges segítség (INGYENES)`;
             } else {
-                 let textHintLabel = `Szöveges segítség (${textHintCost}p)`;
+                 const freeTextHints = stats.freeHints || 0;
+                 let textHintLabel = `Szöveges segítség (${costText}p)`;
                  if (freeTextHints > 0) {
                      textHintLabel = `Szöveges segítség (${freeTextHints} INGYENES)`;
                  } else if (stats.weeklyJokerActive) {
-                     textHintLabel = `Szöveges segítség (${textHintCost}p 🃏)`;
+                     textHintLabel = `Szöveges segítség (${costText}p 🃏)`;
                  }
                 requestTextHintButton.textContent = textHintLabel;
-                requestLetterHintButton.textContent = `Betű felfedése (${letterHintCost}p)`; 
+            }
+
+            if(costLetter === 0){
+                 requestLetterHintButton.textContent = `Betű felfedése (INGYENES)`;
+            } else {
+                requestLetterHintButton.textContent = `Betű felfedése (${costLetter}p)`; 
             }
         }
+
 
         function checkForBonusGameUnlock() { 
             const allWordsSolved = gameData.progress.every(p => p.status === 'solved'); 
@@ -2013,9 +2246,10 @@
         }
         function updateBonusUnlockUI() {
             const stats = getWeeklyStats();
-            const freeAccess = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            const freeAccessFromDaily = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
+            const freeAccessFromWeekly = stats.activeWeeklyPrize && stats.activeWeeklyPrize.unlimitedWheel;
 
-            if (freeAccess) {
+            if (freeAccessFromDaily || freeAccessFromWeekly) {
                 bonusUnlockContainer.style.display = 'none';
                 playWheelButton.style.display = 'block';
                 return;
@@ -2173,7 +2407,8 @@
             }
         });
         
-        playLottoButton.addEventListener('click', openLottoOverlay);
+        playLottoButton.addEventListener('click', () => openLottoOverlay('daily'));
+        playWeeklyLottoButton.addEventListener('click', () => openLottoOverlay('weekly'));
         submitLottoButtonOverlay.addEventListener('click', submitLottoTicketOverlay);
         closeLottoOverlayButton.addEventListener('click', closeLottoOverlay);
         
@@ -2182,8 +2417,11 @@
         loadTheme();
         initGame();
         setInterval(checkForNewHour, 1000 * 30);
-        setInterval(() => { updateMainLottoView(); }, 60000);
+        setInterval(() => { 
+            updateMainLottoView(); 
+            updateMainWeeklyLottoView();
+        }, 60000);
     });
     </script>
 </body>
-</html>
+</html>```

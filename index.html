@@ -45,6 +45,34 @@
             padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative;
             transition: background-color 0.3s ease;
         }
+        #top-right-hud {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1010; 
+        }
+
+        #insurance-display, #warehouse-display {
+            display: flex; align-items: center; gap: 8px; font-family: var(--font-main);
+            font-size: 1.1rem; font-weight: 700; color: var(--insurance-color);
+            background: rgba(76, 175, 80, 0.1); padding: 5px 15px;
+            border-radius: 20px; border: 2px solid var(--insurance-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #warehouse-display {
+            color: var(--present-color);
+            background: rgba(242, 204, 143, 0.15);
+            border-color: var(--present-color);
+        }
+        #insurance-display:hover, #warehouse-display:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px currentColor;
+        }
+        #insurance-display svg, #warehouse-display svg { width: 20px; height: 20px; fill: currentColor; }
+        
         #new-hour-notification {
             display: none; justify-content: space-around; align-items: center;
             position: sticky; top: -15px; left: -15px; right: -15px;
@@ -61,7 +89,7 @@
             font-weight: bold; cursor: pointer;
         }
 
-        header { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; position: relative; width: 100%; }
+        header { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; position: relative; width: 100%; padding-top: 40px; }
         #header-main { display: flex; align-items: center; justify-content: center; position: relative; }
         #logo-container { display: flex; align-items: center; position: relative; }
         #logo-svg { width: clamp(80px, 20vw, 100px); height: auto; z-index: 1; }
@@ -90,14 +118,7 @@
         .theme-swatch.active { border: 3px solid var(--title-color); box-shadow: 0 0 8px var(--title-color); }
         
         #weekly-score-display { font-family: var(--font-main); font-size: 1.1rem; font-weight: 700; color: var(--title-color); background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; border: 2px solid var(--border-color-idle); margin-top: 10px; transition: color 0.3s ease, border-color 0.3s ease; }
-        #insurance-display {
-            display: flex; align-items: center; gap: 8px; font-family: var(--font-main);
-            font-size: 1.1rem; font-weight: 700; color: var(--insurance-color);
-            background: rgba(76, 175, 80, 0.1); padding: 5px 15px;
-            border-radius: 20px; border: 2px solid var(--insurance-color); margin-top: 5px;
-        }
-        #insurance-display svg { width: 20px; height: 20px; fill: currentColor; }
-
+        
         #keyboard-toggle-container { margin-top: 10px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; color: var(--text-color); }
         #keyboard-toggle-checkbox { cursor: pointer; }
 
@@ -204,7 +225,6 @@
         }
         @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
         
-        /* Lottó Szekció Stílusai */
         #lotto-container, #weekly-lotto-container {
             display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0;
             padding: 20px; border: 2px solid var(--border-color-active); border-radius: 15px; width: 100%;
@@ -300,7 +320,6 @@
         .prize-option-button .prize-title { font-weight: bold; font-size: 1.1rem; color: var(--title-color); }
         .prize-option-button .prize-desc { font-size: 0.9rem; margin-top: 5px; }
 
-        /* Szerencsekerék */
         #wheel-game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         #wheel-wrapper { position: relative; width: 360px; height: 360px; margin: 10px auto; }
         #wheel-pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid var(--fail-color); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; transition: border-top-color 0.3s ease; }
@@ -331,8 +350,9 @@
         .alphabet-key.guessed { background-color: var(--absent-color); color: white; opacity: 0.6; cursor: not-allowed; }
         .alphabet-key.vowel { border-color: var(--present-color); }
         #wheel-controls, #wheel-decision-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        #wheel-controls button, #wheel-decision-controls button, #wheel-help-button { padding: 10px 15px; font-size: 1rem; }
+        #wheel-controls button, #wheel-decision-controls button, #wheel-help-button { padding: 10px 15px; font-size: 1rem; flex-basis: 120px; }
         #spin-button { background-color: var(--difficulty-easy); box-shadow: 0 3px 0 #2e7d32; }
+        #buy-vowel-button { background-color: var(--present-color); box-shadow: 0 3px 0 #c46400; }
         #solve-button { background-color: var(--difficulty-hard); box-shadow: 0 3px 0 #c46400; }
         #wheel-help-button { background-color: #9c27b0; color: white; box-shadow: 0 3px 0 #7b1fa2; }
         #wheel-help-button.pulse-purple { animation: pulse-purple 1.5s infinite; }
@@ -344,7 +364,6 @@
         .power-up { animation: power-up 1.5s linear infinite; }
         @keyframes power-up { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
 
-        /* 20 Kártya Játék */
         #card-game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         #card-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 520px; perspective: 1000px; }
         .game-card { width: 90px; height: 130px; cursor: pointer; position: relative; }
@@ -365,10 +384,29 @@
         .card-face-back .card-desc { font-size: 0.8rem; }
         #card-prizes-list { list-style-type: '🃏'; text-align: left; padding-left: 20px; font-size: 0.9rem; line-height: 1.6; }
 
+        #warehouse-items-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; }
+        .warehouse-item { background-color: rgba(0,0,0,0.05); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color-idle); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .warehouse-item-info { text-align: left; flex-grow: 1; }
+        .warehouse-item-desc { font-weight: bold; }
+        .warehouse-item-expiry { font-size: 0.8rem; opacity: 0.8; margin-top: 5px; }
+        .activate-prize-button { background-color: var(--correct-color); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .activate-prize-button:disabled { background-color: var(--absent-color); }
+
     </style>
 </head>
 <body class="theme-classic">
     <div id="game-container">
+        <div id="top-right-hud">
+             <div id="insurance-display" title="Biztosítások">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
+                <span id="insurance-display-count">0</span>
+            </div>
+            <div id="warehouse-display" title="Szerencse Raktár">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+                <span id="warehouse-display-count">0</span>
+            </div>
+        </div>
+
         <div id="new-hour-notification">
             <span>Új feladványok elérhetők!</span>
             <button id="new-hour-refresh-button">Frissítés</button>
@@ -401,10 +439,6 @@
                 </div>
             </div>
             <div id="weekly-score-display">Heti pontszám: <span>0</span></div>
-            <div id="insurance-display" title="Biztosítások">
-                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
-                <span id="insurance-display-count">0</span>
-            </div>
              <div id="keyboard-toggle-container">
                 <label for="keyboard-toggle-checkbox">Eszköz billentyűzet használata: </label>
                 <input type="checkbox" id="keyboard-toggle-checkbox" title="Ha bepipálod, a játék billentyűzete eltűnik, és a sajátodat használhatod.">
@@ -462,7 +496,7 @@
                 </svg>
                 <h2>Napi Lottó</h2>
             </div>
-            <p>Az első szelvény ingyenes, utána 400 pont! Nyereményed másnap éjféltől aktív.</p>
+            <p>Az első szelvény ingyenes, utána 400 pont! Nyereményed a Raktárba kerül.</p>
             <button id="play-lotto-button" class="hint-button">Első ingyenes szelvény</button>
             <div id="lotto-played-message"></div>
             
@@ -487,7 +521,7 @@
                 </svg>
                 <h2>Heti Extra Lottó</h2>
             </div>
-            <p>Tedd próbára a szerencséd a főnyereményért! A szelvény ára 100,000 pont. Sorsolás vasárnap 19:00-kor!</p>
+            <p>Tedd próbára a szerencséd! Ár: 100,000 pont. Sorsolás vasárnap 19:00-kor!</p>
             <button id="play-weekly-lotto-button" class="hint-button">Szelvény 100,000 pontért</button>
             <div id="weekly-lotto-played-message"></div>
             
@@ -510,7 +544,6 @@
         </div>
     </div>
 
-    <!-- Overlays -->
     <div id="lotto-game-overlay" class="overlay">
         <div class="overlay-content">
             <div id="lotto-game-container">
@@ -532,7 +565,7 @@
         <div class="overlay-content">
             <div id="prize-choice-container">
                 <h2>Gratulálunk, több nyereményt is elértél!</h2>
-                <p>Válassz egyet az alábbiak közül.</p>
+                <p>Válassz egyet az alábbiak közül. A nyereményed a Raktárba kerül.</p>
                 <div id="prize-choice-options">
                 </div>
             </div>
@@ -548,10 +581,6 @@
                     <div id="wheel-stats-container">
                         <div id="wheel-stake-display">Tét: <span id="stake-amount">0</span></div>
                         <div id="wheel-winnings-display">Körös Nyeremény: <span id="player-score">0</span></div>
-                        <div id="wheel-insurance-display" title="Biztosítások">
-                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
-                            <span id="wheel-insurance-count">0</span>
-                        </div>
                     </div>
                     <div id="puzzle-category"></div>
                     <div id="puzzle-board"></div>
@@ -565,9 +594,9 @@
                         <div id="power-meter-bar"></div>
                     </div>
                     <div id="wheel-controls">
+                        <button id="buy-vowel-button" class="hint-button">Magánhangzó</button>
                         <button id="spin-button" class="hint-button">Pörgetés</button>
-                        <button id="solve-button" class="hint-button" disabled>Megfejtem</button>
-                        <button id="wheel-help-button" class="hint-button" style="display: none;">Végső Segítség</button>
+                        <button id="solve-button" class="hint-button">Megfejtem</button>
                     </div>
                      <div id="wheel-decision-controls" style="display: none;">
                         <button id="cash-out-button" class="hint-button">Nyeremény felvétele</button>
@@ -595,11 +624,20 @@
         </div>
     </div>
 
+    <div id="warehouse-overlay" class="overlay">
+        <div class="overlay-content">
+            <h2>Szerencse Raktár</h2>
+            <p>Itt tárolod a lottón nyert, még fel nem használt nyereményeidet. Aktiváld őket, mielőtt lejárnak!</p>
+            <div id="warehouse-items-container">
+            </div>
+            <button id="close-warehouse-button" class="overlay-button">Bezárás</button>
+        </div>
+    </div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const wordData = [
-            // Könnyű (15 db)
             {word:"LÁMPA", category:"Tárgy", difficulty:"Könnyű", hints:["Fényt ad a sötétben.", "Lehet asztali vagy álló.", "Villanykörte van benne.", "Kapcsolóval működik."]},
             {word:"KULACS", category:"Tárgy", difficulty:"Könnyű", hints:["Italt tárolnak benne.", "Túrázók gyakran viszik magukkal.", "Lehet fémből vagy műanyagból.", "Kupakkal záródik."]},
             {word:"RADÍR", category:"Iskolaszer", difficulty:"Könnyű", hints:["Ceruza nyomát tünteti el.", "Iskolatáskában lakik.", "Lehet illatos is.", "Használat közben morzsálódik."]},
@@ -615,8 +653,6 @@
             {word:"PÁLMA", category:"Növény", difficulty:"Könnyű", hints:["Trópusi fa.", "A tengerpartok jellegzetessége.", "Nagy, legyezőszerű levelei vannak.", "Termése a kókuszdió."]},
             {word:"GYŰRŰ", category:"Ékszer", difficulty:"Könnyű", hints:["Ujjra húzva viselik.", "Lehet aranyból vagy ezüstből.", "A házasság jelképe.", "A hatalomnak is szimbóluma lehet."]},
             {word:"BICIKLI", category:"Jármű", difficulty:"Könnyű", hints:["Két kereke van.", "Pedállal kell hajtani.", "A kormányával irányítják.", "Csengő van rajta."]},
-
-            // Nehéz (17 db)
             {word:"ZONGORA", category:"Hangszer", difficulty:"Nehéz", hints:["Billentyűkkel szólaltatják meg.", "Fekete és fehér billentyűi vannak.", "Koncerttermek gyakori szereplője.", "A kalapácsok húrokat ütnek benne."]},
             {word:"TELESZKÓP", category:"Eszköz", difficulty:"Nehéz", hints:["Égitestek megfigyelésére használják.", "Lencsék vagy tükrök segítségével nagyít.", "Csillagvizsgálókban található.", "Galilei is használta."]},
             {word:"KÖNYVTÁR", category:"Hely", difficulty:"Nehéz", hints:["Nagyon sok könyv található itt.", "Csendben kell lenni benne.", "Kölcsönözni lehet belőle.", "Egyik fajtája a digitális."]},
@@ -634,8 +670,6 @@
             {word:"UNIVERZUM", category:"Tudomány", difficulty:"Nehéz", hints:["Minden létező összessége.", "Csillagászok kutatják a méretét.", "Az ősrobbanással keletkezett elméletileg.", "Tágulóban van."]},
             {word:"LEGENDA", category:"Irodalom", difficulty:"Nehéz", hints:["Történelmi alappal rendelkező, de csodás elemekkel átszőtt történet.", "Hősökről vagy szentekről szólhat.", "Szájhagyomány útján terjed.", "Artúr király története egy híres példa."]},
             {word:"HORIZONT", category:"Fogalom", difficulty:"Nehéz", hints:["A látható ég és a föld találkozási vonala.", "A tengeren egyenes vonalnak látszik.", "Minél magasabban vagy, annál távolabbi.", "Soha nem lehet elérni."]},
-            
-            // Extra Nehéz (15 db)
             {word:"KRONOLÓGIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Időrendi sorrend.", "Történelmi eseményeknél fontos.", "Segít megérteni az ok-okozati viszonyokat.", "Az események időbeli egymásutánisága."]},
             {word:"DEMOKRÁCIA", category:"Társadalom", difficulty:"Extra Nehéz", hints:["Népuralom.", "Az ókori Görögországból származik.", "A polgárok választásokon döntenek.", "Ellentéte a diktatúra."]},
             {word:"ABSZTRAKT", category:"Művészet", difficulty:"Extra Nehéz", hints:["Nem ábrázol konkrét tárgyakat vagy alakokat.", "A formák és színek játéka a lényeg.", "Piet Mondrian és Vaszilij Kandinszkij híres képviselője.", "Nonfiguratív művészet."]},
@@ -715,18 +749,25 @@
         
         const body = document.body;
         const hiddenInput = document.getElementById('hidden-input');
-        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const weeklyScoreDisplaySpan = document.querySelector('#weekly-score-display span'); const insuranceDisplayCount = document.getElementById('insurance-display-count'); const newHourNotification = document.getElementById('new-hour-notification');
+        const gridContainer = document.getElementById('grid-container'); const keyboardContainer = document.getElementById('keyboard-container'); const requestTextHintButton = document.getElementById('request-text-hint-button'); const requestLetterHintButton = document.getElementById('request-letter-hint-button'); const wordTrackerContainer = document.getElementById('word-tracker'); const weeklyScoreDisplaySpan = document.querySelector('#weekly-score-display span'); 
+        const insuranceDisplay = document.getElementById('insurance-display');
+        const insuranceDisplayCount = document.getElementById('insurance-display-count'); 
+        const warehouseDisplay = document.getElementById('warehouse-display');
+        const warehouseDisplayCount = document.getElementById('warehouse-display-count');
+        const newHourNotification = document.getElementById('new-hour-notification');
         const bonusUnlockContainer = document.getElementById('bonus-unlock-container');
         const codeInputContainer = document.getElementById('code-input-container');
         const codeInputs = document.querySelectorAll('.code-input');
         const checkCodeButton = document.getElementById('check-code-button');
         const playWheelButton = document.getElementById('play-wheel-button');
         const keyboardToggleCheckbox = document.getElementById('keyboard-toggle-checkbox');
-        const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); const spinButton = document.getElementById('spin-button'); const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const stakeAmountEl = document.getElementById('stake-amount'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const solveButton = document.getElementById('solve-button'); const wheelMessageDisplay = document.getElementById('wheel-message-display'); const wheelInsuranceCountEl = document.getElementById('wheel-insurance-count');
+        const wheelGameOverlay = document.getElementById('wheel-game-overlay'); const closeWheelButton = document.getElementById('close-wheel-button'); const wheel = document.getElementById('wheel'); 
+        const spinButton = document.getElementById('spin-button'); 
+        const buyVowelButton = document.getElementById('buy-vowel-button');
+        const powerMeterBar = document.getElementById('power-meter-bar'); const powerMeterContainer = document.getElementById('power-meter-container'); const playerScoreEl = document.getElementById('player-score'); const stakeAmountEl = document.getElementById('stake-amount'); const puzzleBoardEl = document.getElementById('puzzle-board'); const puzzleCategoryEl = document.getElementById('puzzle-category'); const solveButton = document.getElementById('solve-button'); const wheelMessageDisplay = document.getElementById('wheel-message-display'); 
         const wheelRoundDisplay = document.getElementById('wheel-round-display'); const wheelDecisionControls = document.getElementById('wheel-decision-controls'); const cashOutButton = document.getElementById('cash-out-button'); const nextRoundButton = document.getElementById('next-round-button'); const themeToggleButton = document.getElementById('theme-toggle-button'); const themePicker = document.getElementById('theme-picker');
         const infoBar = document.getElementById('info-bar'); const hintDisplayArea = document.getElementById('hint-display-area'); const idleMessageContainer = document.getElementById('idle-message-container'); const hintControls = document.getElementById('hint-controls');
         const wheelAlphabetPanel = document.getElementById('wheel-alphabet-panel');
-        const wheelHelpButton = document.getElementById('wheel-help-button');
         const cardGameOverlay = document.getElementById('card-game-overlay');
         const cardBoard = document.getElementById('card-board');
         const cardGameMessage = document.getElementById('card-game-message');
@@ -748,6 +789,9 @@
         const submittedWeeklyTicketsContainer = document.querySelector('.submitted-weekly-tickets-container');
         const winningLottoNumbersContainer = document.querySelector('#daily-winning-numbers-display');
         const winningWeeklyLottoNumbersContainer = document.querySelector('#weekly-winning-numbers-display');
+        const warehouseOverlay = document.getElementById('warehouse-overlay');
+        const closeWarehouseButton = document.getElementById('close-warehouse-button');
+        const warehouseItemsContainer = document.getElementById('warehouse-items-container');
 
         let selectedLottoNumbers = [];
         let currentLottoType = 'daily';
@@ -764,19 +808,19 @@
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
         const LOTTO_PRIZES_META = {
-            1: { title: "1 Találat", desc: "+1 ingyen szöveges segítség" },
-            2: { title: "2 Találat", desc: "+3 ingyen magánhangzó a Szerencsekerékben" },
-            3: { title: "3 Találat", desc: "Korlátlan biztosítás a Szerencsekerékben" },
-            4: { title: "4 Találat", desc: "Csődmentesség a Szerencsekerékben" },
-            5: { title: "5 Találat", desc: "Ingyenes segítség és kód nélküli Szerencsekerék" }
+            1: { prizeId: 'D1', title: "1 Találat", desc: "+1 ingyen szöveges segítség" },
+            2: { prizeId: 'D2', title: "2 Találat", desc: "+3 ingyen magánhangzó a Szerencsekerékben" },
+            3: { prizeId: 'D3', title: "3 Találat", desc: "Korlátlan biztosítás a Szerencsekerékben (1 napig)" },
+            4: { prizeId: 'D4', title: "4 Találat", desc: "Csődmentesség a Szerencsekerékben (1 napig)" },
+            5: { prizeId: 'D5', title: "5 Találat", desc: "Ingyenes Szerencsekerék (1 napig)" }
         };
         
         const WEEKLY_LOTTO_PRIZES_META = {
-            1: { title: "1 Találat: Napi Ingyen Tipp", desc: "A következő héten minden nap kapsz +1 ingyen szöveges tippet." },
-            2: { title: "2 Találat: Napi Dupla Pont", desc: "A következő héten minden helyes megfejtésért dupla pont jár." },
-            3: { title: "3 Találat: Korlátlan Szerencsekerék", desc: "A következő héten a Szerencsekerék ingyenes és mindig elérhető." },
-            4: { title: "4 Találat: Heti Szuper Joker", desc: "A következő héten minden szöveges és betűs segítség ingyenes." },
-            5: { title: "5 Találat: FŐNYEREMÉNY", desc: "Azonnali 5,000,000 pont!" }
+            1: { prizeId: 'W1', title: "1 Találat: Napi Ingyen Tipp", desc: "A következő 7 napban minden nap kapsz +1 ingyen szöveges tippet." },
+            2: { prizeId: 'W2', title: "2 Találat: Napi Dupla Pont", desc: "A következő 7 napban minden helyes megfejtésért dupla pont jár." },
+            3: { prizeId: 'W3', title: "3 Találat: Korlátlan Szerencsekerék", desc: "A következő 7 napban a Szerencsekerék ingyenes és mindig elérhető." },
+            4: { prizeId: 'W4', title: "4 Találat: Heti Szuper Joker", desc: "A következő 7 napban minden szöveges és betűs segítség ingyenes." },
+            5: { prizeId: 'W5', title: "5 Találat: FŐNYEREMÉNY", desc: "Azonnali 5,000,000 pont!" }
         };
 
 
@@ -795,12 +839,12 @@
             spin_prompt: [ "Pörgess egy nagyot!", "Jöhet a pörgetés!", "Sorsfordító pörgetés következik!"],
             spin_result: [ "A kerék {value} ponton állt meg!", "A szerencse {value} pontot hozott!", "{value} a jutalmad!"],
             guess_consonant: [ "Válassz egy mássalhangzót!", "Melyik mássalhangzóra tippelsz?", "Jöhet egy mássalhangzó!"],
-            guess_vowel: [ "Vásárolj magánhangzót 250 pontért!", "Melyik magánhangzóra esik a választásod?"],
+            buy_vowel_prompt: ["Válassz egy magánhangzót!", "Melyik magánhangzót szeretnéd megvenni?"],
             correct_guess: [ "Ez telitalálat!", "Tökéletes tipp!", "Benne van!", "Eltaláltad!"],
             wrong_guess: [ "Sajnos ez nincs benne.", "Ez a betű most nem segített.", "Rossz tipp, de ne add fel!"],
             bankrupt_round_lost: [ "CSŐD! Elvesztetted a körben szerzett pontjaidat, de a téted biztonságban!", "A CSŐD elvitte a körös nyereményt! Folytathatod." ],
             bankrupt_stake_lost: [ "Újra csőd! A játékodnak sajnos vége. Elvesztetted a tétet is.", "A második csőd végzetes volt. A tét elúszott." ],
-            bankrupt_immune: ["CSŐD! De szerencséd van, ma csődmentességet élvezel a lottónyereményednek köszönhetően!", "Megúsztad a csődöt a lottó segítségével!"],
+            bankrupt_immune: ["CSŐD! De szerencséd van, egy aktív bónuszod megvédett!", "Megúsztad a csődöt a Raktárból aktivált segítséggel!"],
             insurance_win: [ "BIZTOSÍTÁS! Nyertél egy védelmet a csőd ellen!", "Szuper! Van egy biztosításod!"],
             insurance_limit_reached: [ "Elérted az óránkénti biztosítás limidet!", "Ebben az órában már nem szerezhetsz többet." ],
             insurance_used: [ "Felhasználtál egy biztosítást és megmenekültél a csődtől!", "A biztosítás megmentett, minden pontod biztonságban!"],
@@ -822,9 +866,9 @@
             solve_fail: [ "Sajnos ez nem a helyes megfejtés. A játék véget ért.", "Ez most nem jött össze. A helyes megfejtés: <strong>{solution}</strong>. Elbuktad a tétet.", "Rossz válasz. A megoldás: <strong>{solution}</strong>. A nyeremény elszállt."],
             cash_out: [ "Okos döntés! A nyeremény a zsebedben.", "Gratulálunk a nyereményedhez!", "Szép volt!"],
             next_round: [ "Jöhet a következő, nehezebb kör!", "A java még csak most jön!", "Készülj a következő körre!"],
-            not_enough_points: [ "Nincs elég pontod magánhangzót venni!", "Ehhez több pontra lesz szükséged!"],
-            no_more_consonants: ["Nincs több mássalhangzó a feladványban!", "Minden mássalhangzót feltártál már!"],
-            vowel_limit: ["Ebben a körben már nem vehetsz több magánhangzót.", "Elérted a magánhangzó vásárlási limitet."]
+            not_enough_points: [ "Nincs elég pontod ehhez! Szükséges: {cost} pont.", "Ehhez több pontra lesz szükséged!"],
+            must_spin_first: [ "Előbb pörgetned kell, mielőtt mássalhangzót tippelsz!" ],
+            must_guess_consonant: [ "Pörgetés után mássalhangzót kell mondanod!" ]
         };
         const CARD_DATA = [
             { type: 'total_bankrupt', label: 'Totál Csőd', description: 'Minden heti pontod elveszik!', cssClass: 'total-bankrupt' },
@@ -873,10 +917,19 @@
         function getWeeklyStats() { return JSON.parse(localStorage.getItem('szonyomozo_weekly_stats')); }
         function saveWeeklyStats(stats) { localStorage.setItem('szonyomozo_weekly_stats', JSON.stringify(stats)); }
         function getInsuranceCount() { const stats = getWeeklyStats(); return stats ? stats.insurance || 0 : 0; }
-        function updateInsuranceCount(change) { let stats = getWeeklyStats(); stats.insurance = Math.max(0, (stats.insurance || 0) + change); saveWeeklyStats(stats); updateInsuranceDisplay(stats.insurance); }
-        function updateInsuranceDisplay(count) { if(insuranceDisplayCount) insuranceDisplayCount.textContent = count; if(wheelInsuranceCountEl) wheelInsuranceCountEl.textContent = count; }
+        function updateInsuranceCount(change) { let stats = getWeeklyStats(); stats.insurance = Math.max(0, (stats.insurance || 0) + change); saveWeeklyStats(stats); updateUIDisplays(); }
+        
+        function updateUIDisplays() {
+            const stats = getWeeklyStats();
+            if(!stats) return;
+            
+            insuranceDisplayCount.textContent = stats.insurance || 0;
+            
+            const validPrizes = (stats.warehouse || []).filter(p => p.expiry > Date.now());
+            warehouseDisplayCount.textContent = validPrizes.length;
+        }
 
-        function showWheelMessage(category, options = {}) { clearTimeout(wheelMessageTimeout); const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; let message = messages[Math.floor(Math.random() * messages.length)]; if (options.value) { message = message.replace('{value}', `<strong>${options.value}</strong>`); } if (options.solution) { message = message.replace('{solution}', options.solution); } wheelMessageDisplay.innerHTML = message; wheelMessageDisplay.style.opacity = 1; wheelMessageTimeout = setTimeout(() => { wheelMessageDisplay.style.opacity = 0; }, options.duration || 4000); }
+        function showWheelMessage(category, options = {}) { clearTimeout(wheelMessageTimeout); const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; let message = messages[Math.floor(Math.random() * messages.length)]; for (const key in options) { message = message.replace(`{${key}}`, `<strong>${options[key]}</strong>`); } wheelMessageDisplay.innerHTML = message; wheelMessageDisplay.style.opacity = 1; wheelMessageTimeout = setTimeout(() => { wheelMessageDisplay.style.opacity = 0; }, options.duration || 4000); }
         function drawWheel(round) {
             wheel.innerHTML = '';
             const segments = wheelSegmentSets[round];
@@ -920,7 +973,7 @@
         function initWheelGame() {
             let stake = 0;
             let stats = getWeeklyStats();
-            const hasUnlimitedWheel = stats.activeWeeklyPrize && stats.activeWeeklyPrize.unlimitedWheel;
+            const hasUnlimitedWheel = stats.activeLottoPrize?.freeWheel || stats.activeWeeklyPrize?.unlimitedWheel;
 
             if (!hasUnlimitedWheel) {
                  const currentScore = getWeeklyScore();
@@ -933,17 +986,16 @@
                     if (!isNaN(stake) && stake > 0 && stake <= currentScore) { break; }
                     alert("Érvénytelen tét! Kérlek, a pontjaidnál nem nagyobb, pozitív számot adj meg.");
                 }
-                addPointsToWeeklyScore(-stake);
+                addPointsToWeeklyScore(-stake, true);
             } else {
-                alert("A heti lottónyereményednek köszönhetően a Szerencsekerék most ingyenes!");
+                alert("Egy aktív nyereményednek köszönhetően a Szerencsekerék most ingyenes!");
             }
             
-            gameData.bonusUnlocked = false; // Felhasználjuk a lehetőséget
+            gameData.bonusUnlocked = false; 
             saveGame();
             updateBonusUnlockUI(); 
              
-            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0, unlimitedWheel: hasUnlimitedWheel };
-            updateInsuranceDisplay(getInsuranceCount());
+            wheelState = { totalWinnings: 0, initialStake: stake, currentRound: 0 };
             startNewRound();
             wheelGameOverlay.classList.add('visible');
             checkAndDisplayIdleState();
@@ -958,9 +1010,6 @@
             wheelState.spinResult = null;
             wheelState.roundBankrupt = false;
             wheelState.vowelsBoughtThisRound = 0; 
-            wheelState.consonantMisses = 0; 
-            wheelHelpButton.style.display = 'none'; 
-            wheelHelpButton.classList.remove('pulse-purple'); 
             wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; 
             const seed = getCurrentHourSeed() + wheelState.currentRound; 
             const puzzleIndex = Math.floor(seededRandom(seed) * wheelPuzzles.length); 
@@ -973,50 +1022,43 @@
             showWheelMessage('start_round'); 
         }
 
-        function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); key.title = "Magánhangzó (250 pont)"; } else { key.title = "Mássalhangzó"; } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
+        function createAlphabetPanel() { wheelAlphabetPanel.innerHTML = ''; FULL_ALPHABET.split('').forEach(letter => { const key = document.createElement('button'); key.className = 'alphabet-key'; key.textContent = letter; key.dataset.letter = letter; if (VOWELS.includes(letter)) { key.classList.add('vowel'); } key.addEventListener('click', () => handleAlphabetClick(letter)); wheelAlphabetPanel.appendChild(key); }); }
         
-        function handleAlphabetClick(letter) { 
-            if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return; 
-            const isVowel = VOWELS.includes(letter); 
-            let stats = getWeeklyStats(); 
-            if (isVowel) { 
-                if(wheelState.spinResult !== null && wheelState.spinResult > 0) { showWheelMessage("Előbb tippelj a mássalhangzóra pörgetés után!"); return; } 
-                if (wheelState.vowelsBoughtThisRound >= 2) { showWheelMessage('vowel_limit'); return; } 
-                if (stats.freeVowels > 0) { 
-                    if(confirm(`Felhasználsz egyet a ${stats.freeVowels} ingyenes magánhangzódból?`)) { 
-                        stats.freeVowels--; 
-                        saveWeeklyStats(stats); 
-                        guessLetter(letter, true); 
-                    } 
-                    return; 
-                } 
-                const effectiveWinnings = wheelState.totalWinnings + wheelState.roundScore; 
-                if (effectiveWinnings < 250) { 
-                    showWheelMessage('not_enough_points'); 
-                    return; 
-                } 
-                if (confirm("Biztosan veszel egy magánhangzót 250 pontért?")) { 
-                    if(wheelState.roundScore >= 250) {
-                        wheelState.roundScore -= 250;
+        function handleAlphabetClick(letter) {
+            if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return;
+            const isVowel = VOWELS.includes(letter);
+        
+            if (wheelState.gameState === 'choosing_vowel' && isVowel) {
+                const cost = wheelState.vowelsBoughtThisRound < 2 ? 250 : 1000;
+                const effectiveWinnings = wheelState.totalWinnings + wheelState.roundScore;
+                if (effectiveWinnings < cost) {
+                    showWheelMessage('not_enough_points', { cost });
+                    return;
+                }
+                if (confirm(`Biztosan veszel egy magánhangzót ${cost} pontért?`)) {
+                    if (wheelState.roundScore >= cost) {
+                        wheelState.roundScore -= cost;
                     } else {
-                         wheelState.totalWinnings -= 250;
+                        wheelState.totalWinnings -= cost;
                     }
-                    wheelState.vowelsBoughtThisRound++; 
-                    guessLetter(letter); 
-                } 
-            } else { 
-                const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); 
-                if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } 
-                if (wheelState.spinResult > 0) { guessLetter(letter); } else { showWheelMessage('spin_prompt'); } 
-            } 
-            updateWheelPlayerScore();
+                    wheelState.vowelsBoughtThisRound++;
+                    guessLetter(letter);
+                }
+            } else if (wheelState.gameState === 'guess_consonant' && !isVowel) {
+                guessLetter(letter);
+            }
+        }
+        
+        function buyVowel() {
+            if (wheelState.gameState !== 'start_round') return;
+            showWheelMessage('buy_vowel_prompt');
+            updateUIForGameState('choosing_vowel');
         }
 
         function updateAlphabetPanel() { wheelState.guessedLetters.forEach(letter => { const key = wheelAlphabetPanel.querySelector(`[data-letter="${letter}"]`); if(key) key.classList.add('guessed'); }); }
         function setupPuzzleBoard() { puzzleBoardEl.innerHTML = ''; puzzleCategoryEl.textContent = wheelState.puzzle.category; const puzzleText = wheelState.puzzle.puzzle.toUpperCase(); for(const char of puzzleText) { const tile = document.createElement('div'); if (char === ' ') { tile.className = 'puzzle-tile space'; } else { tile.className = 'puzzle-tile'; tile.innerHTML = `<div class="tile-inner"><div class="tile-face tile-front"></div><div class="tile-face tile-back">${char}</div></div>`; tile.dataset.letter = char.toUpperCase(); } puzzleBoardEl.appendChild(tile); } }
-        function togglePowerMeterAndSpin() { if (wheelState.isSpinning) return; const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (!wheelState.isPoweringUp) { showWheelMessage('power_up_prompt'); wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
+        function togglePowerMeterAndSpin() { if (wheelState.gameState !== 'start_round' || wheelState.isSpinning) return; const remainingConsonants = [...new Set(wheelState.puzzle.puzzle.toUpperCase().split(''))].filter(l => !VOWELS.includes(l) && l !== ' ' && !wheelState.guessedLetters.includes(l)); if (remainingConsonants.length === 0) { showWheelMessage('no_more_consonants'); return; } if (!wheelState.isPoweringUp) { showWheelMessage('power_up_prompt'); wheelState.isPoweringUp = true; powerMeterBar.classList.add('power-up'); } else { wheelState.isPoweringUp = false; const power = powerMeterBar.offsetWidth / powerMeterContainer.offsetWidth; powerMeterBar.classList.remove('power-up'); spinWheel(power); } }
         function spinWheel(power) {
-            wheelState.isSpinning = true;
             updateUIForGameState('spinning');
             showWheelMessage('spin_prompt');
             const baseRotations = 2; 
@@ -1041,13 +1083,13 @@
             let stats = getWeeklyStats();
 
             if (result === 'bankrupt') {
-                if(stats.activeLottoPrize && stats.activeLottoPrize.noBankrupt) {
+                 if(stats.activeLottoPrize?.noBankrupt || stats.activeWeeklyPrize?.noBankrupt) {
                     showWheelMessage('bankrupt_immune');
                     updateUIForGameState('start_round');
                     return;
                 }
                 
-                const useUnlimitedInsurance = stats.activeLottoPrize && stats.activeLottoPrize.unlimitedInsurance;
+                const useUnlimitedInsurance = stats.activeLottoPrize?.unlimitedInsurance || stats.activeWeeklyPrize?.unlimitedInsurance;
                 const insuranceCount = getInsuranceCount();
                 if (useUnlimitedInsurance || insuranceCount > 0) {
                     if (!useUnlimitedInsurance) {
@@ -1118,7 +1160,7 @@
             } else if (result === 'card_draw') {
                  showWheelMessage('card_draw');
                  setTimeout(() => {
-                    initCardGame(true); // true indicates it's a mid-wheel draw
+                    initCardGame(true);
                  }, 1500);
                  updateUIForGameState('start_round');
             } else if (result === 're_spin') {
@@ -1161,7 +1203,6 @@
                 wheelState.spinResult = result;
                 updateUIForGameState('guess_consonant');
                 showWheelMessage('spin_result', { value: result });
-                showWheelMessage('guess_consonant', {duration: 6000});
             }
         }
 
@@ -1178,7 +1219,6 @@
                 } 
                 showWheelMessage('correct_guess'); 
             } else { 
-                if(!VOWELS.includes(letter)) { wheelState.consonantMisses++; if(wheelState.consonantMisses >= 5) { wheelHelpButton.style.display = 'block'; wheelHelpButton.classList.add('pulse-purple'); } } 
                 showWheelMessage('wrong_guess'); 
             } 
             wheelState.spinResult = null;
@@ -1230,7 +1270,59 @@
             stakeAmountEl.textContent = wheelState.initialStake; 
         }
 
-        function updateUIForGameState(state) { const controls = document.getElementById('wheel-controls'); controls.style.display = 'none'; wheelDecisionControls.style.display = 'none'; closeWheelButton.style.display = 'none'; spinButton.disabled = true; solveButton.disabled = true; powerMeterContainer.style.pointerEvents = 'none'; if (state === 'start_round' || state === 'guess_consonant') { controls.style.display = 'flex'; spinButton.disabled = false; powerMeterContainer.style.pointerEvents = 'auto'; solveButton.disabled = false; wheelState.spinResult = (state === 'start_round') ? null : wheelState.spinResult; } else if (state === 'spinning') { controls.style.display = 'flex'; } else if (state === 'puzzle_solved') { if (wheelState.currentRound < 3) { wheelDecisionControls.style.display = 'flex'; } else { wheelGameOverlay.classList.remove('visible'); initCardGame(); } } else if (state === 'game_over') { closeWheelButton.style.display = 'block'; } }
+        function updateUIForGameState(state) {
+            wheelState.gameState = state;
+            const controls = document.getElementById('wheel-controls');
+            controls.style.display = 'none';
+            wheelDecisionControls.style.display = 'none';
+            closeWheelButton.style.display = 'none';
+            powerMeterContainer.style.pointerEvents = 'none';
+            wheelAlphabetPanel.querySelectorAll('.alphabet-key').forEach(k => k.disabled = true);
+        
+            switch (state) {
+                case 'start_round':
+                    controls.style.display = 'flex';
+                    spinButton.disabled = false;
+                    solveButton.disabled = false;
+                    buyVowelButton.disabled = false;
+                    powerMeterContainer.style.pointerEvents = 'auto';
+                    wheelState.spinResult = null;
+                    break;
+                case 'choosing_vowel':
+                    controls.style.display = 'flex';
+                    spinButton.disabled = true;
+                    solveButton.disabled = true;
+                    buyVowelButton.disabled = true;
+                    wheelAlphabetPanel.querySelectorAll('.alphabet-key.vowel:not(.guessed)').forEach(k => k.disabled = false);
+                    break;
+                case 'spinning':
+                    controls.style.display = 'flex';
+                    spinButton.disabled = true;
+                    solveButton.disabled = true;
+                    buyVowelButton.disabled = true;
+                    wheelState.isSpinning = true;
+                    break;
+                case 'guess_consonant':
+                    controls.style.display = 'flex';
+                    spinButton.disabled = true;
+                    solveButton.disabled = false;
+                    buyVowelButton.disabled = true;
+                    wheelAlphabetPanel.querySelectorAll('.alphabet-key:not(.vowel):not(.guessed)').forEach(k => k.disabled = false);
+                    showWheelMessage('guess_consonant', {duration: 6000});
+                    break;
+                case 'puzzle_solved':
+                    if (wheelState.currentRound < 3) {
+                        wheelDecisionControls.style.display = 'flex';
+                    } else {
+                        wheelGameOverlay.classList.remove('visible');
+                        initCardGame();
+                    }
+                    break;
+                case 'game_over':
+                    closeWheelButton.style.display = 'block';
+                    break;
+            }
+        }
         function checkWheelWin() { const allTiles = document.querySelectorAll('.puzzle-tile[data-letter]'); const revealedTiles = document.querySelectorAll('.puzzle-tile.revealed[data-letter]'); if(allTiles.length > 0 && allTiles.length === revealedTiles.length) { handleRoundWin(); } }
 
         function shuffleArraySeeded(array, seed) { let currentIndex = array.length, temporaryValue, randomIndex; const newArray = [...array]; while (0 !== currentIndex) { randomIndex = Math.floor(seededRandom(seed + currentIndex) * currentIndex); currentIndex -= 1; temporaryValue = newArray[currentIndex]; newArray[currentIndex] = newArray[randomIndex]; newArray[randomIndex] = temporaryValue; } return newArray; }
@@ -1294,7 +1386,7 @@
                         } else {
                             cardGameMessage.textContent = "Semmi... Elvesztetted a bónusz nyereményed.";
                             wheelState.totalWinnings = 0;
-                            wheelState.initialStake = 0; // A tét is elvész, ahogy a Totál csődnél
+                            wheelState.initialStake = 0; 
                         }
                         wheelState.roundScore = 0;
                         updateWheelPlayerScore();
@@ -1402,7 +1494,6 @@
                     break;
                 case 'witty_message':
                 case 'double_or_nothing':
-                    // These are handled in handleCardClick
                     break;
             }
             saveWeeklyStats(stats);
@@ -1541,7 +1632,7 @@
                 return;
             }
 
-            addPointsToWeeklyScore(-cost);
+            addPointsToWeeklyScore(-cost, true);
             lottoData.tickets.push({
                 numbers: selectedLottoNumbers.sort((a, b) => a - b)
             });
@@ -1731,9 +1822,10 @@
             if (uniqueTiers.length > 1) {
                 promptPrizeChoice(uniqueTiers, lottoType);
             } else if (uniqueTiers.length === 1) {
-                savePendingPrize(uniqueTiers[0], lottoType);
-                const prizeName = isDaily ? LOTTO_PRIZES_META[uniqueTiers[0]].title : WEEKLY_LOTTO_PRIZES_META[uniqueTiers[0]].title;
-                alert(`Nyertél! A(z) "${prizeName}" nyereményed a következő időszaktól lesz aktív.`);
+                addPrizeToWarehouse(uniqueTiers[0], lottoType);
+                const prizeMeta = isDaily ? LOTTO_PRIZES_META : WEEKLY_LOTTO_PRIZES_META;
+                const prizeName = prizeMeta[uniqueTiers[0]].title;
+                alert(`Nyertél! A(z) "${prizeName}" nyereményed a Szerencse Raktárba került.`);
             }
             if(isDaily) updateMainLottoView();
             else updateMainWeeklyLottoView();
@@ -1744,7 +1836,7 @@
             const prizeMeta = isDaily ? LOTTO_PRIZES_META : WEEKLY_LOTTO_PRIZES_META;
             const optionsContainer = document.getElementById('prize-choice-options');
             optionsContainer.innerHTML = '';
-            document.querySelector('#prize-choice-container p').textContent = `Válassz egyet az alábbiak közül. A nyereményed ${isDaily ? 'másnap éjféltől' : 'a következő héttől'} lesz aktív.`;
+            document.querySelector('#prize-choice-container p').textContent = `Válassz egyet az alábbiak közül. A nyereményed a Raktárba kerül.`;
 
 
             tiers.sort((a,b) => b-a).forEach(tier => {
@@ -1753,47 +1845,46 @@
                 button.className = 'prize-option-button';
                 button.innerHTML = `<div class="prize-title">${prize.title}</div><div class="prize-desc">${prize.desc}</div>`;
                 button.onclick = () => {
-                    savePendingPrize(tier, lottoType);
+                    addPrizeToWarehouse(tier, lottoType);
                     prizeChoiceOverlay.classList.remove('visible');
-                    alert(`A(z) "${prize.title}" nyereményt választottad. A következő időszaktól lesz aktív.`);
+                    alert(`A(z) "${prize.title}" nyereményt választottad. A Raktárba került.`);
                 };
                 optionsContainer.appendChild(button);
             });
             prizeChoiceOverlay.classList.add('visible');
         }
 
-        function savePendingPrize(tier, lottoType) {
+        function addPrizeToWarehouse(tier, lottoType) {
             let stats = getWeeklyStats();
-            if (lottoType === 'daily') {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                stats.pendingPrize = {
-                    targetDate: tomorrow.toDateString(),
-                    tier: tier
-                };
-            } else { // weekly
-                const nextWeek = new Date();
-                nextWeek.setDate(nextWeek.getDate() + (7 - nextWeek.getDay() + 1) % 7); // Go to next Monday
-                 if (nextWeek.getDay() === 0) { // If it's Sunday, go to tomorrow (Monday)
-                    nextWeek.setDate(nextWeek.getDate() + 1);
-                }
-                stats.pendingWeeklyPrize = {
-                    targetWeek: getWeekStartDate(nextWeek),
-                    tier: tier
-                }
-                // Handle instant weekly prize
-                if (tier === 5) { // Jackpot
-                    addPointsToWeeklyScore(5000000);
-                    alert("Azonnali FŐNYEREMÉNY! 5,000,000 pont hozzáadva a heti pontszámodhoz!");
-                }
+            if (!stats.warehouse) {
+                stats.warehouse = [];
             }
+            const isDaily = lottoType === 'daily';
+            const prizeMeta = isDaily ? LOTTO_PRIZES_META : WEEKLY_LOTTO_PRIZES_META;
+            const prize = prizeMeta[tier];
+            
+            if (prize.prizeId === 'W5') {
+                addPointsToWeeklyScore(5000000);
+                alert("Azonnali FŐNYEREMÉNY! 5,000,000 pont hozzáadva a heti pontszámodhoz!");
+                return;
+            }
+
+            const newPrize = {
+                id: prize.prizeId + '_' + Date.now(),
+                prizeId: prize.prizeId,
+                description: prize.desc,
+                expiry: Date.now() + 7 * 24 * 60 * 60 * 1000
+            };
+
+            stats.warehouse.push(newPrize);
             saveWeeklyStats(stats);
+            updateUIDisplays();
         }
         
         function getWeekStartDate(date) {
             const d = new Date(date);
             const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
             return new Date(d.setDate(diff)).toDateString();
         }
 
@@ -1810,7 +1901,6 @@
             let stats = getWeeklyStats();
             
             if (!stats || stats.lastResetWeek !== currentWeekStart) {
-                const oldStats = stats || {};
                 stats = { 
                     totalScore: 200, 
                     lastResetWeek: currentWeekStart, 
@@ -1818,13 +1908,11 @@
                     freeHints: 0, 
                     freeVowels: 0,
                     weeklyJokerActive: false,
-                    activeLottoPrize: {},
-                    activeWeeklyPrize: {},
-                    pendingPrize: oldStats.pendingPrize || null,
-                    pendingWeeklyPrize: oldStats.pendingWeeklyPrize || null,
+                    activeLottoPrize: null,
+                    activeWeeklyPrize: null,
+                    warehouse: [],
                     dailyBonusApplied: ''
                 };
-                 // Heti lottó nullázás
                 gameData.weeklyLotto = { week: currentWeekStart, tickets: [], winningNumbers: [], prizesEvaluated: false };
                 generateWeeklyWinningNumbers();
                 saveGame();
@@ -1834,53 +1922,39 @@
             if (!lottoday || lottoday !== today) {
                 gameData.lotto = { date: today, tickets: [], winningNumbers: [], prizesEvaluated: false };
                 generateWinningLottoNumbers();
+                if (stats) stats.dailyBonusApplied = '';
                 saveGame();
-                stats.dailyBonusApplied = '';
             }
-            
-            if (stats.pendingPrize && stats.pendingPrize.targetDate === today) {
-                const tier = stats.pendingPrize.tier;
-                stats.activeLottoPrize = { tier: tier };
-                switch(tier) {
-                    case 1: stats.freeHints = (stats.freeHints || 0) + 1; break;
-                    case 2: stats.freeVowels = (stats.freeVowels || 0) + 3; break;
-                    case 3: stats.activeLottoPrize.unlimitedInsurance = true; break;
-                    case 4: stats.activeLottoPrize.noBankrupt = true; break;
-                    case 5: stats.activeLottoPrize.freeWheel = true; break;
+
+            if(stats){
+                if (stats.activeLottoPrize && Date.now() > stats.activeLottoPrize.expiry) {
+                    stats.activeLottoPrize = null;
                 }
-                stats.pendingPrize = null;
-                alert("A tegnapi napi lottónyereményed mára aktiválódott!");
-            }
-
-            if (stats.pendingWeeklyPrize && stats.pendingWeeklyPrize.targetWeek === currentWeekStart) {
-                const tier = stats.pendingWeeklyPrize.tier;
-                stats.activeWeeklyPrize = { tier: tier };
-                 switch(tier) {
-                    case 3: stats.activeWeeklyPrize.unlimitedWheel = true; break;
-                    case 4: stats.activeWeeklyPrize.superJoker = true; break;
+                if (stats.activeWeeklyPrize && Date.now() > stats.activeWeeklyPrize.expiry) {
+                    stats.activeWeeklyPrize = null;
                 }
-                stats.pendingWeeklyPrize = null;
-                 alert("A múlt heti extra lottónyereményed erre a hétre aktiválódott!");
-            }
-            
-            // Apply daily-repeating weekly prizes
-            if (stats.activeWeeklyPrize.tier && stats.dailyBonusApplied !== today) {
-                 switch(stats.activeWeeklyPrize.tier) {
-                    case 1: stats.freeHints = (stats.freeHints || 0) + 1; break;
-                    case 2: stats.activeWeeklyPrize.doublePoints = true; break; // This is a flag to check on solve
+
+                if (stats.activeWeeklyPrize?.tier && stats.dailyBonusApplied !== today) {
+                     switch(stats.activeWeeklyPrize.tier) {
+                        case 'W1': stats.freeHints = (stats.freeHints || 0) + 1; break;
+                    }
+                    stats.dailyBonusApplied = today;
                 }
-                stats.dailyBonusApplied = today;
+                saveWeeklyStats(stats);
             }
-
-
-            saveWeeklyStats(stats);
-
-            updateWeeklyScoreDisplay(stats.totalScore);
-            updateInsuranceDisplay(stats.insurance);
+            updateUIDisplays();
         }
 
         function getWeeklyScore() { const stats = getWeeklyStats(); return stats ? stats.totalScore : 0; }
-        function addPointsToWeeklyScore(points) { let stats = getWeeklyStats(); if (stats.activeWeeklyPrize && stats.activeWeeklyPrize.doublePoints) { points *= 2; } stats.totalScore = Math.max(0, stats.totalScore + points); saveWeeklyStats(stats); updateWeeklyScoreDisplay(stats.totalScore); }
+        function addPointsToWeeklyScore(points, bypassBonus = false) { 
+            let stats = getWeeklyStats(); 
+            if (!bypassBonus && stats.activeWeeklyPrize?.doublePoints) { 
+                points *= 2; 
+            } 
+            stats.totalScore = Math.max(0, stats.totalScore + points); 
+            saveWeeklyStats(stats); 
+            updateWeeklyScoreDisplay(stats.totalScore); 
+        }
         function updateWeeklyScoreDisplay(score) { weeklyScoreDisplaySpan.textContent = Math.round(score).toLocaleString('hu-HU'); }
         
         function initGame() {
@@ -2006,10 +2080,11 @@
                     let points = wordObject.word.length * 50 + (wordObject.difficulty === "Nehéz" ? 50 : (wordObject.difficulty === "Extra Nehéz" ? 100 : 0));
                     if (gameData.gameModes[gameData.currentWordIndex] === 'timed') { points = Math.round(points * 1.5); }
                     let stats = getWeeklyStats();
-                    const doublePointsActive = stats.activeWeeklyPrize && stats.activeWeeklyPrize.doublePoints;
+                    const doublePointsActive = stats.activeWeeklyPrize?.doublePoints;
+                    const finalPoints = doublePointsActive ? points * 2 : points;
                     
-                    addPointsToWeeklyScore(points); // addPoints handles the doubling internally
-                    showFeedbackMessage(`Helyes! +${doublePointsActive ? points*2 : points} pont! ${doublePointsActive ? '(Heti bónusz!)' : ''}`);
+                    addPointsToWeeklyScore(points);
+                    showFeedbackMessage(`Helyes! +${finalPoints.toLocaleString()} pont! ${doublePointsActive ? '(Heti bónusz!)' : ''}`);
 
                     gameData.progress[gameData.currentWordIndex].scored = true;
                 }
@@ -2045,7 +2120,7 @@
         }
         function calculateHintCost(isLetterHint = false) { 
             let stats = getWeeklyStats();
-            if ((stats.activeLottoPrize && stats.activeLottoPrize.freeWheel) || (stats.activeWeeklyPrize && stats.activeWeeklyPrize.superJoker)) {
+            if (stats.activeWeeklyPrize?.superJoker) {
                 return 0;
             }
 
@@ -2069,7 +2144,7 @@
             let stats = getWeeklyStats();
             const cost = calculateHintCost(isLetterHint);
             
-            if (cost === 0) return true; // From a joker/prize
+            if (cost === 0) return true;
 
             if (stats.freeHints > 0 && !isLetterHint) {
                 stats.freeHints--;
@@ -2079,7 +2154,7 @@
             }
 
             if (stats.totalScore < cost) { alert(`Nincs elég pontod! A segítség ${cost} pontba kerül, de neked csak ${stats.totalScore} pontod van.`); return false; } 
-            if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToWeeklyScore(-cost); return true; } return false; 
+            if (confirm(`Biztosan elköltesz ${cost} pontot a segítségért?`)) { addPointsToWeeklyScore(-cost, true); return true; } return false; 
         }
         
         function saveGame() { localStorage.setItem('szonyomozo_progress', JSON.stringify(gameData)); }
@@ -2246,8 +2321,8 @@
         }
         function updateBonusUnlockUI() {
             const stats = getWeeklyStats();
-            const freeAccessFromDaily = stats.activeLottoPrize && stats.activeLottoPrize.freeWheel;
-            const freeAccessFromWeekly = stats.activeWeeklyPrize && stats.activeWeeklyPrize.unlimitedWheel;
+            const freeAccessFromDaily = stats.activeLottoPrize?.freeWheel;
+            const freeAccessFromWeekly = stats.activeWeeklyPrize?.unlimitedWheel;
 
             if (freeAccessFromDaily || freeAccessFromWeekly) {
                 bonusUnlockContainer.style.display = 'none';
@@ -2295,14 +2370,106 @@
         function startRandomMessageTimer() { clearInterval(randomMessageInterval); randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); }
         function checkAndDisplayIdleState() { clearInterval(idleCountdownInterval); const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); if (allWordsCompleted) { gridContainer.style.display = 'none'; hintControls.style.display = 'none'; infoBar.style.display = 'none'; setKeyboardVisibility(false); clearInterval(randomMessageInterval); clearInterval(secretCodeFlasherInterval); let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; idleMessageContainer.style.display = 'block'; const countdownElement = document.getElementById('countdown-timer'); function updateCountdown() { const now = new Date(); const nextHour = new Date(now); nextHour.setHours(now.getHours() + 1); nextHour.setMinutes(0); nextHour.setSeconds(0); nextHour.setMilliseconds(0); const timeLeft = nextHour - now; if (timeLeft < 0) { clearInterval(idleCountdownInterval); countdownElement.textContent = "Bármelyik pillanatban!"; return; } const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; } updateCountdown(); idleCountdownInterval = setInterval(updateCountdown, 1000); return true; } else { gridContainer.style.display = 'grid'; hintControls.style.display = 'flex'; infoBar.style.display = 'flex'; idleMessageContainer.style.display = 'none'; setKeyboardVisibility(keyboardToggleCheckbox.checked); return false; } }
 
+        function renderWarehouse() {
+            let stats = getWeeklyStats();
+            stats.warehouse = (stats.warehouse || []).filter(p => p.expiry > Date.now());
+            saveWeeklyStats(stats);
+            updateUIDisplays();
+        
+            warehouseItemsContainer.innerHTML = '';
+            if (stats.warehouse.length === 0) {
+                warehouseItemsContainer.innerHTML = '<p>A raktárad jelenleg üres. Játssz a lottón, hogy feltöltsd!</p>';
+                return;
+            }
+        
+            stats.warehouse.forEach(prize => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'warehouse-item';
+        
+                const timeRemaining = prize.expiry - Date.now();
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+                itemEl.innerHTML = `
+                    <div class="warehouse-item-info">
+                        <div class="warehouse-item-desc">${prize.description}</div>
+                        <div class="warehouse-item-expiry">Lejár: ${days} nap ${hours} óra múlva</div>
+                    </div>
+                    <button class="activate-prize-button" data-prize-id="${prize.id}">Aktiválás</button>
+                `;
+                warehouseItemsContainer.appendChild(itemEl);
+            });
+        }
+
+        function activatePrize(prizeId) {
+            let stats = getWeeklyStats();
+            const prizeIndex = (stats.warehouse || []).findIndex(p => p.id === prizeId);
+            if (prizeIndex === -1) return;
+
+            const [prize] = stats.warehouse.splice(prizeIndex, 1);
+            
+            const prizeType = prize.prizeId.charAt(0);
+            const prizeTier = prize.prizeId.substring(1);
+
+            if(prizeType === 'D') {
+                stats.activeLottoPrize = {
+                    tier: prizeTier,
+                    expiry: Date.now() + 24 * 60 * 60 * 1000
+                };
+                switch(prizeTier) {
+                    case '1': stats.freeHints = (stats.freeHints || 0) + 1; break;
+                    case '2': stats.freeVowels = (stats.freeVowels || 0) + 3; break;
+                    case '3': stats.activeLottoPrize.unlimitedInsurance = true; break;
+                    case '4': stats.activeLottoPrize.noBankrupt = true; break;
+                    case '5': stats.activeLottoPrize.freeWheel = true; break;
+                }
+            } else if (prizeType === 'W') {
+                 stats.activeWeeklyPrize = {
+                    tier: prizeTier,
+                    expiry: Date.now() + 7 * 24 * 60 * 60 * 1000,
+                    doublePoints: false,
+                    unlimitedWheel: false,
+                    superJoker: false
+                };
+                switch(prizeTier) {
+                    case '1': stats.dailyBonusApplied = ''; break;
+                    case '2': stats.activeWeeklyPrize.doublePoints = true; break;
+                    case '3': stats.activeWeeklyPrize.unlimitedWheel = true; break;
+                    case '4': stats.activeWeeklyPrize.superJoker = true; break;
+                }
+            }
+
+            saveWeeklyStats(stats);
+            renderWarehouse();
+            alert(`"${prize.description}" aktiválva!`);
+            warehouseOverlay.classList.remove('visible');
+            updateHintButtons();
+            updateBonusUnlockUI();
+        }
+
+        warehouseDisplay.addEventListener('click', () => {
+            renderWarehouse();
+            warehouseOverlay.classList.add('visible');
+        });
+
+        closeWarehouseButton.addEventListener('click', () => {
+            warehouseOverlay.classList.remove('visible');
+        });
+
+        warehouseItemsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('activate-prize-button')) {
+                activatePrize(e.target.dataset.prizeId);
+            }
+        });
+
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && e.target.id !== 'hidden-input') {
                 return;
             }
+            if(wheelGameOverlay.classList.contains('visible')) return;
             if (e.key === 'Enter') {
                 e.preventDefault(); 
-                if(document.getElementById('wheel-game-overlay').classList.contains('visible')){
-                } else if(document.getElementById('lotto-game-overlay').classList.contains('visible')){
+                if(lottoGameOverlay.classList.contains('visible')){
                      if(selectedLottoNumbers.length === 5) submitLottoTicketOverlay();
                 } else {
                     submitGuess();
@@ -2357,6 +2524,7 @@
         });
 
         spinButton.addEventListener('click', togglePowerMeterAndSpin);
+        buyVowelButton.addEventListener('click', buyVowel);
         powerMeterContainer.addEventListener('click', togglePowerMeterAndSpin);
         solveButton.addEventListener('click', solve);
         closeWheelButton.addEventListener('click', () => {
@@ -2388,31 +2556,12 @@
                 displayHint(true); 
             } 
         });
-        wheelHelpButton.addEventListener('click', () => {
-            const currentScore = getWeeklyScore();
-            if (currentScore <= 200) {
-                alert(`Sajnos nincs elég pontod ehhez a segítséghez. A heti pontszámodnak (nem a bónusz nyereménynek) 200 pont felett kell lennie. Jelenlegi pontszámod: ${currentScore}.`);
-                return;
-            }
-            if (confirm("Ez a végső segítség! Az összes pontodat levonja 200-ra, de cserébe felfedi az összes magánhangzót. Biztosan kéred?")) {
-                const pointsToDeduct = currentScore - 200;
-                addPointsToWeeklyScore(-pointsToDeduct);
-                wheelHelpButton.style.display = 'none';
-                wheelHelpButton.classList.remove('pulse-purple');
-                VOWELS.split('').forEach(vowel => {
-                    if (!wheelState.guessedLetters.includes(vowel) && wheelState.puzzle.puzzle.toUpperCase().includes(vowel)) {
-                         guessLetter(vowel, true);
-                    }
-                });
-            }
-        });
         
         playLottoButton.addEventListener('click', () => openLottoOverlay('daily'));
         playWeeklyLottoButton.addEventListener('click', () => openLottoOverlay('weekly'));
         submitLottoButtonOverlay.addEventListener('click', submitLottoTicketOverlay);
         closeLottoOverlayButton.addEventListener('click', closeLottoOverlay);
         
-        // --- INDÍTÁS ---
         populateThemePicker();
         loadTheme();
         initGame();
@@ -2420,8 +2569,10 @@
         setInterval(() => { 
             updateMainLottoView(); 
             updateMainWeeklyLottoView();
+            checkResets();
         }, 60000);
     });
     </script>
 </body>
-</html>```
+</html>
+```

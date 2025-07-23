@@ -85,14 +85,13 @@
         }
 
         #top-right-hud {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 1010; 
-        }
-
+    position: fixed; /* 'absolute'-ról 'fixed'-re váltunk */
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 1010; /* Ez a z-index már elég magas, hogy minden felett legyen */
+}
         #insurance-display, #warehouse-display {
             display: flex; align-items: center; gap: 8px; font-family: var(--font-main);
             font-size: 1.1rem; font-weight: 700; color: var(--insurance-color);
@@ -113,20 +112,24 @@
         #insurance-display svg, #warehouse-display svg { width: 20px; height: 20px; fill: currentColor; }
 
         #new-hour-notification {
-            display: none; justify-content: space-around; align-items: center;
-            position: sticky; top: -15px; left: -15px; right: -15px;
-            width: calc(100% + 30px);
-            background-color: var(--present-color); color: var(--text-color);
-            padding: 10px; font-weight: bold; z-index: 50;
-            border-bottom: 2px solid rgba(0,0,0,0.2);
-            border-radius: 20px 20px 0 0; margin: -15px -15px 15px -15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        #new-hour-notification button {
-            background-color: var(--text-color); color: var(--container-bg);
-            border: none; border-radius: 5px; padding: 5px 10px;
-            font-weight: bold; cursor: pointer;
-        }
+    display: none; 
+    justify-content: space-around; 
+    align-items: center;
+    position: sticky; 
+    top: 45px; /* Növeltük a távolságot fentről */
+    left: 0; 
+    right: 0;
+    width: 100%; /* Most már nem kell túllógnia */
+    background-color: var(--present-color); 
+    color: var(--text-color);
+    padding: 10px; 
+    font-weight: bold; 
+    z-index: 50;
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+    border-radius: 15px; /* A felső sarkok már nem kell, hogy kerekítettek legyenek */
+    margin: -10px 0 15px 0; /* Módosított margók */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
         header { 
             display: flex; 

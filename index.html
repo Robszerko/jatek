@@ -3053,13 +3053,13 @@
             daily: {
                 1: { prizeId: 'D1', title: "1 Találat", desc: "+1 ingyenes szöveges tipp" },
                 2: { prizeId: 'D2', title: "2 Találat", desc: "+5,000 pont" },
-                3: { prizeId: 'D3', title: "3 Találat", desc: "+1 Biztosítás a Szerencsekerékhez" },
+                3: { prizeId: 'D3', title: "3 Találat", desc: "+15 Biztosítás a Szerencsekerékhez" },
                 4: { prizeId: 'D4', title: "4 Találat", desc: "24 óra CSŐD-mentesség a Szerencsekeréken", type: 'bankrupt_immunity_daily' },
                 5: { prizeId: 'D5', title: "5 Találat", desc: "Aznapra korlátlan, ingyenes segítség az alapjátékban", type: 'unlimited_hints_daily' }
             },
             weekly: {
                 1: { prizeId: 'W1', title: "1 Találat", desc: "+250,000 pont" },
-                2: { prizeId: 'W2', title: "2 Találat", desc: "+5 Biztosítás a Szerencsekerékhez" },
+                2: { prizeId: 'W2', title: "2 Találat", desc: "+20 Biztosítás a Szerencsekerékhez" },
                 3: { prizeId: 'W3', title: "3 Találat", desc: "1 hétig dupla pont minden megfejtésért", type: 'double_points_weekly' },
                 4: { prizeId: 'W4', title: "4 Találat", desc: "1 hétig ingyenes Szerencsekerék játék", type: 'unlimited_wheel_weekly' },
                 5: { prizeId: 'W5', title: "5 Találat", desc: "FŐNYEREMÉNY: A Hét Főnyomozója Cím (véglegesen ingyenes tippek)", type: 'grand_detective' }
@@ -4997,54 +4997,63 @@
             lottoData.winningNumbers = winningNumbers.sort((a, b) => a - b);
             saveGame();
         }
+                    function showLottoPage(type) {
+            currentLottoType = type;
+            const lottoData = gameData[type + 'Lotto'];
+            if (!lottoData) return;
 
-        function showLottoPage(type) {
-    currentLottoType = type;
-    const lottoData = gameData[type + 'Lotto'];
-    if (!lottoData) return;
+            mainGameWrapper.style.display = 'none';
+            lottoPageWrapper.style.display = 'flex';
+            
+            lottoPageTitle.textContent = type === 'daily' ? 'Napi Lottó' : 'Heti Lottó';
+            lottoPageTitle.style.color = type === 'daily' ? 'var(--title-color)' : 'var(--surprise-color)';
+            lottoPageLogo.innerHTML = document.querySelector(`#${type}-lotto-container .lotto-logo-svg`).innerHTML;
 
-    // Switch views
-    mainGameWrapper.style.display = 'none';
-    lottoPageWrapper.style.display = 'flex';
-    
-    // Populate header
-    lottoPageTitle.textContent = type === 'daily' ? 'Napi Lottó' : 'Heti Lottó';
-    lottoPageTitle.style.color = type === 'daily' ? 'var(--title-color)' : 'var(--surprise-color)';
-    lottoPageLogo.innerHTML = document.querySelector(`#${type}-lotto-container .lotto-logo-svg`).innerHTML;
+            const score = getWeeklyScore();
+            let infoHTML = '';
+            let purchaseDisabled = false;
 
-    const score = getWeeklyScore();
-    let cost = 0;
-    let infoHTML = '';
-    const isDailyLimitReached = type === 'daily' && lottoData.tickets.length >= 5;
+            // TELJESEN ÚJ, JAVÍTOTT LOGIKA
+            if (type === 'daily') {
+                const ticketsBought = lottoData.tickets.length;
+                if (ticketsBought >= 5) {
+                    infoHTML = `Mára elfogyott az összes szelvényed. Térj vissza holnap!`;
+                    purchaseDisabled = true;
+                } else {
+                    const ticketsLeft = 5 - ticketsBought;
+                    if (ticketsBought === 0) {
+                        infoHTML = `Ma még <strong>${ticketsLeft}</strong> szelvényt vehetsz. <br> Az első szelvényed ma <strong>INGYENES</strong>!`;
+                    } else {
+                        infoHTML = `Ma még <strong>${ticketsLeft}</strong> szelvényt vehetsz. <br> Egy szelvény ára: <strong>1,000 pont</strong>.`;
+                    }
+                }
+            } else { // Heti lottó logikája (változatlan)
+                 const cost = 100000;
+                 infoHTML = `Egy szelvény ára: <strong>${cost.toLocaleString()} pont</strong>.`;
+                 if (score < cost) {
+                    infoHTML += `<br><span class="needed-points">Még ${ (cost - score).toLocaleString() } pontot kell gyűjtened.</span>`;
+                 }
+            }
 
-    if (type === 'daily') {
-        cost = lottoData.tickets.length > 0 ? 1000 : 0;
-        const ticketsLeft = 5 - lottoData.tickets.length;
-        infoHTML = `Ma még <strong>${ticketsLeft > 0 ? ticketsLeft : 0}</strong> szelvényt vehetsz. <br> Az első ingyenes, a többi ára: <strong>1,000 pont</strong>.`;
-        if(isDailyLimitReached) {
-             infoHTML = `Mára elfogyott az összes szelvényed. Térj vissza holnap!`;
+            infoHTML += `<br> Jelenlegi pontszámod: ${score.toLocaleString()} pont.`;
+            lottoPageInfo.innerHTML = infoHTML;
+
+            lottoPagePrizesList.innerHTML = '';
+            Object.values(LOTTO_PRIZES_META[type]).forEach(prize => {
+                lottoPagePrizesList.innerHTML += `<li><strong>${prize.title}:</strong> ${prize.desc}</li>`;
+            });
+
+            // Gombok és a grid letiltása, ha már nem lehet vásárolni
+            const controlsDisabled = purchaseDisabled;
+            lottoPageGrid.style.pointerEvents = controlsDisabled ? 'none' : 'auto';
+            lottoPageGrid.style.opacity = controlsDisabled ? 0.5 : 1;
+            submitLottoButtonPage.style.display = controlsDisabled ? 'none' : 'block';
+
+            lottoPageMessage.textContent = '';
+            selectedLottoNumbers = [];
+            renderLottoPageGrid();
         }
-    } else {
-         cost = 100000;
-         infoHTML = `Egy szelvény ára: <strong>${cost.toLocaleString()} pont</strong>.`;
-    }
-
-    infoHTML += `<br> Jelenlegi pontszámod: ${score.toLocaleString()} pont.`;
-    if (score < cost && !isDailyLimitReached && (type !== 'daily' || lottoData.tickets.length > 0)) {
-        infoHTML += `<br><span class="needed-points">Még ${ (cost - score).toLocaleString() } pontot kell gyűjtened.</span>`;
-    }
-    lottoPageInfo.innerHTML = infoHTML;
-    
-    lottoPagePrizesList.innerHTML = '';
-    Object.values(LOTTO_PRIZES_META[type]).forEach(prize => {
-        lottoPagePrizesList.innerHTML += `<li><strong>${prize.title}:</strong> ${prize.desc}</li>`;
-    });
-
-    lottoPageMessage.textContent = '';
-    selectedLottoNumbers = [];
-    renderLottoPageGrid(); // Ez a funkció már kezeli a gomb letiltását
-}
-        function hideLottoPage() {
+                function hideLottoPage() {
                function renderPurchasedTickets() {
             ['daily', 'weekly'].forEach(type => {
                 const lottoData = gameData[type + 'Lotto'];
@@ -5143,19 +5152,24 @@
             // --- ÚJ RÉSZ VÉGE ---
         }
 
-                function submitLottoTicketOnPage() {
+                        function submitLottoTicketOnPage() {
             const lottoData = gameData[currentLottoType + 'Lotto'];
             if (!lottoData) return;
 
+            // PONTOSÍTOTT KÖLTSÉGSZÁMÍTÁS
             let cost = 0;
             if (currentLottoType === 'daily') {
-                cost = lottoData.tickets.length > 0 ? 1000 : 0;
-            } else { 
+                const ticketsBought = lottoData.tickets.length;
+                // Csak akkor kerül 1000 pontba, ha NEM az első szelvényt veszi.
+                if (ticketsBought > 0) { 
+                    cost = 1000;
+                }
+            } else { // Heti lottó
                 cost = 100000;
             }
 
             if (getWeeklyScore() < cost) {
-                lottoPageMessage.textContent = `Nincs elég pontod a szelvény feladásához!`;
+                lottoPageMessage.textContent = `Nincs elég pontod a szelvény feladásához! Szükséges: ${cost.toLocaleString()} pont.`;
                 return;
             }
 
@@ -5163,22 +5177,22 @@
             lottoPageGrid.style.pointerEvents = 'none';
             lottoPageGrid.style.opacity = 0.5;
 
+            // Pontlevonás a pontosan kiszámolt költséggel
             addPointsToWeeklyScore(-cost, true);
             
-            // ÚJ: Objektumot hozunk létre a szelvénynek, időbélyeggel
             const newTicket = {
                 numbers: [...selectedLottoNumbers].sort((a,b)=>a-b),
                 purchaseTimestamp: Date.now(),
-                prize: null // Ezt töltjük ki a sorsolás után
+                prize: null
             };
             lottoData.tickets.push(newTicket);
 
             saveGame();
             
-            lottoPageMessage.textContent = 'Szelvény sikeresen feladva! Sok szerencsét!';
+            lottoPageMessage.textContent = cost === 0 ? 'Ingyenes szelvény sikeresen feladva! Sok szerencsét!' : 'Szelvény sikeresen feladva! Sok szerencsét!';
             
             setTimeout(() => {
-                renderPurchasedTickets(); // Frissítjük a főoldali nézetet
+                renderPurchasedTickets();
                 hideLottoPage();
                 
                 submitLottoButtonPage.disabled = false;

@@ -47,6 +47,21 @@
     transform: scale(1.1);
     box-shadow: 0 0 5px var(--correct-color);
 }
+          .lotto-ticket-prize-display {
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--correct-color);
+    background-color: rgba(129, 178, 154, 0.1);
+    padding: 6px;
+    border-radius: 0 0 8px 8px;
+    margin-top: -8px; /* Hogy a szelvényhez tapadjon */
+    border: 1px dashed var(--correct-color);
+    border-top: none;
+}
             :root {
             --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
             --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
@@ -80,34 +95,61 @@
             background-color: var(--container-bg);
             border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;
-            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative;
+            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 15px; position: relative;
             transition: background-color 0.3s ease;
         }
 
         #top-right-hud {
-    position: fixed; /* 'absolute'-ról 'fixed'-re váltunk */
-    top: 20px;
-    right: 20px;
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+       .wheel-hud {
     display: flex;
     gap: 10px;
-    z-index: 1010; /* Ez a z-index már elég magas, hogy minden felett legyen */
+    margin-top: 15px;
 }
-        #insurance-display, #warehouse-display {
+
+/* ALAP STÍLUS MINDEN IKONRA (régi és új) */
+#insurance-display, .warehouse-display-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-main);
+    /* ...további stílusok... */
+}
+        #insurance-display, .warehouse-display-trigger {
             display: flex; align-items: center; gap: 8px; font-family: var(--font-main);
-            font-size: 1.1rem; font-weight: 700; color: var(--insurance-color);
-            background: rgba(76, 175, 80, 0.1); padding: 5px 15px;
-            border-radius: 20px; border: 2px solid var(--insurance-color);
+            font-size: 1.1rem; font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        #warehouse-display {
+         /* BIZTOSÍTÁS IKON SZÍNEI */
+        #insurance-display {
+            color: var(--insurance-color);
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid var(--insurance-color);
+        }
+         /* RAKTÁR IKONOK SZÍNEI */
+        .warehouse-display-trigger {
             color: var(--present-color);
             background: rgba(242, 204, 143, 0.15);
-            border-color: var(--present-color);
-        }
-        #insurance-display:hover, #warehouse-display:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 8px currentColor;
+            border: 2px solid var(--present-color);
+        }       /* Ezt a két szabályt kell módosítani a kódban */
+
+#insurance-display:hover, .warehouse-display-trigger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px currentColor;
+}
+
+#insurance-display svg, .warehouse-display-trigger svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
         }
         #insurance-display svg, #warehouse-display svg { width: 20px; height: 20px; fill: currentColor; }
 
@@ -140,7 +182,7 @@
             margin-bottom: 20px; 
             position: relative; 
             width: 100%; 
-            padding-top: 40px; 
+            padding-top: 15px; 
         }
         #header-main { 
             display: flex; 
@@ -1413,18 +1455,8 @@
 </head>
 <body class="theme-classic">
     <div id="game-container">
-        <div id="top-right-hud">
-             <div id="insurance-display" title="Biztosítások">
-                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
-                <span id="insurance-display-count">0</span>
-            </div>
-            <div id="warehouse-display" title="Szerencse Raktár">
-                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
-                <span id="warehouse-display-count">0</span>
-            </div>
-        </div>
-
-        <div id="new-hour-notification">
+        
+    <div id="new-hour-notification">
             <span>Új feladványok elérhetők!</span>
             <button id="new-hour-refresh-button">Frissítés</button>
         </div>
@@ -1455,6 +1487,17 @@
                     <div id="theme-picker" style="display: none;"></div>
                 </div>
             </div>
+                    <div class="wheel-hud">
+             <div id="insurance-display" title="Biztosítások">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
+                <span id="insurance-display-count">0</span>
+            </div>
+            <div class="warehouse-display-trigger" title="SzerencseRaktár">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+                <span id="warehouse-display-count">0</span>
+            </div>
+        </div>
+            <div id="weekly-score-display">
             <div id="weekly-score-display">Heti pontszám: <span>0</span></div>
              <div id="keyboard-toggle-container">
                 <label for="keyboard-toggle-checkbox">Eszköz billentyűzet használata: </label>
@@ -1590,6 +1633,16 @@
         <div class="overlay-content">
             <div id="wheel-game-container">
                 <h2>Szerencsekerék</h2>
+                    <div class="wheel-hud">
+                         <div id="insurance-display" title="Biztosítások">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
+                            <span class="insurance-display-count-wheel">0</span>
+                        </div>
+                        <div class="warehouse-display-trigger" title="Szerencse Raktár">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+                            <span class="warehouse-display-count-wheel">0</span>
+                        </div>
+                    </div>
                 <div id="wheel-round-display"></div>
                 <div id="wheel-game-ui">
                     <div id="wheel-stats-container">
@@ -2807,7 +2860,6 @@
         const weeklyScoreDisplaySpan = document.querySelector('#weekly-score-display span');
         const insuranceDisplay = document.getElementById('insurance-display');
         const insuranceDisplayCount = document.getElementById('insurance-display-count');
-        const warehouseDisplay = document.getElementById('warehouse-display');
         const warehouseDisplayCount = document.getElementById('warehouse-display-count');
         const newHourNotification = document.getElementById('new-hour-notification');
         const bonusUnlockContainer = document.getElementById('bonus-unlock-container');
@@ -2891,12 +2943,17 @@
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
-        const JACKPOT_PRIZES = [
-            { id: 'JP1', desc: '4 óra ingyenes szöveges segítség', type: 'free_text_hints_timed' },
-            { id: 'JP2', desc: '4 óra ingyenes betű felfedés', type: 'free_letter_hints_timed' },
-            { id: 'JP3', desc: '2 óra Csőd-mentesség a keréken', type: 'wheel_bankrupt_immunity_timed' },
-            { id: 'JP4', desc: '2 óra ingyenes magánhangzók a keréken', type: 'wheel_free_vowels_timed' },
-            { id: 'JP5', desc: '1 óra Dupla Pont minden megfejtésért', type: 'double_points_timed' }
+                const JACKPOT_PRIZES = [
+            { id: 'JP1', desc: '24 óra ingyenes szöveges segítség', type: 'free_text_hints_timed' },
+            { id: 'JP2', desc: '24 óra ingyenes betű felfedés', type: 'free_letter_hints_timed' },
+            { id: 'JP3', desc: '24 óra Csőd-mentesség a keréken', type: 'wheel_bankrupt_immunity_timed' },
+            { id: 'JP4', desc: '24 óra ingyenes magánhangzók a keréken', type: 'wheel_free_vowels_timed' },
+            { id: 'JP5', desc: '24 óra Dupla Pont minden megfejtésért', type: 'double_points_timed' },
+            // Az új nyeremények helye itt lesz:
+            { id: 'JP6', desc: 'Azonnali 50,000 pont jutalom', type: 'instant_points_50k' },
+            { id: 'JP7', desc: 'FŐNYEREMÉNY: Azonnali 250,000 pont!', type: 'instant_points_250k' },
+            { id: 'JP8', desc: 'Ajándékcsomag: 3 Biztosítás a raktárba', type: 'add_insurances_3' },
+            { id: 'JP9', desc: 'Tipp-csomag: 5 ingyenes szöveges segítség a raktárba', type: 'add_free_hints_5' }
         ];
 
         const LOTTO_PRIZES_META = {
@@ -3080,22 +3137,32 @@
             updateUIDisplays(); 
         }
         
-        function updateUIDisplays() {
+                function updateUIDisplays() {
             const stats = getWeeklyStats();
             if(!stats) return;
             
-            insuranceDisplayCount.textContent = stats.insurance || 0;
-            
+            const insuranceCount = stats.insurance || 0;
             const validPrizes = (stats.warehouse || []).filter(p => !p.expiry || p.expiry > Date.now());
+
             if (stats.warehouse && stats.warehouse.length !== validPrizes.length) {
                 stats.warehouse = validPrizes;
                 saveWeeklyStats(stats);
             }
-            warehouseDisplayCount.textContent = validPrizes.length;
-            updateWeeklyScoreDisplay(stats.totalScore);
-        }
+            const warehouseCount = validPrizes.length;
 
-        function showWheelMessage(category, options = {}) { 
+            // Főoldali ikonok frissítése
+            insuranceDisplayCount.textContent = insuranceCount;
+            warehouseDisplayCount.textContent = warehouseCount;
+
+            // Szerencsekerék felületén lévő ikonok frissítése (ha léteznek)
+            const wheelInsuranceEl = document.querySelector('.insurance-display-count-wheel');
+            const wheelWarehouseEl = document.querySelector('.warehouse-display-count-wheel');
+            if (wheelInsuranceEl) wheelInsuranceEl.textContent = insuranceCount;
+            if (wheelWarehouseEl) wheelWarehouseEl.textContent = warehouseCount;
+            
+            updateWeeklyScoreDisplay(stats.totalScore);
+          }   
+            function showWheelMessage(category, options = {}) { 
             clearTimeout(wheelMessageTimeout); 
             const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; 
             let message = messages[Math.floor(Math.random() * messages.length)]; 
@@ -4659,16 +4726,16 @@
             } 
         }
         
-        function addPrizeToWarehouse(type, desc, isJackpot = false) {
+               function addPrizeToWarehouse(type, desc, isJackpot = false) {
             let stats = getWeeklyStats();
             if (!stats) return;
             if (!stats.warehouse) stats.warehouse = [];
 
             let expiry;
             if (isJackpot) {
-                const endOfDay = new Date();
-                endOfDay.setHours(23, 59, 59, 999);
-                expiry = endOfDay.getTime();
+                // Módosítás: a nyeremény mostantól 24 óráig érvényes az aktiválástól számítva.
+                // Az expiry-t az activatePrize funkció fogja beállítani.
+                expiry = undefined; // Az expiry-t majd aktiváláskor állítjuk be.
             } else if (type === 'weekly_joker') {
                 const now = new Date();
                 const endOfWeek = new Date(getWeekStartDate(now));
@@ -4680,17 +4747,12 @@
                 id: type + '_' + Date.now(),
                 type: type,
                 description: desc,
-                expiry: expiry // Can be undefined for non-expiring prizes
+                // A 'jackpot' flag hozzáadása, hogy tudjuk, meddig érvényes
+                isJackpotPrize: isJackpot 
             };
-
-            // This logic is for prizes that grant items, not timed effects
-            if(type === 'amnesty' || type === 'point_rain' || type === 'code_breaker') {
-                applyCardEffect({ type: type, label: desc }); // Re-use card effect logic
-                alert(`Nyeremény aktiválva: ${desc}`);
-            } else {
-                 stats.warehouse.push(newPrize);
-                 alert(`Raktárba került: ${desc}`);
-            }
+           
+            stats.warehouse.push(newPrize);
+            alert(`Raktárba került: ${desc}`);
            
             saveWeeklyStats(stats);
             updateUIDisplays();
@@ -4731,20 +4793,64 @@
             });
         }
 
-        function activatePrize(prizeId) {
+                function activatePrize(prizeId) {
             let stats = getWeeklyStats();
             const prizeIndex = (stats.warehouse || []).findIndex(p => p.id === prizeId);
             if (prizeIndex === -1) return;
 
             const [prize] = stats.warehouse.splice(prizeIndex, 1);
             
+            // Új azonnali nyeremények kezelése
+            switch(prize.type) {
+                case 'instant_points_50k':
+                    addPointsToWeeklyScore(50000);
+                    alert(`Jóváírtunk 50,000 pontot!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return; // Kilépünk, mert ez nem egy aktív bónusz
+                case 'instant_points_250k':
+                    addPointsToWeeklyScore(250000);
+                    alert(`FŐNYEREMÉNY! Jóváírtunk 250,000 pontot!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+                case 'add_insurances_3':
+                    updateInsuranceCount(3);
+                    alert(`Jóváírtunk 3 biztosítást!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+                case 'add_free_hints_5':
+                    stats.freeHints = (stats.freeHints || 0) + 5;
+                    alert(`Jóváírtunk 5 ingyenes szöveges segítséget!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+            }
+
+            // Meglévő időzített bónuszok kezelése
             if(!stats.activePrizes) stats.activePrizes = [];
             
             stats.activePrizes = stats.activePrizes.filter(p => !p.expiry || p.expiry > Date.now());
 
+            // A jackpot nyeremények mostantól 24 órás lejárattal aktiválódnak
+            if (prize.isJackpotPrize) {
+                prize.expiry = Date.now() + 24 * 60 * 60 * 1000;
+            }
+
             const existingPrizeIndex = stats.activePrizes.findIndex(p => p.type === prize.type);
             if(existingPrizeIndex > -1){
-                stats.activePrizes[existingPrizeIndex].expiry = prize.expiry ? Math.max(stats.activePrizes[existingPrizeIndex].expiry, prize.expiry) : undefined;
+                // Ha már van ilyen aktív bónusz, összeadjuk a lejárati időket
+                const existingExpiry = stats.activePrizes[existingPrizeIndex].expiry || Date.now();
+                stats.activePrizes[existingPrizeIndex].expiry = existingExpiry + (24 * 60 * 60 * 1000);
             } else {
                  stats.activePrizes.push(prize);
             }
@@ -4818,34 +4924,52 @@
     renderLottoPageGrid(); // Ez a funkció már kezeli a gomb letiltását
 }
         function hideLottoPage() {
-        function renderPurchasedTickets() {
-    ['daily', 'weekly'].forEach(type => {
-        const lottoData = gameData[type + 'Lotto'];
-        const container = document.getElementById(type + '-tickets-display');
-        
-        if (!container) return;
-        container.innerHTML = '';
-        if (!lottoData || !lottoData.tickets || lottoData.tickets.length === 0) return;
+               function renderPurchasedTickets() {
+            ['daily', 'weekly'].forEach(type => {
+                const lottoData = gameData[type + 'Lotto'];
+                const container = document.getElementById(type + '-tickets-display');
+                
+                if (!container) return;
+                container.innerHTML = ''; // Konténer kiürítése
+                if (!lottoData || !lottoData.tickets || lottoData.tickets.length === 0) return;
 
-        const drawHappened = lottoData.prizesEvaluated;
-        const winningNumbers = new Set(lottoData.winningNumbers);
+                const drawHappened = lottoData.prizesEvaluated;
+                const winningNumbers = new Set(lottoData.winningNumbers);
 
-        lottoData.tickets.forEach((ticket, index) => {
-            const ticketRow = document.createElement('div');
-            ticketRow.className = 'lotto-ticket-row';
-            
-            let html = `<span class="lotto-ticket-label">Szelvény #${index + 1}:</span>`;
-            
-            ticket.forEach(num => {
-                const isMatch = drawHappened && winningNumbers.has(num);
-                html += `<div class="lotto-ball ${isMatch ? 'match' : ''}">${num}</div>`;
+                lottoData.tickets.forEach((ticketData, index) => {
+                    // Konténer minden egyes szelvénynek
+                    const ticketWrapper = document.createElement('div');
+                    ticketWrapper.className = 'purchased-ticket-wrapper'; // Opcionális, további stílusozáshoz
+
+                    // Dátum és idő formázása
+                    const purchaseDate = new Date(ticketData.purchaseTimestamp);
+                    const formattedDate = `${purchaseDate.getFullYear()}. ${String(purchaseDate.getMonth() + 1).padStart(2, '0')}. ${String(purchaseDate.getDate()).padStart(2, '0')}. ${String(purchaseDate.getHours()).padStart(2, '0')}:${String(purchaseDate.getMinutes()).padStart(2, '0')}`;
+                    
+                    const ticketRow = document.createElement('div');
+                    ticketRow.className = 'lotto-ticket-row';
+                    
+                    let html = `<span class="lotto-ticket-label">#${index + 1} (${formattedDate})</span>`;
+                    
+                    ticketData.numbers.forEach(num => {
+                        const isMatch = drawHappened && winningNumbers.has(num);
+                        html += `<div class="lotto-ball ${isMatch ? 'match' : ''}">${num}</div>`;
+                    });
+                    
+                    ticketRow.innerHTML = html;
+                    ticketWrapper.appendChild(ticketRow);
+
+                    // Nyeremény megjelenítése, ha van
+                    if (drawHappened && ticketData.prize) {
+                        const prizeDisplay = document.createElement('div');
+                        prizeDisplay.className = 'lotto-ticket-prize-display';
+                        prizeDisplay.innerHTML = `<strong>Nyeremény:</strong> ${ticketData.prize.desc}`;
+                        ticketWrapper.appendChild(prizeDisplay);
+                    }
+                    
+                    container.appendChild(ticketWrapper);
+                });
             });
-            
-            ticketRow.innerHTML = html;
-            container.appendChild(ticketRow);
-        });
-    });
-}
+        }             
              mainGameWrapper.style.display = 'block';
              lottoPageWrapper.style.display = 'none';
              checkAndDisplayIdleState();
@@ -4898,7 +5022,7 @@
             // --- ÚJ RÉSZ VÉGE ---
         }
 
-         function submitLottoTicketOnPage() {
+                function submitLottoTicketOnPage() {
             const lottoData = gameData[currentLottoType + 'Lotto'];
             if (!lottoData) return;
 
@@ -4914,99 +5038,94 @@
                 return;
             }
 
-            // Gombok és a grid letiltása a dupla kattintás elkerülése végett
             submitLottoButtonPage.disabled = true;
             lottoPageGrid.style.pointerEvents = 'none';
             lottoPageGrid.style.opacity = 0.5;
 
             addPointsToWeeklyScore(-cost, true);
-            lottoData.tickets.push([...selectedLottoNumbers].sort((a,b)=>a-b));
+            
+            // ÚJ: Objektumot hozunk létre a szelvénynek, időbélyeggel
+            const newTicket = {
+                numbers: [...selectedLottoNumbers].sort((a,b)=>a-b),
+                purchaseTimestamp: Date.now(),
+                prize: null // Ezt töltjük ki a sorsolás után
+            };
+            lottoData.tickets.push(newTicket);
+
             saveGame();
             
             lottoPageMessage.textContent = 'Szelvény sikeresen feladva! Sok szerencsét!';
             
-            // Késleltetett visszatérés, hogy a felhasználó lássa az üzenetet
             setTimeout(() => {
-                renderPurchasedTickets(); // Ezt a sorsolás után érdemesebb futtatni, de itt is maradhat
+                renderPurchasedTickets(); // Frissítjük a főoldali nézetet
                 hideLottoPage();
                 
-                // Gombok és grid visszaállítása a következő látogatáshoz
                 submitLottoButtonPage.disabled = false;
                 lottoPageGrid.style.pointerEvents = 'auto';
                 lottoPageGrid.style.opacity = 1;
                 selectedLottoNumbers = [];
 
             }, 2000);
-        }
-        function evaluateLottoPrizes() {
+        }        
+                            function evaluateLottoPrizes() {
             ['daily', 'weekly'].forEach(type => {
                 const lottoData = gameData[type + 'Lotto'];
+                // Csak akkor fut le, ha van kiértékelendő szelvény és a sorsolás még nem történt meg
                 if (!lottoData || lottoData.prizesEvaluated || lottoData.tickets.length === 0) return;
                 
                 const winningNumbers = new Set(lottoData.winningNumbers);
-                let allPrizes = [];
+                let anyPrizeWon = false;
 
-                lottoData.tickets.forEach(ticket => {
-                    const matches = ticket.filter(num => winningNumbers.has(num)).length;
+                lottoData.tickets.forEach((ticket, index) => {
+                    const matches = ticket.numbers.filter(num => winningNumbers.has(num)).length;
                     if (matches > 0) {
                          const prizeMeta = LOTTO_PRIZES_META[type][matches];
                          if (prizeMeta) {
-                            allPrizes.push({ matches, prizeMeta });
+                            // Minden nyertes szelvény nyereményét külön kezeljük
+                            awardLottoPrize(prizeMeta, type); 
+                            // Elmentjük a nyereményt a szelvény objektumába a későbbi megjelenítéshez
+                            gameData[type + 'Lotto'].tickets[index].prize = prizeMeta;
+                            anyPrizeWon = true;
                          }
                     }
                 });
                 
-                if(allPrizes.length === 0) {
-                    lottoData.prizesEvaluated = true;
-                    saveGame();
-                  renderPurchasedTickets();
-                    return;
-                }
-                
-                if(allPrizes.length === 1) {
-                    awardLottoPrize(allPrizes[0].prizeMeta, type);
-                } else {
-                    displayPrizeChoice(allPrizes, type);
-                }
-
-                lottoData.prizesEvaluated = true;
+                lottoData.prizesEvaluated = true; // Megjelöljük, hogy a kiértékelés megtörtént
                 saveGame();
+                renderPurchasedTickets(); // Frissítjük a kijelzőt az új eredményekkel
+
+                if(anyPrizeWon) {
+                    alert(`Nyertél a ${type === 'daily' ? 'Napi' : 'Heti'} Lottón! Nézd meg a szelvényeidet és a Szerencse Raktáradat a részletekért!`);
+                }
             });
         }
 
         function awardLottoPrize(prizeMeta, type) {
              let stats = getWeeklyStats();
-             let warehouseDesc = prizeMeta.desc;
+             let prizeDescription = prizeMeta.desc;
              let expiry;
-             if (type === 'daily') {
-                expiry = new Date().getTime() + 24 * 60 * 60 * 1000;
-             } else {
-                const now = new Date();
-                const endOfWeek = new Date(getWeekStartDate(now));
-                endOfWeek.setDate(endOfWeek.getDate() + 7);
-                expiry = endOfWeek.getTime();
-             }
 
-             const prizePayload = { id: prizeMeta.prizeId + '_' + Date.now(), type: prizeMeta.type, description: prizeMeta.desc, expiry: expiry };
-
-             switch (prizeMeta.prizeId.slice(0, 1)) {
-                case 'D': // Daily
+             // Logika a nyeremények raktárba helyezéséhez vagy azonnali jóváírásához
+             switch (prizeMeta.type) {
+                // Azonnali pont/biztosítás jutalmak
+                case undefined: // Pl. 5000 pont, 1 biztosítás
                     if(prizeMeta.prizeId === 'D1') stats.freeHints = (stats.freeHints || 0) + 1;
                     else if(prizeMeta.prizeId === 'D2') addPointsToWeeklyScore(5000);
                     else if(prizeMeta.prizeId === 'D3') updateInsuranceCount(1);
-                    else stats.warehouse.push(prizePayload);
-                    break;
-                case 'W': // Weekly
-                    if(prizeMeta.prizeId === 'W1') addPointsToWeeklyScore(250000);
+                    else if(prizeMeta.prizeId === 'W1') addPointsToWeeklyScore(250000);
                     else if(prizeMeta.prizeId === 'W2') updateInsuranceCount(5);
-                    else if(prizeMeta.prizeId === 'W5') stats.isGrandDetective = true;
-                    else stats.warehouse.push(prizePayload);
+                    break;
+                // Végleges, account-szintű nyeremény
+                case 'grand_detective':
+                    stats.isGrandDetective = true;
+                    break;
+                // Minden más, ami aktiválható, a Raktárba kerül
+                default:
+                    addPrizeToWarehouse(prizeMeta.type, prizeDescription, false);
                     break;
              }
              saveWeeklyStats(stats);
-             alert(`Lottó nyeremény: ${prizeMeta.title}! ${prizeMeta.desc}`);
-        }
-        
+        }        
         function displayPrizeChoice(prizes, type) {
             const prizeChoiceOptions = document.getElementById('prize-choice-options');
             prizeChoiceOptions.innerHTML = '';
@@ -5107,10 +5226,16 @@
             }
         }
 
-        warehouseDisplay.addEventListener('click', () => {
-            renderWarehouse();
-            warehouseOverlay.classList.add('visible');
-        });
+       // -- JAVÍTOTT KÓDRÉSZLET --
+// Kikeressük az ÖSSZES elemet, ami megnyithatja a raktárat
+const warehouseTriggers = document.querySelectorAll('.warehouse-display-trigger');
+// Mindegyikre rátesszük a kattintás-figyelőt
+warehouseTriggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        renderWarehouse();
+        warehouseOverlay.classList.add('visible');
+    });
+});
         closeWarehouseButton.addEventListener('click', () => {
             warehouseOverlay.classList.remove('visible');
         });

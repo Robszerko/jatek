@@ -520,8 +520,32 @@
             border-color: var(--border-color-active); 
             animation: pop 0.2s; 
         }
-        @keyframes pop { 
-            50% { transform: scale(1.1); } 
+        /* 1. Pop-in animáció a beírt betűkhöz (már létezik, csak tudj róla) */
+@keyframes pop { 
+    50% { transform: scale(1.1); } 
+}
+
+/* 2. Győzelmi animáció - a sor betűi felugrálnak */
+.grid-row.win-dance .cell-inner {
+    animation: dance 0.5s ease-in-out both;
+}
+
+@keyframes dance {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-15px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(-5px); }
+}
+
+/* 3. Hibás sor rázkódása */
+.grid-row.shake {
+    animation: shake-horizontal 0.6s;
+}
+@keyframes shake-horizontal {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
+} 
         }
         .cell-revealed { 
             border-color: var(--correct-color); 
@@ -640,32 +664,54 @@
             opacity: 0.6; 
         }
 
-        #idle-message-container { 
+                #idle-message-container { 
+            display: flex; /* Flexboxra váltunk a könnyebb középre igazításért */
+            flex-direction: column; /* Az elemek egymás alá kerülnek */
+            justify-content: center; /* Függőleges középre igazítás */
+            align-items: center; /* Vízszintes középre igazítás */
             text-align: center; 
             padding: 40px 20px; 
             line-height: 1.8; 
             border: 2px dashed var(--border-color-idle); 
             border-radius: 15px; 
-            margin: 20px 0; 
+            margin: 20px 0;
+            width: 100%;
+            box-sizing: border-box;
         }
+        #idle-logo-svg { /* Az új logó stílusa */
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        #idle-logo-svg .logo-circle,
+        #idle-logo-svg .logo-text {
+            fill: var(--container-bg); /* A logo háttere illeszkedjen a konténerhez */
+        }
+        #idle-logo-svg .grad-stop1 { stop-color: var(--title-color); }
+        #idle-logo-svg .grad-stop2 { stop-color: var(--text-color); }
+        #idle-logo-svg .logo-handle { stroke: url(#grad1-idle); }
+        #idle-logo-svg .logo-circle { stroke: url(#grad1-idle); }
         #idle-message-container h3 { 
             font-family: var(--font-title); 
             color: var(--title-color); 
-            font-size: 1.6rem; 
+            font-size: 1.8rem; 
             margin: 0 0 15px 0; 
         }
         #idle-message-container p { 
             margin: 10px 0; 
             font-size: 1.1rem; 
+            max-width: 450px; /* Ne legyen túl széles a szöveg */
         }
         #countdown-timer { 
             font-weight: bold; 
             color: var(--title-color); 
             font-size: 1.2rem; 
             display: block; 
-            margin-top: 15px; 
+            margin-top: 25px; 
+            background-color: rgba(0,0,0,0.05);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
-
         #rules-container { 
             margin-top: 30px; 
             padding-top: 20px; 
@@ -930,7 +976,7 @@
             font-weight: bold;
          }
 
-        .overlay { 
+                .overlay { 
             position: fixed; 
             top: 0; 
             left: 0; 
@@ -943,13 +989,44 @@
             z-index: 1000; 
             opacity: 0; 
             visibility: hidden; 
-            transition: opacity 0.3s ease, visibility 0s 0.3s; 
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* A láthatóságot is animáljuk */
         }
         .overlay.visible { 
             opacity: 1; 
             visibility: visible; 
-            transition-delay: 0s; 
         }
+        .overlay.visible .overlay-content {
+            animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+        }
+        /* Új animáció a felugró tartalomhoz */
+        @keyframes scale-up-center {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+/* EZT A TELJESEN ÚJ BLOKKOT ILLessze BE IDE */
+#weekly-score-display.score-increase {
+    animation: score-pulse-green 0.7s ease-out;
+}
+#weekly-score-display.score-decrease {
+    animation: score-pulse-red 0.7s ease-out;
+}
+
+@keyframes score-pulse-green {
+    0% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+    50% { transform: scale(1.1); background-color: rgba(76, 175, 80, 0.3); }
+    100% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+}
+@keyframes score-pulse-red {
+    0% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+    50% { transform: scale(1.1); background-color: rgba(229, 57, 53, 0.3); }
+    100% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+}
         .overlay-content { 
             background-color: var(--container-bg); 
             color: var(--text-color); 
@@ -1545,7 +1622,23 @@
             
             <div id="keyboard-container"></div>
 
-            <div id="idle-message-container" style="display: none;"></div>
+                    <div id="idle-message-container" style="display: none;">
+            <!-- Logo másolata a fejlécből -->
+            <svg id="idle-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad1-idle" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop class="grad-stop1" offset="0%" style="stop-color: var(--title-color);stop-opacity:1"></stop>
+                        <stop class="grad-stop2" offset="100%" style="stop-color: var(--text-color);stop-opacity:1"></stop>
+                    </linearGradient>
+                </defs>
+                <circle class="logo-circle" cx="50" cy="50" r="40" stroke-width="12"></circle>
+                <line class="logo-handle" x1="32" y1="72" x2="5" y2="95" stroke-width="16" stroke-linecap="round"></line>
+                <text class="logo-text" x="50" y="62" font-family="Fredoka One, cursive" font-size="38" text-anchor="middle">Szó</text>
+            </svg>
+            <h3>A nyomozás véget ért... egyelőre.</h3>
+            <p>Minden szálat felgöngyölítettél és a szerencsédet is próbára tetted. A következő ügy aktái hamarosan megérkeznek.</p>
+            <span id="countdown-timer"></span>
+        </div>
 
             <div id="lotto-selector-wrapper">
                 <div id="daily-lotto-container" class="lotto-main-container">
@@ -2974,7 +3067,13 @@
         };
         
 
-        const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
+                const FUNNY_IDLE_MESSAGES = [ 
+            { title: "A nyomozás véget ért... egyelőre.", text: "Minden szálat felgöngyölítettél és a szerencsédet is próbára tetted. A következő ügy aktái hamarosan megérkeznek." }, 
+            { title: "Kávészünet a rendőrsön.", text: "Kiváló munka, nyomozó! Most dőlj hátra egy fánkkal. A laborosok már elemzik a következő óra bizonyítékait." }, 
+            { title: "Várakozás a sötét sikátorban.", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő nagy fogáshoz szükséges füles hamarosan befut." }, 
+            { title: "Aktarendezés az irodában.", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet. A papírmunka a legkeményebb dió. De ne aggódj, újabb rejtélyek már úton vannak." }, 
+            { title: "Lehallgatás alatt...", text: "A technikusaink most állítják be a poloskákat. Légy türelemmel, a következő órában már hallani fogjuk, mit terveznek a rosszfiúk." } 
+        ];
         const RANDOM_GAME_MESSAGES = [
             "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.",
             "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól.", "Figyelj a részletekre, a tettes hibázni fog!",
@@ -3939,7 +4038,8 @@
                     modeLocked: Array(5).fill(false), secretCode: [], insurancesGainedThisHour: 0,
                     jackpotSpinsThisHour: 0, bonusUnlocked: false, currentWordIndex: 0, 
                     currentRow: 0, currentCol: 0, isGameOver: false,
-                    dailyLotto: oldDailyLotto, weeklyLotto: oldWeeklyLotto
+                    dailyLotto: oldDailyLotto, weeklyLotto: oldWeeklyLotto,
+                     wheelPlayedThisHour: false
                 };
 
                 let availableIndices = Array.from(Array(wordData.length).keys());
@@ -4051,20 +4151,33 @@
                 targetInput.dataset.isFlashing = 'false'; 
             }, 2000); 
         }
-        function submitGuess() {
+                function submitGuess() {
             if (gameData.isGameOver) return;
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
+            
+            // Hibás sor ellenőrzése
             if (gameData.currentCol !== wordObject.word.length) {
-                // If not all letters are filled, check if it's because of pre-revealed letters
-                 const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
-                 const filledCells = Array.from(currentRowEl.children).filter(cell => cell.querySelector('.cell-front').textContent !== '').length;
-                 if(filledCells < wordObject.word.length) return;
+                currentRowEl.classList.add('shake');
+                setTimeout(() => currentRowEl.classList.remove('shake'), 600);
+                return;
             }
-            const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join('');
+
+            const guess = Array.from(currentRowEl.children).map(cell => cell.querySelector('.cell-front').textContent).join('');
             if (guess.length !== wordObject.word.length) return;
             
             flipRow(guess, wordObject.word.toUpperCase());
+
             if (guess === wordObject.word.toUpperCase()) {
+                // GYŐZELMI ANIMÁCIÓ INDÍTÁSA
+                setTimeout(() => {
+                    const winningRow = document.getElementById(`row-${gameData.currentRow}`);
+                    winningRow.classList.add('win-dance');
+                    Array.from(winningRow.children).forEach((cell, i) => {
+                        cell.querySelector('.cell-inner').style.animationDelay = `${i * 0.1}s`;
+                    });
+                }, 300 * wordObject.word.length); // Megvárjuk a flip animáció végét
+
                 gameData.isGameOver = true;
                 clearInterval(timerInterval);
                 clearInterval(randomMessageInterval);
@@ -4688,16 +4801,24 @@
             randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); 
         }
 
-        function checkAndDisplayIdleState() { 
+                function checkAndDisplayIdleState() { 
             clearInterval(idleCountdownInterval); 
-            const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); 
-            if (allWordsCompleted && !gameData.bonusUnlocked) {  
+            // A FELTÉTEL MÓDOSÍTÁSA:
+            // Most már azt is nézzük, hogy az alapjáték KÉSZ VAN-E, ÉS a szerencsekerékkel is JÁTSZOTT-E MÁR.
+            const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed'); 
+            const showIdleScreen = allWordsCompleted && gameData.wheelPlayedThisHour;
+
+            if (showIdleScreen) {  
                 mainGameWrapper.style.display = 'none';
-                idleMessageContainer.style.display = 'block'; 
+                lottoPageWrapper.style.display = 'none'; // Lottó oldalt is elrejtjük
+                idleMessageContainer.style.display = 'flex'; // 'flex'-re állítjuk a jobb középre igazításért
                 clearInterval(randomMessageInterval); 
                 clearInterval(secretCodeFlasherInterval); 
+
                 let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; 
-                idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; 
+                idleMessageContainer.querySelector('h3').textContent = msg.title;
+                idleMessageContainer.querySelector('p').textContent = msg.text;
+
                 const countdownElement = document.getElementById('countdown-timer'); 
                 function updateCountdown() { 
                     const now = new Date(); 
@@ -4708,13 +4829,14 @@
                     nextHour.setMilliseconds(0); 
                     const timeLeft = nextHour - now; 
                     if (timeLeft < 0) { 
-                        clearInterval(idleCountdownInterval); 
-                        countdownElement.textContent = "Bármelyik pillanatban!"; 
+                        clearInterval(idleCountdownInterval);
+                        countdownElement.textContent = "Az új feladványok bármelyik pillanatban betölthetők!"; 
+                        location.reload(); // Automatikus újratöltés, ha lejárt az idő
                         return; 
                     } 
                     const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); 
                     const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); 
-                    countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; 
+                    countdownElement.textContent = `Új ügyek feloldása pontosan: ${minutes} perc ${seconds} másodperc múlva.`; 
                 } 
                 updateCountdown(); 
                 idleCountdownInterval = setInterval(updateCountdown, 1000); 
@@ -4724,8 +4846,7 @@
                 idleMessageContainer.style.display = 'none'; 
                 return false; 
             } 
-        }
-        
+        }        
                function addPrizeToWarehouse(type, desc, isJackpot = false) {
             let stats = getWeeklyStats();
             if (!stats) return;
@@ -5327,6 +5448,8 @@ warehouseTriggers.forEach(trigger => {
         closeWheelButton.addEventListener('click', () => {
             wheelGameOverlay.classList.remove('visible');
             updateUIDisplays();
+        gameData.wheelPlayedThisHour = true;
+            saveGame();
             checkAndDisplayIdleState();
             updateBonusUnlockUI();
         });

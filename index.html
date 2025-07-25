@@ -3953,7 +3953,7 @@
             const currentWeekStart = getWeekStartDate(now);
             let stats = getWeeklyStats();
             
-            // Heti statisztikák nullázása
+                        // Heti statisztikák nullázása
             if (!stats || stats.lastResetWeek !== currentWeekStart) {
                 stats = { 
                     totalScore: 200, 
@@ -3963,7 +3963,8 @@
                     freeVowels: 0,
                     activePrizes: [],
                     warehouse: [],
-                    isGrandDetective: stats.isGrandDetective || false, // A főnyeremény megmarad
+                    // JAVÍTVA: Ha a stats nem létezik, akkor alapértelmezetten false lesz az érték.
+                    isGrandDetective: (stats && stats.isGrandDetective) || false, 
                 };
             }
             stats.activePrizes = (stats.activePrizes || []).filter(p => !p.expiry || p.expiry > Date.now());

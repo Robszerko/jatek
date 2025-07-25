@@ -9,6 +9,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
+.purchased-tickets-container {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.lotto-ticket-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: rgba(0,0,0,0.04);
+    border-radius: 10px;
+    border: 1px dashed var(--border-color-active);
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.lotto-ticket-label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-right: auto;
+    white-space: nowrap;
+}
+
+/* Ez a szabály színezi át a találatokat a szelvényen */
+.lotto-ticket-row .lotto-ball.match {
+    background-color: var(--correct-color);
+    color: white;
+    border-color: var(--correct-color);
+    transform: scale(1.1);
+    box-shadow: 0 0 5px var(--correct-color);
+}
+          .lotto-ticket-prize-display {
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--correct-color);
+    background-color: rgba(129, 178, 154, 0.1);
+    padding: 6px;
+    border-radius: 0 0 8px 8px;
+    margin-top: -8px; /* Hogy a szelvényhez tapadjon */
+    border: 1px dashed var(--correct-color);
+    border-top: none;
+}
             :root {
             --bg-gradient-start: #3d405b; --bg-gradient-end: #2c2f48; --container-bg: rgba(244, 241, 222, 0.95);
             --text-color: #3d405b; --title-color: #e07a5f; --border-color-idle: #bcaaa4;
@@ -42,53 +95,82 @@
             background-color: var(--container-bg);
             border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;
-            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 1vh; position: relative;
+            padding: clamp(15px, 4vw, 30px); box-sizing: border-box; margin-top: 15px; position: relative;
             transition: background-color 0.3s ease;
         }
 
         #top-right-hud {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             display: flex;
             gap: 10px;
-            z-index: 1010; 
+            margin-top: 15px;
         }
 
-        #insurance-display, #warehouse-display {
+       .wheel-hud {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* ALAP STÍLUS MINDEN IKONRA (régi és új) */
+#insurance-display, .warehouse-display-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-main);
+    /* ...további stílusok... */
+}
+        #insurance-display, .warehouse-display-trigger {
             display: flex; align-items: center; gap: 8px; font-family: var(--font-main);
-            font-size: 1.1rem; font-weight: 700; color: var(--insurance-color);
-            background: rgba(76, 175, 80, 0.1); padding: 5px 15px;
-            border-radius: 20px; border: 2px solid var(--insurance-color);
+            font-size: 1.1rem; font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        #warehouse-display {
+         /* BIZTOSÍTÁS IKON SZÍNEI */
+        #insurance-display {
+            color: var(--insurance-color);
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid var(--insurance-color);
+        }
+         /* RAKTÁR IKONOK SZÍNEI */
+        .warehouse-display-trigger {
             color: var(--present-color);
             background: rgba(242, 204, 143, 0.15);
-            border-color: var(--present-color);
-        }
-        #insurance-display:hover, #warehouse-display:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 8px currentColor;
-        }
+            border: 2px solid var(--present-color);
+        }       /* Ezt a két szabályt kell módosítani a kódban */
+
+#insurance-display:hover, .warehouse-display-trigger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px currentColor;
+}
+
+#insurance-display svg, .warehouse-display-trigger svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
         #insurance-display svg, #warehouse-display svg { width: 20px; height: 20px; fill: currentColor; }
 
         #new-hour-notification {
-            display: none; justify-content: space-around; align-items: center;
-            position: sticky; top: -15px; left: -15px; right: -15px;
-            width: calc(100% + 30px);
-            background-color: var(--present-color); color: var(--text-color);
-            padding: 10px; font-weight: bold; z-index: 50;
-            border-bottom: 2px solid rgba(0,0,0,0.2);
-            border-radius: 20px 20px 0 0; margin: -15px -15px 15px -15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        #new-hour-notification button {
-            background-color: var(--text-color); color: var(--container-bg);
-            border: none; border-radius: 5px; padding: 5px 10px;
-            font-weight: bold; cursor: pointer;
-        }
+    display: none; 
+    justify-content: space-around; 
+    align-items: center;
+    position: sticky; 
+    top: 45px; /* Növeltük a távolságot fentről */
+    left: 0; 
+    right: 0;
+    width: 100%; /* Most már nem kell túllógnia */
+    background-color: var(--present-color); 
+    color: var(--text-color);
+    padding: 10px; 
+    font-weight: bold; 
+    z-index: 50;
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+    border-radius: 15px; /* A felső sarkok már nem kell, hogy kerekítettek legyenek */
+    margin: -10px 0 15px 0; /* Módosított margók */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
         header { 
             display: flex; 
@@ -99,7 +181,7 @@
             margin-bottom: 20px; 
             position: relative; 
             width: 100%; 
-            padding-top: 40px; 
+            padding-top: 15px; 
         }
         #header-main { 
             display: flex; 
@@ -437,9 +519,32 @@
             border-color: var(--border-color-active); 
             animation: pop 0.2s; 
         }
-        @keyframes pop { 
-            50% { transform: scale(1.1); } 
-        }
+        /* 1. Pop-in animáció a beírt betűkhöz (már létezik, csak tudj róla) */
+@keyframes pop { 
+    50% { transform: scale(1.1); } 
+}
+
+/* 2. Győzelmi animáció - a sor betűi felugrálnak */
+.grid-row.win-dance .cell-inner {
+    animation: dance 0.5s ease-in-out both;
+}
+
+@keyframes dance {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-15px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(-5px); }
+}
+
+/* 3. Hibás sor rázkódása */
+.grid-row.shake {
+    animation: shake-horizontal 0.6s;
+}
+@keyframes shake-horizontal {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
+} 
         .cell-revealed { 
             border-color: var(--correct-color); 
             background-color: rgba(129, 178, 154, 0.2); 
@@ -557,32 +662,54 @@
             opacity: 0.6; 
         }
 
-        #idle-message-container { 
+                #idle-message-container { 
+            display: flex; /* Flexboxra váltunk a könnyebb középre igazításért */
+            flex-direction: column; /* Az elemek egymás alá kerülnek */
+            justify-content: center; /* Függőleges középre igazítás */
+            align-items: center; /* Vízszintes középre igazítás */
             text-align: center; 
             padding: 40px 20px; 
             line-height: 1.8; 
             border: 2px dashed var(--border-color-idle); 
             border-radius: 15px; 
-            margin: 20px 0; 
+            margin: 20px 0;
+            width: 100%;
+            box-sizing: border-box;
         }
+        #idle-logo-svg { /* Az új logó stílusa */
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        #idle-logo-svg .logo-circle,
+        #idle-logo-svg .logo-text {
+            fill: var(--container-bg); /* A logo háttere illeszkedjen a konténerhez */
+        }
+        #idle-logo-svg .grad-stop1 { stop-color: var(--title-color); }
+        #idle-logo-svg .grad-stop2 { stop-color: var(--text-color); }
+        #idle-logo-svg .logo-handle { stroke: url(#grad1-idle); }
+        #idle-logo-svg .logo-circle { stroke: url(#grad1-idle); }
         #idle-message-container h3 { 
             font-family: var(--font-title); 
             color: var(--title-color); 
-            font-size: 1.6rem; 
+            font-size: 1.8rem; 
             margin: 0 0 15px 0; 
         }
         #idle-message-container p { 
             margin: 10px 0; 
             font-size: 1.1rem; 
+            max-width: 450px; /* Ne legyen túl széles a szöveg */
         }
         #countdown-timer { 
             font-weight: bold; 
             color: var(--title-color); 
             font-size: 1.2rem; 
             display: block; 
-            margin-top: 15px; 
+            margin-top: 25px; 
+            background-color: rgba(0,0,0,0.05);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
-
         #rules-container { 
             margin-top: 30px; 
             padding-top: 20px; 
@@ -847,7 +974,7 @@
             font-weight: bold;
          }
 
-        .overlay { 
+                .overlay { 
             position: fixed; 
             top: 0; 
             left: 0; 
@@ -860,13 +987,44 @@
             z-index: 1000; 
             opacity: 0; 
             visibility: hidden; 
-            transition: opacity 0.3s ease, visibility 0s 0.3s; 
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* A láthatóságot is animáljuk */
         }
         .overlay.visible { 
             opacity: 1; 
             visibility: visible; 
-            transition-delay: 0s; 
         }
+        .overlay.visible .overlay-content {
+            animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+        }
+        /* Új animáció a felugró tartalomhoz */
+        @keyframes scale-up-center {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+/* EZT A TELJESEN ÚJ BLOKKOT ILLessze BE IDE */
+#weekly-score-display.score-increase {
+    animation: score-pulse-green 0.7s ease-out;
+}
+#weekly-score-display.score-decrease {
+    animation: score-pulse-red 0.7s ease-out;
+}
+
+@keyframes score-pulse-green {
+    0% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+    50% { transform: scale(1.1); background-color: rgba(76, 175, 80, 0.3); }
+    100% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+}
+@keyframes score-pulse-red {
+    0% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+    50% { transform: scale(1.1); background-color: rgba(229, 57, 53, 0.3); }
+    100% { transform: scale(1); background-color: rgba(0,0,0,0.05); }
+}
         .overlay-content { 
             background-color: var(--container-bg); 
             color: var(--text-color); 
@@ -1360,22 +1518,20 @@
         .activate-prize-button:disabled { 
             background-color: var(--absent-color); 
         }
+        #lotto-page-selected-numbers {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            min-height: 1.5em; /* Megakadályozza az ugrálást */
+            color: var(--text-color);
+        }
     </style>
 </head>
 <body class="theme-classic">
     <div id="game-container">
-        <div id="top-right-hud">
-             <div id="insurance-display" title="Biztosítások">
-                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
-                <span id="insurance-display-count">0</span>
-            </div>
-            <div id="warehouse-display" title="Szerencse Raktár">
-                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
-                <span id="warehouse-display-count">0</span>
-            </div>
-        </div>
-
-        <div id="new-hour-notification">
+        
+    <div id="new-hour-notification">
             <span>Új feladványok elérhetők!</span>
             <button id="new-hour-refresh-button">Frissítés</button>
         </div>
@@ -1406,6 +1562,16 @@
                     <div id="theme-picker" style="display: none;"></div>
                 </div>
             </div>
+                    <div class="wheel-hud">
+             <div id="insurance-display" title="Biztosítások">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
+                <span id="insurance-display-count">0</span>
+            </div>
+            <div class="warehouse-display-trigger" title="SzerencseRaktár">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+                <span id="warehouse-display-count">0</span>
+            </div>
+        </div>
             <div id="weekly-score-display">Heti pontszám: <span>0</span></div>
              <div id="keyboard-toggle-container">
                 <label for="keyboard-toggle-checkbox">Eszköz billentyűzet használata: </label>
@@ -1453,7 +1619,23 @@
             
             <div id="keyboard-container"></div>
 
-            <div id="idle-message-container" style="display: none;"></div>
+                    <div id="idle-message-container" style="display: none;">
+            <!-- Logo másolata a fejlécből -->
+            <svg id="idle-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad1-idle" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop class="grad-stop1" offset="0%" style="stop-color: var(--title-color);stop-opacity:1"></stop>
+                        <stop class="grad-stop2" offset="100%" style="stop-color: var(--text-color);stop-opacity:1"></stop>
+                    </linearGradient>
+                </defs>
+                <circle class="logo-circle" cx="50" cy="50" r="40" stroke-width="12"></circle>
+                <line class="logo-handle" x1="32" y1="72" x2="5" y2="95" stroke-width="16" stroke-linecap="round"></line>
+                <text class="logo-text" x="50" y="62" font-family="Fredoka One, cursive" font-size="38" text-anchor="middle">Szó</text>
+            </svg>
+            <h3>A nyomozás véget ért... egyelőre.</h3>
+            <p>Minden szálat felgöngyölítettél és a szerencsédet is próbára tetted. A következő ügy aktái hamarosan megérkeznek.</p>
+            <span id="countdown-timer"></span>
+        </div>
 
             <div id="lotto-selector-wrapper">
                 <div id="daily-lotto-container" class="lotto-main-container">
@@ -1464,6 +1646,7 @@
                         <h2>Napi Lottó</h2>
                     </div>
                     <p>Tedd próbára a szerencséd! Az első szelvény ingyenes, a többi 1.000 pont.</p>
+                    <div id="daily-tickets-display" class="purchased-tickets-container"></div> 
                 </div>
 
                 <div id="weekly-lotto-container" class="lotto-main-container weekly">
@@ -1484,6 +1667,7 @@
                         <h2>Heti Lottó</h2>
                     </div>
                     <p>Játssz a főnyereményért! Egy szelvény ára 100.000 pont.</p>
+                    <div id="weekly-tickets-display" class="purchased-tickets-container"></div>
                 </div>
             </div>
 
@@ -1510,6 +1694,7 @@
             <div id="lotto-page-info"></div>
             <p id="lotto-page-selection-info"></p>
             <div id="lotto-page-grid"></div>
+            <div id="lotto-page-selected-numbers"></div>
             <div id="lotto-page-message"></div>
             <div id="lotto-page-buttons">
                 <button id="back-to-game-button" class="hint-button">Vissza a játékhoz</button>
@@ -1538,6 +1723,16 @@
         <div class="overlay-content">
             <div id="wheel-game-container">
                 <h2>Szerencsekerék</h2>
+                    <div class="wheel-hud">
+                         <div id="insurance-display" title="Biztosítások">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path></svg>
+                            <span class="insurance-display-count-wheel">0</span>
+                        </div>
+                        <div class="warehouse-display-trigger" title="Szerencse Raktár">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+                            <span class="warehouse-display-count-wheel">0</span>
+                        </div>
+                    </div>
                 <div id="wheel-round-display"></div>
                 <div id="wheel-game-ui">
                     <div id="wheel-stats-container">
@@ -1589,7 +1784,7 @@
     <div id="warehouse-overlay" class="overlay">
         <div class="overlay-content">
             <h2>Szerencse Raktár</h2>
-            <p>Itt tárolod a lottón nyert, még fel nem használt nyereményeidet. Aktiváld őket, mielőtt lejárnak!</p>
+            <p>Itt tárolod a lottón és a szerencsekerék játékon belül található megnyert nyereményeket amiket még nem használtál fel. Aktiváld őket, mielőtt lejárnak!</p>
             <div id="warehouse-items-container">
             </div>
             <button id="close-warehouse-button" class="overlay-button">Bezárás</button>
@@ -1600,13 +1795,190 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         const wordData = [
-            {word:"LÁMPA", category:"Tárgy", difficulty:"Könnyű", hints:["Fényt ad a sötétben.", "Lehet asztali vagy álló.", "Villanykörte van benne.", "Kapcsolóval működik."]},
-            {word:"TELEFON", category:"Elektronika", difficulty:"Könnyű", hints:["Kommunikációs eszköz.", "Lehet okos vagy vezetékes.", "Sokan a zsebükben hordják.", "Alkalmazásokat futtat."]},
-            {word:"CSOKOLÁDÉ", category:"Édesség", difficulty:"Nehéz", hints:["Kakaóbabból készül.", "Lehet ét, tej vagy fehér.", "Táblás formában is kapható.", "Boldogsághormont termel."]},
-            {word:"SZÁMÍTÓGÉP", category:"Elektronika", difficulty:"Extra Nehéz", hints:["Információ feldolgozására szolgál.", "Van képernyője és billentyűzete.", "Lehet asztali vagy hordozható.", "Az internethez csatlakozik."]},
-            {word:"NYOMOZÓ", category:"Foglalkozás", difficulty:"Nehéz", hints:["Bűnügyeket old meg.", "Nagyítót használ a nyomokhoz.", "Jellemző ruhadarabja a ballonkabát.", "A játék címe is ez."]}
-        ];
-
+    // --- KÖNNYŰ SZAVAK (KB. 150 DB) ---
+    {word:"HÁZ", category:"Épület", difficulty:"Könnyű", hints:["Lakni lehet benne.", "Teteje és falai vannak.", "Lehet családi vagy társas.", "Ajtaja és ablakai vannak.", "A telek egyik fő építménye.", "Otthont ad."]},
+    {word:"NAP", category:"Égitest", difficulty:"Könnyű", hints:["Fényt és meleget ad.", "Körülötte kering a Föld.", "A Naprendszer központi csillaga.", "Nélküle nem lenne élet.", "Reggel felkel, este lenyugszik.", "Túl sok belőle leégést okoz."]},
+    {word:"VÍZ", category:"Folyadék", difficulty:"Könnyű", hints:["Az élet alapja.", "Képlete: H₂O.", "Lehet folyó, tó vagy tenger.", "Színtelen, szagtalan folyadék.", "Fagyáspontja 0 Celsius fok.", "Szomjoltásra isszuk."]},
+    {word:"KŐ", category:"Természet", difficulty:"Könnyű", hints:["Kemény, szilárd anyag.", "Az ollót legyőzi a játékban.", "Építkezéshez is használják.", "A hegyek fő alkotóeleme.", "Lehet kavics vagy szikla.", "A papír becsomagolja."]},
+    {word:"ÉG", category:"Természet", difficulty:"Könnyű", hints:["Felettünk terül el.", "Nappal kék, éjjel fekete.", "Felhők úsznak rajta.", "A csillagok otthona.", "A madarak itt repülnek.", "A Föld légköre."]},
+    {word:"SÓ", category:"Étel", difficulty:"Könnyű", hints:["Fehér, kristályos fűszer.", "A tengerben is megtalálható.", "Túlzott fogyasztása egészségtelen.", "Ízesítésre használjuk.", "Konzerválásra is alkalmas.", "Nátrium-klorid."]},
+    {word:"KOR", category:"Fogalom", difficulty:"Könnyű", hints:["Időszakot jelöl.", "Lehet új- vagy közép-.", "Az ember életének szakaszait is jelöli.", "Lehet arany- vagy vaskorszak.", "Meghatározza a divatot.", "Az évek számával mérik."]},
+    {word:"ÁGY", category:"Bútor", difficulty:"Könnyű", hints:["Alvásra használjuk.", "Párna és takaró tartozik hozzá.", "A hálószoba központi eleme.", "Lehet francia- vagy heverő.", "Reggel bevetjük.", "Matrac van rajta."]},
+    {word:"ÚT", category:"Hely", difficulty:"Könnyű", hints:["Két pontot köt össze.", "Járművek közlekednek rajta.", "Lehet aszfalt vagy föld.", "A végén cél vár.", "Lehet egyenes vagy kanyargós.", "A térkép jelöli."]},
+    {word:"TŰZ", category:"Jelenség", difficulty:"Könnyű", hints:["Égés során keletkezik.", "Meleget és fényt ad.", "Vigyázni kell vele, mert veszélyes.", "A víz eloltja.", "A tábortűz romantikus.", "Szükséges hozzá oxigén."]},
+    {word:"FA", category:"Növény", difficulty:"Könnyű", hints:["Levelei, törzse és ágai vannak.", "Papírt készítenek belőle.", "Oxigént termel.", "Az erdőben sok van belőle.", "Évgyűrűi mutatják a korát.", "Lehet lombhullató vagy örökzöld."]},
+    {word:"AUTÓ", category:"Jármű", difficulty:"Könnyű", hints:["Négy kereke van.", "Benzinnel vagy árammal működik.", "Jogosítvány kell a vezetéséhez.", "Motor hajtja.", "Parkolni kell vele.", "A garázsban tartják."]},
+    {word:"KERT", category:"Hely", difficulty:"Könnyű", hints:["A ház körül található.", "Növényeket ültetnek ide.", "Lehet veteményes vagy virágos.", "Fűnyíróval gondozzák.", "Gyakran van benne hinta.", "Kerítés veszi körül."]},
+    {word:"HÍD", category:"Építmény", difficulty:"Könnyű", hints:["Víz felett vezet át.", "Összeköti a két partot.", "Pilléreken áll.", "Lehet lánc- vagy függő-.", "Budapesten több is van a Dunán.", "Lehajtani tilos róla."]},
+    {word:"HEGY", category:"Természet", difficulty:"Könnyű", hints:["Magas földrajzi képződmény.", "A völgy ellentéte.", "Télen síelni lehet rajta.", "Csúcsa és lejtője van.", "A Kékes a legmagasabb nálunk.", "Megmászása kihívás lehet."]},
+    {word:"KÉP", category:"Tárgy", difficulty:"Könnyű", hints:["Vizuális alkotás.", "A falra akasztják.", "Lehet festmény vagy fénykép.", "Keretbe foglalják.", "A múzeumban nézegetik.", "Megörökít egy pillanatot."]},
+    {word:"EBÉD", category:"Étel", difficulty:"Könnyű", hints:["Déli étkezés.", "Gyakran leves és főétel.", "Munkahelyen is van rá szünet.", "A reggeli és a vacsora között van.", "Utána jól esik a szieszta.", "Az éttermek menüt kínálnak."]},
+    {word:"BOR", category:"Ital", difficulty:"Könnyű", hints:["Szőlőből készül.", "Lehet vörös vagy fehér.", "A pincében tárolják.", "Tokaj híres róla.", "Dugóhúzó kell a kinyitásához.", "Sommelier ajánlja az ételhez."]},
+    {word:"CÉL", category:"Fogalom", difficulty:"Könnyű", hints:["Elérendő dolog.", "A sportoló erre törekszik.", "Lehet rövid vagy hosszú távú.", "A futó a szalagot szakítja át.", "Terv kell a megvalósításához.", "Motivációt ad."]},
+    {word:"TÓ", category:"Természet", difficulty:"Könnyű", hints:["Állóvíz.", "A Balaton a legnagyobb ilyen nálunk.", "Horgászni és csónakázni lehet rajta.", "Kisebb, mint a tenger.", "Partján nádas lehet.", "Hattyúk úszkálnak rajta."]},
+    {word:"HÓ", category:"Időjárás", difficulty:"Könnyű", hints:["Téli csapadék.", "Hóembert építenek belőle.", "Fagyott vízkristályokból áll.", "Fehér takaróval borítja a tájat.", "A síeléshez elengedhetetlen.", "Lapátolni kell a járdáról."]},
+    {word:"PAD", category:"Bútor", difficulty:"Könnyű", hints:["Ülőalkalmatosság.", "Parkban vagy iskolában is van.", "Több ember is elfér rajta.", "Lehet fából vagy fémből.", "Az iskolában ebbe ül a diák.", "Lehet kényelmes vagy kényelmetlen."]},
+    {word:"SAJT", category:"Étel", difficulty:"Könnyű", hints:["Tejtermék.", "Az egér kedvence a mesékben.", "Lehet trappista vagy parmezán.", "Lyukacsos is lehet.", "Bor mellé fogyasztják.", "Sokféle ízesítésű létezik."]},
+    {word:"JÉG", category:"Halmazállapot", difficulty:"Könnyű", hints:["Fagyott víz.", "Italokba teszik hűsítésre.", "A korcsolyapálya ebből van.", "Csúszós felület.", "A jéghegy is ebből van.", "Olvad, ha meleg éri."]},
+    {word:"BANK", category:"Intézmény", difficulty:"Könnyű", hints:["Pénzzel foglalkozik.", "Hiteleket nyújt.", "ATM-et üzemeltet.", "Számlát lehet itt vezetni.", "A takarékoskodás helyszíne.", "Lehet kereskedelmi vagy nemzeti."]},
+    {word:"ERDŐ", category:"Hely", difficulty:"Könnyű", hints:["Sok fa együttese.", "A róka lakhelye.", "Kirándulni lehet benne.", "Tisztás is lehet benne.", "Gombát lehet itt szedni.", "Friss a levegője."]},
+    {word:"KULCS", category:"Tárgy", difficulty:"Könnyű", hints:["Ajtót nyit és zár.", "Zárba illik.", "Gyakran karikán tartják.", "Ha elveszik, nem jutsz be.", "Minden ajtóhoz más kell.", "A megoldás szinonimája is lehet."]},
+    {word:"PÉNZ", category:"Eszköz", difficulty:"Könnyű", hints:["Fizetésre használjuk.", "Lehet érme vagy bankjegy.", "A hiánya gyakori probléma.", "A pénztárcában tartjuk.", "Nem boldogít, de jó ha van.", "Különböző valuták léteznek."]},
+    {word:"HANG", category:"Jelenség", difficulty:"Könnyű", hints:["A fülünkkel érzékeljük.", "A csend ellentéte.", "A levegő rezgése.", "Lehet magas vagy mély.", "A fal visszaveri.", "A sebessége lassabb a fényénél."]},
+    {word:"CIPŐ", category:"Ruhanemű", difficulty:"Könnyű", hints:["A lábunkra vesszük.", "Véd a sérülésektől.", "Lehet sport- vagy elegáns.", "Fűzője van.", "Párban hordjuk.", "A cipész javítja."]},
+    {word:"HOMOK", category:"Anyag", difficulty:"Könnyű", hints:["Apró szemcsékből áll.", "A sivatagban és a tengerparton is van.", "Homokvárat építenek belőle.", "Az óra is lehet ilyen.", "A játszótéren is megtalálható.", "Belemehet a szemedbe."]},
+    {word:"AJTÓ", category:"Nyílászáró", difficulty:"Könnyű", hints:["Be- és kilépésre szolgál.", "Lehet nyitva vagy csukva.", "Van kilincse.", "A küszöb az alja.", "Lehet biztonsági vagy üveg.", "Kopogni illik rajta."]},
+    {word:"MESE", category:"Irodalom", difficulty:"Könnyű", hints:["Kitalált történet.", "Gyakran happy end a vége.", "A jó elnyeri jutalmát, a rossz a büntetését.", "Esténként olvassák a gyerekeknek.", "Sárkányok és hercegnők szerepelnek benne.", "A népi változata szájhagyomány útján terjedt."]},
+    {word:"NYÁR", category:"Évszak", difficulty:"Könnyű", hints:["A legmelegebb évszak.", "Ilyenkor van a vakáció.", "Sokan mennek nyaralni.", "Júniustól augusztusig tart.", "A fagylalt szezonja.", "A napfény és a strandolás ideje."]},
+    {word:"LÁZ", category:"Tünet", difficulty:"Könnyű", hints:["Magas testhőmérséklet.", "Betegség jele.", "Hőmérővel mérik.", "Gyógyszerrel csillapítják.", "Hidegrázás kísérheti.", "37 Celsius fok felett kezdődik."]},
+    {word:"DÍJ", category:"Elismerés", difficulty:"Könnyű", hints:["Jutalom valamiért.", "A győztes kapja.", "Lehet serleg vagy érem.", "Az Oscar is ilyen.", "Pénzjutalommal is járhat.", "Ünnepélyes keretek között adják át."]},
+    {word:"PITE", category:"Étel", difficulty:"Könnyű", hints:["Gyümölcsös sütemény.", "Lehet almás vagy meggyes.", "Gyakran rácsos a teteje.", "Az amerikaiak kedvence.", "Omlós tésztából készül.", "Nagymamák specialitása."]},
+    {word:"ASZTAL", category:"Bútor", difficulty:"Könnyű", hints:["Étkezésre, munkára használjuk.", "Általában négy lába van.", "Terítővel borítják le.", "Lehet dohányzó- vagy étkező-.", "A székek körülötte állnak.", "Ne tegye fel rá a lábát!"]},
+    {word:"POHÁR", category:"Eszköz", difficulty:"Könnyű", hints:["Ebből iszunk.", "Lehet üvegből vagy műanyagból.", "Koccintani is szoktak vele.", "A borhoz és a sörhöz is másmilyen kell.", "Félre is lehet beszélni.", "Lehet tele vagy üres."]},
+    {word:"MADÁR", category:"Állat", difficulty:"Könnyű", hints:["Tollas, repülő állat.", "Fészket rak.", "Csicsereg.", "Tojásokkal szaporodik.", "A gólya és a veréb is ilyen.", "Némelyik költöző."]},
+    {word:"HAJÓ", category:"Jármű", difficulty:"Könnyű", hints:["Vízen közlekedik.", "Lehet vitorlás vagy motoros.", "A kapitány irányítja.", "A kikötőben áll.", "A Titanic egy híres ilyen volt.", "Horgonyt vet."]},
+    {word:"KENYÉR", category:"Étel", difficulty:"Könnyű", hints:["Alapvető élelmiszer.", "Pékségben sütik.", "Szeletekre vágva fogyasztják.", "Lehet fehér vagy barna.", "Héja és bele van.", "A szendvics alapja."]},
+    {word:"VIRÁG", category:"Növény", difficulty:"Könnyű", hints:["Színes és illatos.", "Nőnapra adják.", "Vázába teszik.", "A méhek szeretik.", "Szirma és szára van.", "A szerelem egyik jelképe."]},
+    {word:"SZÉK", category:"Bútor", difficulty:"Könnyű", hints:["Ülésre használjuk.", "Háttámlája van.", "Az asztal mellett áll.", "Lábai vannak.", "Lehet kényelmes vagy kemény.", "A trón egy díszes változata."]},
+    {word:"ALMA", category:"Gyümölcs", difficulty:"Könnyű", hints:["Piros vagy zöld gyümölcs.", "Egy közmondás szerint távol tartja az orvost.", "A pite gyakori tölteléke.", "A csumáját nem esszük meg.", "Hófehérke ebbe harapott bele.", "Lehet savanyú vagy édes."]},
+    {word:"VONAT", category:"Jármű", difficulty:"Könnyű", hints:["Sínen közlekedik.", "Vagonokból áll.", "Mozdony húzza.", "Az állomáson áll meg.", "Kalauz kezeli a jegyeket.", "Lehet személy vagy teherszállító."]},
+    {word:"LÁMPA", category:"Tárgy", difficulty:"Könnyű", hints:["Fényt ad a sötétben.", "Lehet asztali vagy álló.", "Villanykörte van benne.", "Kapcsolóval működik.", "A szellem is kijöhet belőle.", "Az éjjeli szekrényen is van."]},
+    {word:"FALU", category:"Település", difficulty:"Könnyű", hints:["Kisebb, mint a város.", "Gyakran van temploma és kocsmája.", "Nyugodtabb az élet, mint a városban.", "A polgármester vezeti.", "A házak általában kertesek.", "Több ilyen alkot egy járást."]},
+    {word:"ANYA", category:"Személy", difficulty:"Könnyű", hints:["Nőnemű szülő.", "Ő hordta a szív alatt.", "Gondoskodik a gyermekeiről.", "Az apával együtt nevel.", "Ünnepnapja is van májusban.", "Az ő főztje a legjobb."]},
+    {word:"KUTYA", category:"Állat", difficulty:"Könnyű", hints:["Az ember legjobb barátja.", "Ugat és csóválja a farkát.", "Házőrzésre is használják.", "Sétáltatni kell.", "A hűség jelképe.", "Lehet fajtiszta vagy keverék."]},
+    {word:"CSOKI", category:"Édesség", difficulty:"Könnyű", hints:["Kakaóbabból készül.", "Lehet tej- vagy ét-.", "A gyerekek egyik kedvence.", "Boldogsághormont termel.", "A Mikulás ezt hozza.", "A Tibi egy magyar márka."]},
+    {word:"ISKOLA", category:"Épület", difficulty:"Könnyű", hints:["Itt tanulnak a gyerekek.", "Szünetben nagy a zaj.", "Tanárok és diákok alkotják közösségét.", "Tantermei és folyosói vannak.", "Az igazgató vezeti.", "Az órarend határozza meg a napot."]},
+    {word:"KÖNYV", category:"Tárgy", difficulty:"Könnyű", hints:["Oldalakból és borítóból áll.", "Olvasásra való.", "A könyvtárban kölcsönözhető.", "Lehet regény vagy verseskötet.", "A könyvjelző segít megtalálni, hol tartottunk.", "Az író írja."]},
+    {word:"LABDA", category:"Játék", difficulty:"Könnyű", hints:["Gömbölyű sportszer.", "Rúgni vagy dobni lehet.", "A focihoz elengedhetetlen.", "A gyerekek kedvenc játéka.", "Lehet bőr, gumi vagy műanyag.", "Pattogtatni is lehet."]},
+    {word:"ZENE", category:"Művészet", difficulty:"Könnyű", hints:["Hangok művészi elrendezése.", "Rádióban szól.", "Lehet komoly vagy könnyű.", "Ritmus, dallam és harmónia jellemzi.", "Koncerten élőben hallgatható.", "A fülhallgatón is ezt hallgatjuk."]},
+    {word:"TÉL", category:"Évszak", difficulty:"Könnyű", hints:["A leghidegebb évszak.", "Karácsony és hó.", "Ilyenkor kell a kabát és a sál.", "Decembertől februárig tart.", "A medve ilyenkor alszik.", "A fák kopaszok."]},
+    {word:"FILM", category:"Művészet", difficulty:"Könnyű", hints:["Mozgóképes alkotás.", "Moziban vagy tévében nézik.", "Rendező készíti.", "Színészek játszanak benne.", "Lehet vígjáték vagy dráma.", "A popcorn elengedhetetlen kelléke."]},
+    {word:"SZÍN", category:"Tulajdonság", difficulty:"Könnyű", hints:["A fény egy tulajdonsága.", "A szivárványban sok van belőle.", "Lehet piros, kék, sárga.", "A festő ezt keveri.", "A fekete és a fehér is az.", "Az alap- és a kevert fajtái vannak."]},
+    {word:"SZÓ", category:"Nyelvészet", difficulty:"Könnyű", hints:["Jelentéssel bíró betűsor.", "Ebből áll a mondat.", "A játék lényege ennek a kitalálása.", "Lehet főnév, ige vagy melléknév.", "A szótárban megtalálható.", "Lehet rövid vagy hosszú."]},
+    {word:"CSEND", category:"Állapot", difficulty:"Könnyű", hints:["A zaj hiánya.", "A könyvtárban elvárás.", "Néha aranyat ér.", "A vihar előtti állapot.", "A meditációhoz szükséges.", "Éjszaka van ilyen."]},
+    {word:"ÁLOM", category:"Jelenség", difficulty:"Könnyű", hints:["Alvás közben látjuk.", "Lehet szép vagy ijesztő.", "Freud sokat foglalkozott vele.", "Néha nem emlékszünk rá.", "Lehet vágyott dolog is.", "Az ébrenlét ellentéte."]},
+    {word:"KÉS", category:"Eszköz", difficulty:"Könnyű", hints:["Vágásra használják.", "Éles a pengéje.", "A villával és kanállal együtt evőeszköz.", "Lehet zseb- vagy konyha-.", "A hegyével szúrni lehet.", "A kenyér szeletelésére való."]},
+    {word:"IDŐ", category:"Fogalom", difficulty:"Könnyű", hints:["Múlik és mérhető.", "Óra, nap, év.", "A pénzhez szokták hasonlítani.", "Nem lehet visszaforgatni.", "A zónái is vannak a Földön.", "Az utazás is lehet ilyen."]},
+    {word:"SZÍV", category:"Szerv", difficulty:"Könnyű", hints:["A szeretet jelképe.", "A vért pumpálja.", "Dobog.", "A mellkas bal oldalán található.", "Lehet megszakadni érte.", "A kardiológus gyógyítja."]},
+    {word:"BABA", category:"Személy", difficulty:"Könnyű", hints:["Kisgyermek.", "Sír, ha éhes.", "Cumit használ.", "Pelenkát visel.", "Még nem tud beszélni.", "Játékként is létezik."]},
+    {word:"JÁTÉK", category:"Cselekvés", difficulty:"Könnyű", hints:["Szórakoztató tevékenység.", "Nem munka.", "A gyerekek sokat csinálják.", "Lehet társas- vagy video-.", "A szabályait be kell tartani.", "Lehet nyerni vagy veszíteni."]},
+    {word:"MAJOM", category:"Állat", difficulty:"Könnyű", hints:["Fán élő emlős.", "Szereti a banánt.", "Az ember rokona.", "Grimaszokat vág.", "Az állatkertben népszerű.", "A csimpánz egy fajtája."]},
+    {word:"ORR", category:"Testrész", difficulty:"Könnyű", hints:["Szaglószerv.", "Az arc közepén van.", "Megfázáskor folyik.", "Két lyuk van rajta.", "Lehet pisze vagy nagy.", "Tüsszenteni is tudunk vele."]},
+    {word:"KEFE", category:"Eszköz", difficulty:"Könnyű", hints:["Tisztításra használják.", "Lehet fog-, haj- vagy köröm-.", "Sörtéi vannak.", "A cipőt is ezzel tisztítják.", "A WC-ben is van egy.", "A festő is használja."]},
+    {word:"KÁVÉ", category:"Ital", difficulty:"Könnyű", hints:["Reggeli, élénkítő ital.", "Lehet presszó vagy hosszú.", "Cukorral és tejjel is isszák.", "A koffein a hatóanyaga.", "A kávézóban szolgálják fel.", "Babból őrlik."]},
+    {word:"TEA", category:"Ital", difficulty:"Könnyű", hints:["Forró ital, gyógynövényből.", "Lehet fekete vagy zöld.", "Angliában délután isszák.", "Mézzel és citrommal ízesítik.", "A filteres a leggyakoribb.", "Megfázásra is jó."]},
+    {word:"FÜL", category:"Testrész", difficulty:"Könnyű", hints:["A hallás szerve.", "Páros szerv a fej két oldalán.", "Fülbevalót viselnek benne.", "A dobhártya a része.", "Lehet nagy vagy elálló.", "Befogjuk, ha nagy a zaj."]},
+    {word:"FOG", category:"Testrész", difficulty:"Könnyű", hints:["Rágásra használjuk.", "A fogorvos kezeli.", "Lehet tej- vagy maradó.", "Mosni kell naponta kétszer.", "A bölcsesség is lehet ilyen.", "Lyukadhat és fájhat."]},
+    {word:"KÉZ", category:"Testrész", difficulty:"Könnyű", hints:["Öt ujja van.", "Írásra és megfogásra használjuk.", "Mosni kell étkezés előtt.", "A tenyérjóslás helyszíne.", "A manikűrös teszi rendbe.", "Tapsolni is tudunk vele."]},
+    {word:"LÁB", category:"Testrész", difficulty:"Könnyű", hints:["Járásra használjuk.", "A cipőt erre húzzuk.", "A test alsó végtagja.", "A boka és a térd a része.", "Lehet lúdtalpas.", "A százlábúnak sok van."]},
+    {word:"HAJ", category:"Testrész", difficulty:"Könnyű", hints:["A fejet borítja.", "Fodrász vágja.", "Lehet szőke, barna, fekete.", "Lehet hullámos vagy egyenes.", "A samponnal mossuk.", "A kopasz embernek nincs."]},
+    {word:"BŐR", category:"Szerv", difficulty:"Könnyű", hints:["A test külső borítása.", "A legnagyobb szervünk.", "Leéghet a napon.", "A színe lehet világos vagy sötét.", "A pattanás ezen jelenik meg.", "Az ujjlenyomat is ezen van."]},
+    {word:"ÉV", category:"Idő", difficulty:"Könnyű", hints:["365 napból áll.", "Négy évszak van benne.", "Az ember korát ebben mérik.", "Szökő- változata 366 napos.", "Az újévvel kezdődik.", "A naptár ezt mutatja."]},
+    {word:"HÉT", category:"Idő", difficulty:"Könnyű", hints:["Hét napból áll.", "Munkanapokból és hétvégéből áll.", "A naptárban követhető.", "A vasárnap az utolsó napja.", "Lehet dolgos vagy pihentető.", "A hétfő az első napja."]},
+    {word:"ÉJ", category:"Napszak", difficulty:"Könnyű", hints:["A nappal ellentéte.", "Sötét van és alszunk.", "A csillagok ekkor látszanak.", "A bagoly ilyenkor aktív.", "A Szentiván is ilyen.", "Éjfélkor van a közepe."]},
+    {word:"POR", category:"Anyag", difficulty:"Könnyű", hints:["Apró részecskék a levegőben.", "Takarítani kell.", "Allergiát okozhat.", "A bútorokon megül.", "A porszívó felszívja.", "A törlőkendő leszedi."]},
+    {word:"SÁR", category:"Anyag", difficulty:"Könnyű", hints:["Vizes föld.", "Eső után keletkezik.", "Összekeni a cipőt.", "A dagonyázás helyszíne.", "Az autó kereke felveri.", "Gumicsizma kell hozzá."]},
+    {word:"VÉR", category:"Testnedv", difficulty:"Könnyű", hints:["Piros folyadék az erekben.", "Oxigént szállít.", "A szúnyog ezt szívja.", "A vámpírok kedvence.", "A véradás során ezt adják.", "A szív pumpálja."]},
+    {word:"CSŐ", category:"Tárgy", difficulty:"Könnyű", hints:["Hosszú, üreges henger.", "Víz vagy gáz áramlik benne.", "A szerelő javítja.", "A lefolyó is ilyen.", "Lehet fémből vagy műanyagból.", "A csődtől csak egy betű választja el."]},
+    {word:"VAS", category:"Anyag", difficulty:"Könnyű", hints:["Erős, szürke fém.", "A mágnes vonzza.", "Rozsdásodik.", "A vasúti sín ebből van.", "A vitamin is lehet ilyen.", "A függöny is lehet ilyen."]},
+    {word:"SÖR", category:"Ital", difficulty:"Könnyű", hints:["Alkoholos ital.", "Komlóból és árpából készül.", "Habos a teteje.", "Korsóból isszák.", "Lehet világos vagy barna.", "Németországban és Csehországban népszerű."]},
+    {word:"SZÉL", category:"Időjárás", difficulty:"Könnyű", hints:["Mozgó levegő.", "A vitorlát hajtja.", "Viharban erős.", "A malmot is hajthatja.", "Fúj.", "A zászlót lobogtatja."]},
+    {word:"KÖD", category:"Időjárás", difficulty:"Könnyű", hints:["Sűrű pára a föld közelében.", "Csökkenti a látótávolságot.", "Ősszel gyakori.", "Az autósoknak veszélyes.", "London híres róla.", "Feloszlik, ha kisüt a nap."]},
+    {word:"MACSKA", category:"Állat", difficulty:"Könnyű", hints:["Doromboló háziállat.", "Szereti a tejet.", "Egeret fog.", "Kilenc élete van.", "Nyávog.", "A kutya ellensége."]},
+    {word:"HAL", category:"Állat", difficulty:"Könnyű", hints:["Vízben élő állat.", "Kopoltyúval lélegzik.", "A horgász fogja ki.", "Pikkelyei vannak.", "Az arany- teljesíti a kívánságot.", "A karácsonyi menü része."]},
+    {word:"LÓ", category:"Állat", difficulty:"Könnyű", hints:["Nagy, növényevő emlős.", "Lovagolnak rajta.", "Patkó van a lábán.", "Nyerít.", "Az istállóban él.", "A lovaskocsit húzza."]},
+    {word:"CSÉSZE", category:"Eszköz", difficulty:"Könnyű", hints:["Kisebb, füles ivóedény.", "Kávét vagy teát isznak belőle.", "Gyakran van hozzá alj.", "Porcelánból készülhet.", "A konyhaszekrényben lakik.", "Repedezett is lehet."]},
+    {word:"VILLA", category:"Eszköz", difficulty:"Könnyű", hints:["Evőeszköz, aminek ágai vannak.", "Szúrni lehet vele az ételt.", "A késsel együtt használják.", "A spagettihez elengedhetetlen.", "A vas- egy kerti szerszám.", "Az ördögnek is van ilyen."]},
+    {word:"RUHA", category:"Ruhanemű", difficulty:"Könnyű", hints:["A testünket fedi.", "Lehet nyári vagy téli.", "A szekrényben tartjuk.", "Mosni kell, ha piszkos.", "Lehet elegáns vagy sportos.", "A divat változik."]},
+    {word:"FEJ", category:"Testrész", difficulty:"Könnyű", hints:["A test legfelső része.", "Ezen van az arcunk.", "A gondolatok itt születnek.", "Fájhat.", "A nyak tartja.", "Sapkát teszünk rá."]},
+    {word:"SZEM", category:"Testrész", difficulty:"Könnyű", hints:["A látás szerve.", "Páros szerv.", "Szempilla védi.", "Lehet kék, zöld vagy barna.", "A lélek tükre.", "Kacsintani lehet vele."]},
+    {word:"SZÁJ", category:"Testrész", difficulty:"Könnyű", hints:["Evésre és beszédre használjuk.", "A fogak és a nyelv van benne.", "Rúzsozni lehet.", "A csók szerve.", "Lehet tátva vagy csukva.", "Az arc alsó részén található."]},
+    {word:"CSŐR", category:"Állati testrész", difficulty:"Könnyű", hints:["A madarak szájszerve.", "Eleség felcsipegetésére való.", "Kemény szaruból van.", "A kacsaé lapos.", "A sasé kampós.", "Kopogtatni is lehet vele."]},
+    {word:"FAL", category:"Épület", difficulty:"Könnyű", hints:["Egy szoba oldala.", "Téglából épül.", "Képet akasztanak rá.", "Lehet festeni vagy tapétázni.", "A negyedik áttörhetetlen.", "A szomszédtól választ el."]},
+    {word:"FÖLD", category:"Bolygó", difficulty:"Könnyű", hints:["Ezen a bolygón élünk.", "Kering a Nap körül.", "Egy holdja van.", "Lehet termő- vagy anya-.", "A növények ebben gyökereznek.", "Lehet sáros, ha vizes."]},
+    {word:"HOLD", category:"Égitest", difficulty:"Könnyű", hints:["A Föld körül kering.", "Éjjel világít az égen.", "Lehet tele- vagy új-.", "Az első ember Neil Armstrong volt rajta.", "Az árapályt okozza.", "A farkasok ezt vonyítják."]},
+    {word:"KORONA", category:"Tárgy", difficulty:"Könnyű", hints:["Királyi fejék.", "A hatalom jelképe.", "Drágakövek díszítik.", "Lehet szent is.", "A fogra is tesznek ilyet.", "Fizetőeszköz is volt."]},
+    {word:"TÁL", category:"Eszköz", difficulty:"Könnyű", hints:["Mély, öblös edény.", "Leves vagy saláta tálalására.", "Lehet üveg, fém vagy fa.", "Mosogatni kell használat után.", "A gyümölcsöt is ebben tartják.", "Nagyobb, mint a tányér."]},
+    {word:"TÖK", category:"Növény", difficulty:"Könnyű", hints:["Nagy, narancssárga termés.", "Halloweenkor lámpást faragnak belőle.", "Lehet sütni vagy főzeléket készíteni belőle.", "A hamupipőke hintója is ebből lett.", "Magja is ehető.", "Lehet főző- vagy sütő-."]},
+    {word:"VÁR", category:"Épület", difficulty:"Könnyű", hints:["Középkori erődítmény.", "Védelmi célokat szolgált.", "Vizesárok veheti körül.", "A budai egy híres ilyen.", "Lovagok laktak benne.", "Ostromolták a csatákban."]},
+    {word:"VÁZA", category:"Tárgy", difficulty:"Könnyű", hints:["Vágott virág tárolására való.", "Vízzel töltik meg.", "Lehet üvegből vagy kerámiából.", "Könnyen eltörhet.", "Az asztal dísze.", "A virág így tovább él."]},
+    {word:"ZSÁK", category:"Tárgy", difficulty:"Könnyű", hints:["Tárolásra és szállításra való.", "Lehet burgonyás vagy cementes.", "A Mikulás ebbe teszi az ajándékot.", "Lehet bele macskát venni.", "A futóverseny egyik kelléke.", "A szája be van kötve."]},
+    {word:"BÚTOR", category:"Tárgy", difficulty:"Nehéz", hints:["A lakás berendezési tárgya.", "Asztal, szék, szekrény.", "Lehet antik vagy modern.", "Az IKEA erről híres.", "Lapra szerelve is kapható.", "Funkciója és díszítő szerepe is van."]},
+    {word:"FÜGGÖNY", category:"Lakástextil", difficulty:"Nehéz", hints:["Az ablakot takarja.", "Véd a belátástól és a fénytől.", "Lehet sötétítő vagy fényáteresztő.", "Karnisra akasztják.", "A színházban is van.", "Mosni is kell néha."]},
+    {word:"GYŰMÖLCS", category:"Étel", difficulty:"Nehéz", hints:["Édes, lédús növényi termés.", "Vitaminokban gazdag.", "Az alma, a körte és a banán is ilyen.", "Lehet belőle levet facsarni.", "Salátát is készítenek belőle.", "Aszalva is fogyasztható."]},
+    {word:"KALAPÁCS", category:"Eszköz", difficulty:"Nehéz", hints:["Szög beverésére használják.", "Feje és nyele van.", "A kovács is ezt használja.", "A bíró is használ egy kisebb verziót.", "Ne üssön az ujjára vele!", "Az építkezések elengedhetetlen kelléke."]},
+    {word:"KEDVENC", category:"Fogalom", difficulty:"Nehéz", hints:["A legjobban szeretett dolog vagy személy.", "Lehet étel, szín vagy film.", "A tanárnak is van ilyen diákja.", "A háziállat is lehet ilyen.", "Kivételezett helyzetben van.", "Személyes preferencia."]},
+    {word:"SZALONNA", category:"Étel", difficulty:"Nehéz", hints:["Sertés zsíros része.", "Lehet sütni vagy füstölni.", "A tábortűznél nyárson sütik.", "A tojásrántottát feldobja.", "Hagymával és kenyérrel eszik.", "A szaloncukorral csak a neve hasonló."]},
+    {word:"TANULÓ", category:"Személy", difficulty:"Nehéz", hints:["Iskolába jár.", "Tudást szerez.", "A tanár tanítja.", "Lehet jó vagy rossz.", "Felel és dolgozatot ír.", "Diák."]},
+    {word:"VENDÉG", category:"Személy", difficulty:"Nehéz", hints:["Látogatóba érkező személy.", "Illik megkínálni.", "A házigazda fogadja.", "Lehet hívott vagy hívatlan.", "A szállodában is lakik.", "Marasztalni szokták."]},
+    {word:"ZSÍR", category:"Anyag", difficulty:"Nehéz", hints:["Sütéshez használt alapanyag.", "Állati vagy növényi eredetű.", "A kenyérre is kenik.", "A testen is lerakódhat.", "A koleszterinnel összefügg.", "A vízben nem oldódik."]},
+    {word:"GOMBA", category:"Élőlény", difficulty:"Nehéz", hints:["Nem növény, nem állat.", "Lehet ehető vagy mérgező.", "Az erdőben terem eső után.", "A pizza egyik feltéte.", "Kalapja és tönkje van.", "A gombapörkölt finom."]},
+    {word:"LÉTRA", category:"Eszköz", difficulty:"Nehéz", hints:["Magas helyek elérésére szolgál.", "Fokai vannak, amire lépni lehet.", "Festéskor használják.", "Nem szabad alatta átmenni.", "Lehet támasztó- vagy álló-.", "A tűzoltóautón is van."]},
+    {word:"SZALAG", category:"Tárgy", difficulty:"Nehéz", hints:["Hosszú, keskeny anyagcsík.", "Ajándékot kötnek át vele.", "A célban ezt szakítják át a futók.", "Lehet mérő- vagy ragasztó-.", "Az ünnepségeken vágják át.", "A tornászok is használják."]},
+    {word:"CSATORNA", category:"Média", difficulty:"Nehéz", hints:["Televíziós adó.", "Lehet híradó vagy sport.", "A távirányítóval váltunk közöttük.", "Lehet állami vagy kereskedelmi.", "A szennyvíz is ebben folyik.", "Velence híres róluk."]},
+    {word:"BETŰ", category:"Írás", difficulty:"Nehéz", hints:["Az ábécé eleme.", "Szavakat alkotnak.", "Lehet nagy- vagy kis-.", "A levesben is lehet.", "A hangok írott jele.", "30 darab van a magyar ábécében."]},
+    {word:"BAJNOKSÁG", category:"Esemény", difficulty:"Extra Nehéz", hints:["Sportverseny sorozat.", "A végén győztest hirdetnek.", "Lehet nemzeti vagy világ-.", "A csapatok pontokért küzdenek.", "Van oda- és visszavágó.", "A tabella mutatja az állást."]},
+    {word:"FŐIGAZGATÓ", category:"Pozíció", difficulty:"Extra Nehéz", hints:["Egy intézmény vagy cég legfőbb vezetője.", "Nagy felelőssége van.", "Titkárnője is van.", "Stratégiai döntéseket hoz.", "Iskolának vagy kórháznak is van.", "Rektor az egyetemen."]},
+    {word:"ALKOTMÁNY", category:"Dokumentum", difficulty:"Extra Nehéz", hints:["Egy állam jogrendszerének alapja.", "Magyarországon ma Alaptörvénynek hívják.", "Meghatározza a polgárok jogait és kötelességeit.", "Az ünnepélyes esküt erre teszik.", "A bíróság is ezt védi.", "Az USA-é az egyik legrégebbi."]},
+    {word:"MINISZTERELNÖK", category:"Pozíció", difficulty:"Extra Nehéz", hints:["A kormány feje.", "Végrehajtó hatalmat gyakorol.", "A parlamentnek felelős.", "Más néven kormányfő.", "Ő vezeti a kormányüléseket.", "A választások győztese lesz."]},
+    {word:"ELNÖK", category:"Pozíció", difficulty:"Extra Nehéz", hints:["Egy ország vagy szervezet első embere.", "Lehet köztársasági vagy cég-.", "Képviseli az országot.", "Az USA-ban nagy a hatalma.", "Megválasztják.", "Az alelnök helyettesíti."]},
+    {word:"PROFESSZOR", category:"Foglalkozás", difficulty:"Extra Nehéz", hints:["A legmagasabb egyetemi oktatói cím.", "Előadásokat tart.", "Kutatómunkát végez.", "A diákok gyakran tisztelik.", "Lehet szórakozott.", "A doktorátus után következik."]},
+    {word:"POLGÁRMESTER", category:"Pozíció", difficulty:"Extra Nehéz", hints:["Egy város vagy falu vezetője.", "A helyi önkormányzatot irányítja.", "A lakosok választják meg.", "Hivatala van a városházán.", "A település fejlődéséért felelős.", "Esküvőn is összeadhat."]},
+    {word:"SZABADSÁG", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Korlátozásoktól mentes állapot.", "Petőfi versében a szerelem előtt áll.", "Lehet sajtó-, szólás- vagy vallás-.", "A szobor New Yorkban áll.", "A börtön ellentéte.", "Demokratikus jog."]},
+    {word:"IGAZSÁG", category:"Fogalom", difficulty:"Extra Nehéz", hints:["A valósággal megegyező állítás.", "A hazugság ellentéte.", "A bíróság ezt keresi.", "Szolgáltatni kell.", "Lehet fájdalmas.", "A filozófusok sokat töprengenek rajta."]},
+    {word:"FEJLŐDÉS", category:"Folyamat", difficulty:"Extra Nehéz", hints:["Előrehaladás, javulás.", "A gazdaság is tud ilyet.", "A gyermek végigmegy rajta.", "A technika folyamatosan ezt teszi.", "A stagnálás ellentéte.", "Az evolúció is ez."]},
+    {word:"TÁRSADALOM", category:"Közösség", difficulty:"Extra Nehéz", hints:["Emberek szervezett közössége.", "Vannak írott és íratlan szabályai.", "Rétegekből áll.", "A szociológia vizsgálja.", "Lehet nyitott vagy zárt.", "A kultúra határozza meg."]},
+    {word:"KULTÚRA", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Egy közösség szellemi és anyagi értékeinek összessége.", "Beletartozik a művészet, a zene, a nyelv.", "Országonként eltérő.", "A civilizáció alapja.", "Lehet magas- vagy tömeg-.", "A hagyományok a részei."]},
+    {word:"KORMÁNY", category:"Testület", difficulty:"Extra Nehéz", hints:["Egy ország végrehajtó hatalma.", "Miniszterekből áll.", "A miniszterelnök vezeti.", "Az autóban is van.", "Döntéseket hoz és törvényeket hajt végre.", "Az ellenzék kritizálja."]},
+    {word:"DEMONSTRÁCIÓ", category:"Esemény", difficulty:"Extra Nehéz", hints:["Tüntetés, felvonulás.", "Tömeges véleménynyilvánítás.", "Transzparenseket visznek.", "Lehet békés vagy erőszakos.", "Engedélyköteles lehet.", "Gyakran valami ellen tiltakoznak."]},
+    {word:"VÁLASZTÁS", category:"Esemény", difficulty:"Extra Nehéz", hints:["Döntéshozatal szavazással.", "Lehet országgyűlési vagy önkormányzati.", "A polgárok leadják a voksukat.", "Kampány előzi meg.", "A demokrácia alapja.", "A győztes alakíthat kormányt."]},
+    {word:"KÖRNYEZET", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Élő és élettelen dolgok összessége körülöttünk.", "Védeni kell.", "A szennyezés károsítja.", "A szelektív hulladékgyűjtés segíti.", "Lehet természetes vagy épített.", "A globális felmelegedés fenyegeti."]},
+    {word:"TECHNOLÓGIA", category:"Terület", difficulty:"Extra Nehéz", hints:["Gyakorlati tudást és eszközöket jelent.", "Folyamatosan fejlődik.", "Az okostelefon is a része.", "Megkönnyíti az életünket.", "Lehet digitális vagy analóg.", "A tudományos felfedezéseket alkalmazza."]},
+    {word:"GAZDASÁG", category:"Terület", difficulty:"Extra Nehéz", hints:["Termelés, elosztás és fogyasztás rendszere.", "Lehet piac- vagy terv-.", "A GDP méri a teljesítményét.", "Infláció és munkanélküliség jellemzi.", "A tőzsde a része.", "A pénzügyminiszter felel érte."]},
+    {word:"EGÉSZSÉG", category:"Állapot", difficulty:"Extra Nehéz", hints:["A testi és lelki jólét állapota.", "A betegség ellentéte.", "Meg kell őrizni.", "A sport és a táplálkozás hozzájárul.", "Az orvosok ezen őrködnek.", "A legnagyobb kincs."]},
+    {word:"OKTATÁS", category:"Terület", difficulty:"Extra Nehéz", hints:["Tudás és készségek átadása.", "Az iskola a színtere.", "Lehet alap-, közép- vagy felsőfokú.", "A tanárok végzik.", "A jövő záloga.", "A minisztérium irányítja."]},
+    {word:"MŰVÉSZET", category:"Terület", difficulty:"Extra Nehéz", hints:["Szépség és érzelmek kifejezése.", "Ágai a festészet, zene, irodalom.", "A múzeumokban és galériákban látható.", "Lehet absztrakt vagy realista.", "Az alkotója a művész.", "Inspirációt igényel."]},
+    {word:"INFLÁCIÓ", category:"Gazdaság", difficulty:"Extra Nehéz", hints:["A pénz értékének romlása.", "Az árak általános emelkedése.", "Százalékban mérik.", "A jegybank küzd ellene.", "Magas értéke gazdasági probléma.", "A fizetések vásárlóerejét csökkenti."]},
+    {word:"BERUHÁZÁS", category:"Gazdaság", difficulty:"Extra Nehéz", hints:["Pénz befektetése jövőbeli haszon reményében.", "Lehet állami vagy magán.", "Új gyárat építeni ilyen.", "Munkahelyeket teremt.", "Növeli a termelést.", "A gazdasági növekedés motorja."]},
+    {word:"CIVILIZÁCIÓ", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Fejlett emberi társadalom.", "Jellemzője a városok, az írás és a kormányzat.", "Lehet ókori vagy modern.", "A barbárság ellentéte.", "A kultúra és a technológia hozza létre.", "Az egyiptomi és a római is ilyen volt."]},
+    {word:"FILOZÓFIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["A bölcsesség szeretete.", "Az élet nagy kérdéseivel foglalkozik.", "Platón és Arisztotelész művelte.", "Az etika és a logika a részei.", "Nem ad konkrét válaszokat, inkább kérdéseket tesz fel.", "Gondolkodásra késztet."]},
+    {word:"PSZICHOLÓGIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["A lélek és a viselkedés tudománya.", "Freud az egyik leghíresebb alakja.", "A depresszióval is foglalkozik.", "A pszichológus műveli.", "Vizsgálja az érzelmeket és a gondolkodást.", "Terápiát alkalmaz."]},
+    {word:"ARCHITEKTÚRA", category:"Művészet", difficulty:"Extra Nehéz", hints:["Az építészet művészete.", "Épületek tervezésével foglalkozik.", "Lehet gótikus vagy barokk.", "Az építész műveli.", "A funkció és a forma egysége.", "Híres példája a Sydney-i Operaház."]},
+    {word:"INFORMATIKA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Az információ feldolgozásával foglalkozik.", "A számítógép az alapja.", "A programozás a része.", "A szoftverek és hardverek tudománya.", "Az adatok tárolása és továbbítása.", "A mai világ alapja."]},
+    {word:"KAPITALIZMUS", category:"Gazdasági rendszer", difficulty:"Extra Nehéz", hints:["A magántulajdonon és a szabad piacon alapul.", "A profit a fő mozgatórugója.", "A kommunizmus ellentéte.", "Jellemzője a verseny.", "Adam Smith a teoretikusa.", "A legtöbb nyugati országban ez van."]},
+    {word:"DEMOKRÁCIA", category:"Államforma", difficulty:"Extra Nehéz", hints:["A népuralmon alapuló rendszer.", "A választások központi szerepet játszanak.", "A hatalmi ágak szétválasztása jellemzi.", "A diktatúra ellentéte.", "Az ókori Athénban alakult ki.", "A szólásszabadság fontos eleme."]},
+    {word:"BÜROKRÁCIA", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Hivatalnoki rendszer.", "A túlzott papírmunka jellemzi.", "Lassú és nehézkes lehet.", "A hivatalokban találkozunk vele.", "A pecsét és az űrlap a szimbóluma.", "Kafka regényeinek gyakori témája."]},
+    {word:"GLOBALIZÁCIÓ", category:"Folyamat", difficulty:"Extra Nehéz", hints:["A világ országainak összefonódása.", "A kereskedelem és a kommunikáció hajtja.", "A McDonald's elterjedése is a jele.", "Kulturális és gazdasági hatásai vannak.", "A határok elmosódnak.", "Vannak előnyei és hátrányai."]},
+    {word:"PROPAGANDA", category:"Kommunikáció", difficulty:"Extra Nehéz", hints:["Egyoldalú, manipulatív tájékoztatás.", "Célja a közvélemény befolyásolása.", "A diktatúrák gyakran használják.", "Plakátokon és filmeken is terjedhet.", "Féligazságokkal operál.", "A kritikus gondolkodás az ellenszere."]},
+    {word:"KORRUPCIÓ", category:"Bűncselekmény", difficulty:"Extra Nehéz", hints:["Hatalommal való visszaélés anyagi haszonért.", "A megvesztegetés egy formája.", "Károsítja a gazdaságot és a bizalmat.", "A politikusokat gyakran vádolják ezzel.", "A kenőpénz a eszköze.", "Nehéz bizonyítani."]},
+    {word:"INFRASTRUKTÚRA", category:"Rendszer", difficulty:"Extra Nehéz", hints:["Az ellátórendszerek (utak, közművek) összessége.", "Egy ország működésének alapja.", "Beletartozik az úthálózat és az internet is.", "Fejlesztése sok pénzbe kerül.", "Lehet elavult vagy modern.", "Az autópálya is a része."]},
+    {word:"SZUVERENITÁS", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Egy állam függetlensége, önállósága.", "Azt jelenti, hogy saját maga hozza a döntéseit.", "Az EU-ban vita tárgya.", "A nemzeti lobogó is ezt szimbolizálja.", "Megsértése háborúhoz vezethet.", "A belső és külső függetlenséget jelenti."]},
+    {word:"PREVENCIÓ", category:"Orvoslás", difficulty:"Extra Nehéz", hints:["Megelőzés.", "Célja a betegségek elkerülése.", "A szűrővizsgálatok részei.", "Az egészséges életmód a legjobb formája.", "Olcsóbb, mint a gyógyítás.", "A védőoltás is ide tartozik."]},
+    {word:"LOGISZTIKA", category:"Terület", difficulty:"Extra Nehéz", hints:["Az áruk szállításának és raktározásának megszervezése.", "A webáruházaknak nagyon fontos.", "A kamionok és raktárak a részei.", "Célja a hatékonyság.", "A ellátási lánc menedzselése.", "Jól kell időzíteni."]},
+    {word:"MARKETING", category:"Terület", difficulty:"Extra Nehéz", hints:["A termékek eladásösztönzésével foglalkozik.", "A reklám a része.", "A 4P a modellje (Product, Price, Place, Promotion).", "Piackutatást végez.", "Célja a vásárlói igények kielégítése.", "A márkaépítés is a feladata."]},
+    {word:"KONFLIKTUS", category:"Esemény", difficulty:"Extra Nehéz", hints:["Érdekek, vélemények ütközése.", "Veszekedéshez vezethet.", "Lehet belső vagy külső.", "A megoldása kompromisszumot igényelhet.", "A háború a legdurvább formája.", "A diplomácia ezt hivatott kezelni."]},
+    {word:"INNOVÁCIÓ", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Újítás, új ötletek bevezetése.", "A technológiai fejlődés motorja.", "Lehet egy új termék vagy eljárás.", "A startupok erre építenek.", "Növeli a versenyképességet.", "A kreativitás eredménye."]},
+    {word:"HIERARCHIA", category:"Rendszer", difficulty:"Extra Nehéz", hints:["Alá- és fölérendeltségi viszonyok rendszere.", "A hadseregben és a cégeknél is van.", "Piramis alakban ábrázolható.", "A főnök van a csúcson.", "Meghatározza, ki kinek adhat utasítást.", "Lehet lapos vagy meredek."]},
+    {word:"ÖKOLÓGIA", category:"Tudomány", difficulty:"Extra Nehéz", hints:["Az élőlények és környezetük kapcsolatát vizsgálja.", "A környezetvédelem tudományos alapja.", "Az ökoszisztéma a tárgya.", "A tápláléklánc is ide tartozik.", "A biodiverzitás fontosságát hangsúlyozza.", "Az ember hatását is vizsgálja a természetre."]},
+    {word:"AMBÍCIÓ", category:"Tulajdonság", difficulty:"Extra Nehéz", hints:["Erős törekvés a sikerre, elismerésre.", "Nagy célokat tűz ki.", "A karrieristákat ez hajtja.", "Túlzásba vive káros is lehet.", "A lustaság ellentéte.", "Szorgalommal párosul."]},
+    {word:"NOSZTALGIA", category:"Érzés", difficulty:"Extra Nehéz", hints:["Vágyakozás a múlt iránt.", "Lehet édesbús érzés.", "Egy régi fénykép vagy dal válthatja ki.", "A 'régen minden jobb volt' érzése.", "A múlt megszépítése.", "A retro divat erre épít."]},
+    {word:"EMPÁTIA", category:"Képesség", difficulty:"Extra Nehéz", hints:["A másik ember érzelmeinek megértése, átérzése.", "Az együttérzés képessége.", "Fontos a szociális kapcsolatokban.", "Az önzőség ellentéte.", "Segít a konfliktusok megoldásában.", "Fejleszthető képesség."]},
+    {word:"PARADOXON", category:"Fogalom", difficulty:"Extra Nehéz", hints:["Látszólagos ellentmondás.", "Filozófiai vagy logikai fejtörő.", "A kakukktojás egy híres példa.", "A józan ésszel ellentétesnek tűnik.", "A 'hazudok' mondat is ilyen.", "Gondolkodásra késztet."]},
+    {word:"SZARKAZMUS", category:"Kommunikáció", difficulty:"Extra Nehéz", hints:["Gúnyos, csípős megjegyzés.", "Az irónia durvább formája.", "Gyakran az ellenkezőjét mondják, mint amit gondolnak.", "Sérthető lehet.", "Jellemzője a metsző hangnem.", "Chandler Bing a Jóbarátokból mestere volt."]},
+    {word:"ALGORITMUS", category:"Informatika", difficulty:"Extra Nehéz", hints:["Lépések sorozata egy probléma megoldására.", "A számítógépes programok alapja.", "A Google keresője is ezt használja.", "A recept is egyfajta ilyen.", "A hatékonysága fontos.", "A mesterséges intelligencia is ezen alapul."]},
+    {word:"KARANTÉN", category:"Eljárás", difficulty:"Extra Nehéz", hints:["Elkülönítés fertőző betegség miatt.", "A COVID-19 idején gyakori volt.", "Célja a továbbterjedés megakadályozása.", "Lehet házi vagy intézményi.", "A hajókat is alávetették régen.", "A középkorban a pestis miatt vezették be."]},
+    {word:"UNIVERZUM", category:"Fogalom", difficulty:"Extra Nehéz", hints:["A világmindenség, minden létező összessége.", "Csillagok, galaxisok, bolygók.", "Az ősrobbanással keletkezett.", "Folyamatosan tágul.", "Végtelennek gondoljuk.", "A csillagászat ezt kutatja."]},
+    {word:"METAFORA", category:"Irodalom", difficulty:"Extra Nehéz", hints:["Képes kifejezés, névátvitel.", "Két dolog azonosítása hasonlóság alapján.", "A 'gólyahír' egy példa rá.", "A költők gyakran használják.", "Szebbé, kifejezőbbé teszi a nyelvet.", "Nem szó szerint kell érteni."]},
+    {word:"SZIMBIÓZIS", category:"Biológia", difficulty:"Extra Nehéz", hints:["Két különböző faj kölcsönösen előnyös együttélése.", "A bohóchal és a tengeri rózsa esete.", "A zuzmó gombából és algából áll.", "Lehet szoros vagy laza.", "Az evolúció során alakult ki.", "Mindkét fél profitál belőle."]},
+    {word:"SZENÁTUS", category:"Testület", difficulty:"Extra Nehéz", hints:["Törvényhozó testület.", "Az ókori Rómában volt a legfőbb tanács.", "Az USA-ban a Kongresszus felsőháza.", "Tagjait választják.", "A szenátorok alkotják.", "Az egyetemeknek is van ilyen testülete."]},
+    {word:"FÖDERÁCIÓ", category:"Államforma", difficulty:"Extra Nehéz", hints:["Tagállamok szövetsége.", "Az USA és Németország is ilyen.", "A tagállamok bizonyos önállósággal bírnak.", "Van központi és tagállami kormány.", "A Star Trekben is van ilyen.", "Az unitárius állam ellentéte."]},
+    {word:"EKLEKTIKUS", category:"Melléknév", difficulty:"Extra Nehéz", hints:["Különböző stílusokat, irányzatokat vegyítő.", "Az építészetben gyakori.", "Nem eredeti, hanem válogató.", "Többféle forrásból merít.", "A zenei stílusok keverése is lehet ilyen.", "A budapesti bérházak egy része ilyen stílusú."]},
+    {word:"HIPOCHONDER", category:"Személy", difficulty:"Extra Nehéz", hints:["Olyan személy, aki túlzottan aggódik az egészségéért.", "Képzelt betegségekben szenved.", "Gyakran jár orvoshoz.", "Az interneten keresgél tüneteket.", "A legkisebb jelet is túlértékeli.", "Nehéz meggyőzni, hogy egészséges."]},
+    {word:"MELANKÓLIA", category:"Érzés", difficulty:"Extra Nehéz", hints:["Mély, lehangolt, szomorkás hangulat.", "A depresszió enyhébb formája.", "Az őszhöz gyakran társítják.", "A romantikus költők kedvelt témája.", "Vágyakozással és elmúlással kapcsolatos.", "Nem betegség, hanem hangulati állapot."]},
+    {word:"PERGAMEN", category:"Anyag", difficulty:"Extra Nehéz", hints:["Állati bőrből készült, írásra használt anyag.", "A papír elődje.", "A középkori kódexek erre íródtak.", "Tartós, de drága volt.", "Tekercs formájában tárolták.", "A holt-tengeri tekercsek is erre készültek."]},
+    {word:"KALLIGRÁFIA", category:"Művészet", difficulty:"Extra Nehéz", hints:["A díszes, szép kézírás művészete.", "Kínában és Japánban nagy hagyománya van.", "Speciális tollat vagy ecsetet használnak.", "A betűk esztétikájával foglalkozik.", "Régen a kódexmásolók művelték.", "Ma már hobbi vagy művészeti ág."]},
+    {word:"ENTRÓPIA", category:"Fizika", difficulty:"Extra Nehéz", hints:["A rendezetlenség mértéke egy rendszerben.", "A termodinamika második főtételében szerepel.", "Az univerzumban folyamatosan növekszik.", "A szoba magától nem lesz rendes, csak rendetlen.", "Az energia minőségének romlását is jelenti.", "A káosz felé mutat."]}
+];
         const wheelPuzzles = [
     { category: "Közmondás", puzzle: "ADDIG JÁR A KORSÓ A KÚTRA AMÍG EL NEM TÖRIK" },
     { category: "Film & Rendező", puzzle: "QUENTIN TARANTINO PULP FICTION" },
@@ -2578,7 +2950,6 @@
         const weeklyScoreDisplaySpan = document.querySelector('#weekly-score-display span');
         const insuranceDisplay = document.getElementById('insurance-display');
         const insuranceDisplayCount = document.getElementById('insurance-display-count');
-        const warehouseDisplay = document.getElementById('warehouse-display');
         const warehouseDisplayCount = document.getElementById('warehouse-display-count');
         const newHourNotification = document.getElementById('new-hour-notification');
         const bonusUnlockContainer = document.getElementById('bonus-unlock-container');
@@ -2662,25 +3033,30 @@
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
         
-        const JACKPOT_PRIZES = [
-            { id: 'JP1', desc: '4 óra ingyenes szöveges segítség', type: 'free_text_hints_timed' },
-            { id: 'JP2', desc: '4 óra ingyenes betű felfedés', type: 'free_letter_hints_timed' },
-            { id: 'JP3', desc: '2 óra Csőd-mentesség a keréken', type: 'wheel_bankrupt_immunity_timed' },
-            { id: 'JP4', desc: '2 óra ingyenes magánhangzók a keréken', type: 'wheel_free_vowels_timed' },
-            { id: 'JP5', desc: '1 óra Dupla Pont minden megfejtésért', type: 'double_points_timed' }
+                const JACKPOT_PRIZES = [
+            { id: 'JP1', desc: '24 óra ingyenes szöveges segítség', type: 'free_text_hints_timed' },
+            { id: 'JP2', desc: '24 óra ingyenes betű felfedés', type: 'free_letter_hints_timed' },
+            { id: 'JP3', desc: '24 óra Csőd-mentesség a keréken', type: 'wheel_bankrupt_immunity_timed' },
+            { id: 'JP4', desc: '24 óra ingyenes magánhangzók a keréken', type: 'wheel_free_vowels_timed' },
+            { id: 'JP5', desc: '24 óra Dupla Pont minden megfejtésért', type: 'double_points_timed' },
+            // Az új nyeremények helye itt lesz:
+            { id: 'JP6', desc: 'Azonnali 50,000 pont jutalom', type: 'instant_points_50k' },
+            { id: 'JP7', desc: 'FŐNYEREMÉNY: Azonnali 250,000 pont!', type: 'instant_points_250k' },
+            { id: 'JP8', desc: 'Ajándékcsomag: 3 Biztosítás a raktárba', type: 'add_insurances_3' },
+            { id: 'JP9', desc: 'Tipp-csomag: 5 ingyenes szöveges segítség a raktárba', type: 'add_free_hints_5' }
         ];
 
         const LOTTO_PRIZES_META = {
             daily: {
                 1: { prizeId: 'D1', title: "1 Találat", desc: "+1 ingyenes szöveges tipp" },
                 2: { prizeId: 'D2', title: "2 Találat", desc: "+5,000 pont" },
-                3: { prizeId: 'D3', title: "3 Találat", desc: "+1 Biztosítás a Szerencsekerékhez" },
+                3: { prizeId: 'D3', title: "3 Találat", desc: "+15 Biztosítás a Szerencsekerékhez" },
                 4: { prizeId: 'D4', title: "4 Találat", desc: "24 óra CSŐD-mentesség a Szerencsekeréken", type: 'bankrupt_immunity_daily' },
                 5: { prizeId: 'D5', title: "5 Találat", desc: "Aznapra korlátlan, ingyenes segítség az alapjátékban", type: 'unlimited_hints_daily' }
             },
             weekly: {
                 1: { prizeId: 'W1', title: "1 Találat", desc: "+250,000 pont" },
-                2: { prizeId: 'W2', title: "2 Találat", desc: "+5 Biztosítás a Szerencsekerékhez" },
+                2: { prizeId: 'W2', title: "2 Találat", desc: "+20 Biztosítás a Szerencsekerékhez" },
                 3: { prizeId: 'W3', title: "3 Találat", desc: "1 hétig dupla pont minden megfejtésért", type: 'double_points_weekly' },
                 4: { prizeId: 'W4', title: "4 Találat", desc: "1 hétig ingyenes Szerencsekerék játék", type: 'unlimited_wheel_weekly' },
                 5: { prizeId: 'W5', title: "5 Találat", desc: "FŐNYEREMÉNY: A Hét Főnyomozója Cím (véglegesen ingyenes tippek)", type: 'grand_detective' }
@@ -2688,7 +3064,13 @@
         };
         
 
-        const FUNNY_IDLE_MESSAGES = [ { title: "Türelmi idő", text: "Az informátorunk a következő órában jelentkezik újabb nyomokkal. Addig is..." }, { title: "Kávészünet a rendőrsön", text: "Még a legjobb nyomozóknak is jár egy fánk. Amíg eszel, a laborosok elemzik a bizonyítékokat. A következő adag..." }, { title: "Várakozás a sötét sikátorban", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő füles..." }, { title: "Akták rendezése", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet az irodádban. A papírmunka a legkeményebb dió. Új ügyek..." }, ];
+                const FUNNY_IDLE_MESSAGES = [ 
+            { title: "A nyomozás véget ért... egyelőre.", text: "Minden szálat felgöngyölítettél és a szerencsédet is próbára tetted. A következő ügy aktái hamarosan megérkeznek." }, 
+            { title: "Kávészünet a rendőrsön.", text: "Kiváló munka, nyomozó! Most dőlj hátra egy fánkkal. A laborosok már elemzik a következő óra bizonyítékait." }, 
+            { title: "Várakozás a sötét sikátorban.", text: "Árnyékba húzódtál, és a kapcsolatodra vársz. Azt súgta, a következő nagy fogáshoz szükséges füles hamarosan befut." }, 
+            { title: "Aktarendezés az irodában.", text: "Annyi ügyet megoldottál, hogy a főnök megkért, rakj rendet. A papírmunka a legkeményebb dió. De ne aggódj, újabb rejtélyek már úton vannak." }, 
+            { title: "Lehallgatás alatt...", text: "A technikusaink most állítják be a poloskákat. Légy türelemmel, a következő órában már hallani fogjuk, mit terveznek a rosszfiúk." } 
+        ];
         const RANDOM_GAME_MESSAGES = [
             "Ez az ügy keményebb, mint a kétnapos zsemle.", "Minden betű egy újabb nyom.", "A megérzésem azt súgja, jó úton jársz.",
             "Lassan összeáll a kép, mint egy puzzle.", "Csak egy hajszál választ el a megoldástól.", "Figyelj a részletekre, a tettes hibázni fog!",
@@ -2851,22 +3233,32 @@
             updateUIDisplays(); 
         }
         
-        function updateUIDisplays() {
+                function updateUIDisplays() {
             const stats = getWeeklyStats();
             if(!stats) return;
             
-            insuranceDisplayCount.textContent = stats.insurance || 0;
-            
+            const insuranceCount = stats.insurance || 0;
             const validPrizes = (stats.warehouse || []).filter(p => !p.expiry || p.expiry > Date.now());
+
             if (stats.warehouse && stats.warehouse.length !== validPrizes.length) {
                 stats.warehouse = validPrizes;
                 saveWeeklyStats(stats);
             }
-            warehouseDisplayCount.textContent = validPrizes.length;
-            updateWeeklyScoreDisplay(stats.totalScore);
-        }
+            const warehouseCount = validPrizes.length;
 
-        function showWheelMessage(category, options = {}) { 
+            // Főoldali ikonok frissítése
+            insuranceDisplayCount.textContent = insuranceCount;
+            warehouseDisplayCount.textContent = warehouseCount;
+
+            // Szerencsekerék felületén lévő ikonok frissítése (ha léteznek)
+            const wheelInsuranceEl = document.querySelector('.insurance-display-count-wheel');
+            const wheelWarehouseEl = document.querySelector('.warehouse-display-count-wheel');
+            if (wheelInsuranceEl) wheelInsuranceEl.textContent = insuranceCount;
+            if (wheelWarehouseEl) wheelWarehouseEl.textContent = warehouseCount;
+            
+            updateWeeklyScoreDisplay(stats.totalScore);
+          }   
+            function showWheelMessage(category, options = {}) { 
             clearTimeout(wheelMessageTimeout); 
             const messages = WHEEL_MESSAGES[category] || ["Hiba: Ismeretlen üzenet kategória."]; 
             let message = messages[Math.floor(Math.random() * messages.length)]; 
@@ -3555,12 +3947,13 @@
             return d.getFullYear() * 1000 + d.getMonth() * 50 + Math.floor(d.getDate() / 7);
         }
 
-        function checkResets() {
+                function checkResets() {
             const now = new Date();
             const today = now.toDateString();
             const currentWeekStart = getWeekStartDate(now);
             let stats = getWeeklyStats();
             
+            // Heti statisztikák nullázása
             if (!stats || stats.lastResetWeek !== currentWeekStart) {
                 stats = { 
                     totalScore: 200, 
@@ -3570,17 +3963,19 @@
                     freeVowels: 0,
                     activePrizes: [],
                     warehouse: [],
-                    isGrandDetective: false,
+                    isGrandDetective: stats.isGrandDetective || false, // A főnyeremény megmarad
                 };
             }
             stats.activePrizes = (stats.activePrizes || []).filter(p => !p.expiry || p.expiry > Date.now());
             saveWeeklyStats(stats);
             
-            if (!gameData.dailyLotto || gameData.dailyLotto.date !== today) {
+            // Napi lottó nullázása, de csak 18:00 után, hogy az eredmények látszódjanak
+            if ((!gameData.dailyLotto || gameData.dailyLotto.date !== today) && now.getHours() >= 18) {
                 gameData.dailyLotto = { date: today, tickets: [], winningNumbers: [], prizesEvaluated: false };
                 generateLottoNumbers('daily');
             }
 
+            // Heti lottó nullázása
             if (!gameData.weeklyLotto || gameData.weeklyLotto.week !== currentWeekStart) {
                 gameData.weeklyLotto = { week: currentWeekStart, tickets: [], winningNumbers: [], prizesEvaluated: false };
                 generateLottoNumbers('weekly');
@@ -3640,7 +4035,8 @@
                     modeLocked: Array(5).fill(false), secretCode: [], insurancesGainedThisHour: 0,
                     jackpotSpinsThisHour: 0, bonusUnlocked: false, currentWordIndex: 0, 
                     currentRow: 0, currentCol: 0, isGameOver: false,
-                    dailyLotto: oldDailyLotto, weeklyLotto: oldWeeklyLotto
+                    dailyLotto: oldDailyLotto, weeklyLotto: oldWeeklyLotto,
+                     wheelPlayedThisHour: false
                 };
 
                 let availableIndices = Array.from(Array(wordData.length).keys());
@@ -3671,6 +4067,7 @@
             }
             startSecretCodeFlasher();
             updateUIDisplays();
+            renderPurchasedTickets();
         }
 
         function loadWord(indexInSet) {
@@ -3751,20 +4148,33 @@
                 targetInput.dataset.isFlashing = 'false'; 
             }, 2000); 
         }
-        function submitGuess() {
+                function submitGuess() {
             if (gameData.isGameOver) return;
             const wordObject = wordData[gameData.hourlySet[gameData.currentWordIndex]];
+            const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
+            
+            // Hibás sor ellenőrzése
             if (gameData.currentCol !== wordObject.word.length) {
-                // If not all letters are filled, check if it's because of pre-revealed letters
-                 const currentRowEl = document.getElementById(`row-${gameData.currentRow}`);
-                 const filledCells = Array.from(currentRowEl.children).filter(cell => cell.querySelector('.cell-front').textContent !== '').length;
-                 if(filledCells < wordObject.word.length) return;
+                currentRowEl.classList.add('shake');
+                setTimeout(() => currentRowEl.classList.remove('shake'), 600);
+                return;
             }
-            const guess = Array.from(document.getElementById(`row-${gameData.currentRow}`).children).map(cell => cell.querySelector('.cell-front').textContent).join('');
+
+            const guess = Array.from(currentRowEl.children).map(cell => cell.querySelector('.cell-front').textContent).join('');
             if (guess.length !== wordObject.word.length) return;
             
             flipRow(guess, wordObject.word.toUpperCase());
+
             if (guess === wordObject.word.toUpperCase()) {
+                // GYŐZELMI ANIMÁCIÓ INDÍTÁSA
+                setTimeout(() => {
+                    const winningRow = document.getElementById(`row-${gameData.currentRow}`);
+                    winningRow.classList.add('win-dance');
+                    Array.from(winningRow.children).forEach((cell, i) => {
+                        cell.querySelector('.cell-inner').style.animationDelay = `${i * 0.1}s`;
+                    });
+                }, 300 * wordObject.word.length); // Megvárjuk a flip animáció végét
+
                 gameData.isGameOver = true;
                 clearInterval(timerInterval);
                 clearInterval(randomMessageInterval);
@@ -4388,16 +4798,24 @@
             randomMessageInterval = setInterval(showRandomGameMessage, 30000 + Math.random() * 15000); 
         }
 
-        function checkAndDisplayIdleState() { 
+                function checkAndDisplayIdleState() { 
             clearInterval(idleCountdownInterval); 
-            const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed' || (p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) < RETRY_COOLDOWN_MS)); 
-            if (allWordsCompleted) { 
+            // A FELTÉTEL MÓDOSÍTÁSA:
+            // Most már azt is nézzük, hogy az alapjáték KÉSZ VAN-E, ÉS a szerencsekerékkel is JÁTSZOTT-E MÁR.
+            const allWordsCompleted = gameData.progress.every(p => p.status === 'solved' || p.status === 'failed-revealed'); 
+            const showIdleScreen = allWordsCompleted && gameData.wheelPlayedThisHour;
+
+            if (showIdleScreen) {  
                 mainGameWrapper.style.display = 'none';
-                idleMessageContainer.style.display = 'block'; 
+                lottoPageWrapper.style.display = 'none'; // Lottó oldalt is elrejtjük
+                idleMessageContainer.style.display = 'flex'; // 'flex'-re állítjuk a jobb középre igazításért
                 clearInterval(randomMessageInterval); 
                 clearInterval(secretCodeFlasherInterval); 
+
                 let msg = FUNNY_IDLE_MESSAGES[getCurrentHourSeed() % FUNNY_IDLE_MESSAGES.length]; 
-                idleMessageContainer.innerHTML = `<h3>${msg.title}</h3><p>${msg.text}</p><span id="countdown-timer"></span>`; 
+                idleMessageContainer.querySelector('h3').textContent = msg.title;
+                idleMessageContainer.querySelector('p').textContent = msg.text;
+
                 const countdownElement = document.getElementById('countdown-timer'); 
                 function updateCountdown() { 
                     const now = new Date(); 
@@ -4408,13 +4826,14 @@
                     nextHour.setMilliseconds(0); 
                     const timeLeft = nextHour - now; 
                     if (timeLeft < 0) { 
-                        clearInterval(idleCountdownInterval); 
-                        countdownElement.textContent = "Bármelyik pillanatban!"; 
+                        clearInterval(idleCountdownInterval);
+                        countdownElement.textContent = "Az új feladványok bármelyik pillanatban betölthetők!"; 
+                        location.reload(); // Automatikus újratöltés, ha lejárt az idő
                         return; 
                     } 
                     const minutes = Math.floor((timeLeft / 1000 / 60) % 60).toString().padStart(2, '0'); 
                     const seconds = Math.floor((timeLeft / 1000) % 60).toString().padStart(2, '0'); 
-                    countdownElement.textContent = `pontosan ${minutes} perc ${seconds} másodperc múlva érkeznek!`; 
+                    countdownElement.textContent = `Új ügyek feloldása pontosan: ${minutes} perc ${seconds} másodperc múlva.`; 
                 } 
                 updateCountdown(); 
                 idleCountdownInterval = setInterval(updateCountdown, 1000); 
@@ -4424,18 +4843,17 @@
                 idleMessageContainer.style.display = 'none'; 
                 return false; 
             } 
-        }
-        
-        function addPrizeToWarehouse(type, desc, isJackpot = false) {
+        }        
+               function addPrizeToWarehouse(type, desc, isJackpot = false) {
             let stats = getWeeklyStats();
             if (!stats) return;
             if (!stats.warehouse) stats.warehouse = [];
 
             let expiry;
             if (isJackpot) {
-                const endOfDay = new Date();
-                endOfDay.setHours(23, 59, 59, 999);
-                expiry = endOfDay.getTime();
+                // Módosítás: a nyeremény mostantól 24 óráig érvényes az aktiválástól számítva.
+                // Az expiry-t az activatePrize funkció fogja beállítani.
+                expiry = undefined; // Az expiry-t majd aktiváláskor állítjuk be.
             } else if (type === 'weekly_joker') {
                 const now = new Date();
                 const endOfWeek = new Date(getWeekStartDate(now));
@@ -4447,17 +4865,12 @@
                 id: type + '_' + Date.now(),
                 type: type,
                 description: desc,
-                expiry: expiry // Can be undefined for non-expiring prizes
+                // A 'jackpot' flag hozzáadása, hogy tudjuk, meddig érvényes
+                isJackpotPrize: isJackpot 
             };
-
-            // This logic is for prizes that grant items, not timed effects
-            if(type === 'amnesty' || type === 'point_rain' || type === 'code_breaker') {
-                applyCardEffect({ type: type, label: desc }); // Re-use card effect logic
-                alert(`Nyeremény aktiválva: ${desc}`);
-            } else {
-                 stats.warehouse.push(newPrize);
-                 alert(`Raktárba került: ${desc}`);
-            }
+           
+            stats.warehouse.push(newPrize);
+            alert(`Raktárba került: ${desc}`);
            
             saveWeeklyStats(stats);
             updateUIDisplays();
@@ -4498,20 +4911,64 @@
             });
         }
 
-        function activatePrize(prizeId) {
+                function activatePrize(prizeId) {
             let stats = getWeeklyStats();
             const prizeIndex = (stats.warehouse || []).findIndex(p => p.id === prizeId);
             if (prizeIndex === -1) return;
 
             const [prize] = stats.warehouse.splice(prizeIndex, 1);
             
+            // Új azonnali nyeremények kezelése
+            switch(prize.type) {
+                case 'instant_points_50k':
+                    addPointsToWeeklyScore(50000);
+                    alert(`Jóváírtunk 50,000 pontot!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return; // Kilépünk, mert ez nem egy aktív bónusz
+                case 'instant_points_250k':
+                    addPointsToWeeklyScore(250000);
+                    alert(`FŐNYEREMÉNY! Jóváírtunk 250,000 pontot!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+                case 'add_insurances_3':
+                    updateInsuranceCount(3);
+                    alert(`Jóváírtunk 3 biztosítást!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+                case 'add_free_hints_5':
+                    stats.freeHints = (stats.freeHints || 0) + 5;
+                    alert(`Jóváírtunk 5 ingyenes szöveges segítséget!`);
+                    saveWeeklyStats(stats);
+                    updateUIDisplays();
+                    renderWarehouse();
+                    warehouseOverlay.classList.remove('visible');
+                    return;
+            }
+
+            // Meglévő időzített bónuszok kezelése
             if(!stats.activePrizes) stats.activePrizes = [];
             
             stats.activePrizes = stats.activePrizes.filter(p => !p.expiry || p.expiry > Date.now());
 
+            // A jackpot nyeremények mostantól 24 órás lejárattal aktiválódnak
+            if (prize.isJackpotPrize) {
+                prize.expiry = Date.now() + 24 * 60 * 60 * 1000;
+            }
+
             const existingPrizeIndex = stats.activePrizes.findIndex(p => p.type === prize.type);
             if(existingPrizeIndex > -1){
-                stats.activePrizes[existingPrizeIndex].expiry = prize.expiry ? Math.max(stats.activePrizes[existingPrizeIndex].expiry, prize.expiry) : undefined;
+                // Ha már van ilyen aktív bónusz, összeadjuk a lejárati időket
+                const existingExpiry = stats.activePrizes[existingPrizeIndex].expiry || Date.now();
+                stats.activePrizes[existingPrizeIndex].expiry = existingExpiry + (24 * 60 * 60 * 1000);
             } else {
                  stats.activePrizes.push(prize);
             }
@@ -4537,39 +4994,107 @@
             lottoData.winningNumbers = winningNumbers.sort((a, b) => a - b);
             saveGame();
         }
-
-        function showLottoPage(type) {
+                    function showLottoPage(type) {
             currentLottoType = type;
             const lottoData = gameData[type + 'Lotto'];
             if (!lottoData) return;
 
-            // Switch views
             mainGameWrapper.style.display = 'none';
             lottoPageWrapper.style.display = 'flex';
             
-            // Populate header
             lottoPageTitle.textContent = type === 'daily' ? 'Napi Lottó' : 'Heti Lottó';
             lottoPageTitle.style.color = type === 'daily' ? 'var(--title-color)' : 'var(--surprise-color)';
             lottoPageLogo.innerHTML = document.querySelector(`#${type}-lotto-container .lotto-logo-svg`).innerHTML;
 
-            // Populate info
             const score = getWeeklyScore();
-            const cost = type === 'daily' ? (lottoData.tickets.length > 0 ? 1000 : 0) : 100000;
-            let infoHTML = `Egy szelvény ára: <strong>${cost.toLocaleString()} pont</strong>. <br> Jelenlegi pontszámod: ${score.toLocaleString()} pont.`;
-            if (score < cost) {
-                infoHTML += `<br><span class="needed-points">Még ${ (cost - score).toLocaleString() } pontot kell gyűjtened.</span>`;
+            let infoHTML = '';
+            let purchaseDisabled = false;
+
+            // TELJESEN ÚJ, JAVÍTOTT LOGIKA
+            if (type === 'daily') {
+                const ticketsBought = lottoData.tickets.length;
+                if (ticketsBought >= 5) {
+                    infoHTML = `Mára elfogyott az összes szelvényed. Térj vissza holnap!`;
+                    purchaseDisabled = true;
+                } else {
+                    const ticketsLeft = 5 - ticketsBought;
+                    if (ticketsBought === 0) {
+                        infoHTML = `Ma még <strong>${ticketsLeft}</strong> szelvényt vehetsz. <br> Az első szelvényed ma <strong>INGYENES</strong>!`;
+                    } else {
+                        infoHTML = `Ma még <strong>${ticketsLeft}</strong> szelvényt vehetsz. <br> Egy szelvény ára: <strong>1,000 pont</strong>.`;
+                    }
+                }
+            } else { // Heti lottó logikája (változatlan)
+                 const cost = 100000;
+                 infoHTML = `Egy szelvény ára: <strong>${cost.toLocaleString()} pont</strong>.`;
+                 if (score < cost) {
+                    infoHTML += `<br><span class="needed-points">Még ${ (cost - score).toLocaleString() } pontot kell gyűjtened.</span>`;
+                 }
             }
+
+            infoHTML += `<br> Jelenlegi pontszámod: ${score.toLocaleString()} pont.`;
             lottoPageInfo.innerHTML = infoHTML;
-            
-            // Populate prizes
+
             lottoPagePrizesList.innerHTML = '';
             Object.values(LOTTO_PRIZES_META[type]).forEach(prize => {
                 lottoPagePrizesList.innerHTML += `<li><strong>${prize.title}:</strong> ${prize.desc}</li>`;
             });
 
+            // Gombok és a grid letiltása, ha már nem lehet vásárolni
+            const controlsDisabled = purchaseDisabled;
+            lottoPageGrid.style.pointerEvents = controlsDisabled ? 'none' : 'auto';
+            lottoPageGrid.style.opacity = controlsDisabled ? 0.5 : 1;
+            submitLottoButtonPage.style.display = controlsDisabled ? 'none' : 'block';
+
             lottoPageMessage.textContent = '';
             selectedLottoNumbers = [];
             renderLottoPageGrid();
+        }
+               // ...
+
+        // A függvény definícióját kivettük a hideLottoPage-ből és ide, a globális térbe helyeztük.
+        function renderPurchasedTickets() {
+            ['daily', 'weekly'].forEach(type => {
+                const lottoData = gameData[type + 'Lotto'];
+                const container = document.getElementById(type + '-tickets-display');
+                
+                if (!container) return;
+                container.innerHTML = ''; 
+                if (!lottoData || !lottoData.tickets || lottoData.tickets.length === 0) return;
+
+                const drawHappened = lottoData.prizesEvaluated;
+                const winningNumbers = new Set(lottoData.winningNumbers);
+
+                lottoData.tickets.forEach((ticketData, index) => {
+                    const ticketWrapper = document.createElement('div');
+                    ticketWrapper.className = 'purchased-ticket-wrapper'; 
+
+                    const purchaseDate = new Date(ticketData.purchaseTimestamp);
+                    const formattedDate = `${purchaseDate.getFullYear()}. ${String(purchaseDate.getMonth() + 1).padStart(2, '0')}. ${String(purchaseDate.getDate()).padStart(2, '0')}. ${String(purchaseDate.getHours()).padStart(2, '0')}:${String(purchaseDate.getMinutes()).padStart(2, '0')}`;
+                    
+                    const ticketRow = document.createElement('div');
+                    ticketRow.className = 'lotto-ticket-row';
+                    
+                    let html = `<span class="lotto-ticket-label">#${index + 1} (${formattedDate})</span>`;
+                    
+                    ticketData.numbers.forEach(num => {
+                        const isMatch = drawHappened && winningNumbers.has(num);
+                        html += `<div class="lotto-ball ${isMatch ? 'match' : ''}">${num}</div>`;
+                    });
+                    
+                    ticketRow.innerHTML = html;
+                    ticketWrapper.appendChild(ticketRow);
+
+                    if (drawHappened && ticketData.prize) {
+                        const prizeDisplay = document.createElement('div');
+                        prizeDisplay.className = 'lotto-ticket-prize-display';
+                        prizeDisplay.innerHTML = `<strong>Nyeremény:</strong> ${ticketData.prize.desc}`;
+                        ticketWrapper.appendChild(prizeDisplay);
+                    }
+                    
+                    container.appendChild(ticketWrapper);
+                });
+            });
         }
 
         function hideLottoPage() {
@@ -4578,7 +5103,7 @@
              checkAndDisplayIdleState();
         }
 
-        function renderLottoPageGrid() {
+ function renderLottoPageGrid() {
             const numberCount = currentLottoType === 'daily' ? 35 : 60;
             lottoPageGrid.innerHTML = '';
             lottoPageGrid.className = currentLottoType;
@@ -4608,107 +5133,132 @@
             updateLottoPageSelectionUI();
         }
         
-        function updateLottoPageSelectionUI() {
+                function updateLottoPageSelectionUI() {
             const remaining = 5 - selectedLottoNumbers.length;
             lottoPageSelectionInfo.textContent = remaining > 0 ? `Válassz még ${remaining} számot.` : `Kiválasztottad az 5 számot.`;
             submitLottoButtonPage.disabled = selectedLottoNumbers.length !== 5;
+
+            // --- ÚJ RÉSZ KEZDETE ---
+            const selectedNumbersEl = document.getElementById('lotto-page-selected-numbers');
+            if (selectedLottoNumbers.length > 0) {
+                // A számokat növekvő sorrendben jelenítjük meg a jobb átláthatóságért
+                const sortedNumbers = [...selectedLottoNumbers].sort((a, b) => a - b).join(', ');
+                selectedNumbersEl.innerHTML = `<strong>Nyerőszámaid:</strong> ${sortedNumbers}`;
+            } else {
+                selectedNumbersEl.innerHTML = ''; // Ha nincs kiválasztott szám, ürítjük a tartalmat
+            }
+            // --- ÚJ RÉSZ VÉGE ---
         }
 
-        function submitLottoTicketOnPage() {
+                        function submitLottoTicketOnPage() {
             const lottoData = gameData[currentLottoType + 'Lotto'];
             if (!lottoData) return;
 
+            // PONTOSÍTOTT KÖLTSÉGSZÁMÍTÁS
             let cost = 0;
             if (currentLottoType === 'daily') {
-                cost = lottoData.tickets.length > 0 ? 1000 : 0;
-            } else { 
+                const ticketsBought = lottoData.tickets.length;
+                // Csak akkor kerül 1000 pontba, ha NEM az első szelvényt veszi.
+                if (ticketsBought > 0) { 
+                    cost = 1000;
+                }
+            } else { // Heti lottó
                 cost = 100000;
             }
 
             if (getWeeklyScore() < cost) {
-                lottoPageMessage.textContent = `Nincs elég pontod!`;
+                lottoPageMessage.textContent = `Nincs elég pontod a szelvény feladásához! Szükséges: ${cost.toLocaleString()} pont.`;
                 return;
             }
 
+            submitLottoButtonPage.disabled = true;
+            lottoPageGrid.style.pointerEvents = 'none';
+            lottoPageGrid.style.opacity = 0.5;
+
+            // Pontlevonás a pontosan kiszámolt költséggel
             addPointsToWeeklyScore(-cost, true);
-            lottoData.tickets.push([...selectedLottoNumbers].sort((a,b)=>a-b));
+            
+            const newTicket = {
+                numbers: [...selectedLottoNumbers].sort((a,b)=>a-b),
+                purchaseTimestamp: Date.now(),
+                prize: null
+            };
+            lottoData.tickets.push(newTicket);
+
             saveGame();
-
-            lottoPageMessage.textContent = 'Szelvény sikeresen feladva! Sok szerencsét!';
-            selectedLottoNumbers = [];
+            
+            lottoPageMessage.textContent = cost === 0 ? 'Ingyenes szelvény sikeresen feladva! Sok szerencsét!' : 'Szelvény sikeresen feladva! Sok szerencsét!';
+            
             setTimeout(() => {
+                renderPurchasedTickets();
                 hideLottoPage();
-            }, 2000);
-        }
+                
+                submitLottoButtonPage.disabled = false;
+                lottoPageGrid.style.pointerEvents = 'auto';
+                lottoPageGrid.style.opacity = 1;
+                selectedLottoNumbers = [];
 
-        function evaluateLottoPrizes() {
+            }, 2000);
+        }        
+                            function evaluateLottoPrizes() {
             ['daily', 'weekly'].forEach(type => {
                 const lottoData = gameData[type + 'Lotto'];
+                // Csak akkor fut le, ha van kiértékelendő szelvény és a sorsolás még nem történt meg
                 if (!lottoData || lottoData.prizesEvaluated || lottoData.tickets.length === 0) return;
                 
                 const winningNumbers = new Set(lottoData.winningNumbers);
-                let allPrizes = [];
+                let anyPrizeWon = false;
 
-                lottoData.tickets.forEach(ticket => {
-                    const matches = ticket.filter(num => winningNumbers.has(num)).length;
+                lottoData.tickets.forEach((ticket, index) => {
+                    const matches = ticket.numbers.filter(num => winningNumbers.has(num)).length;
                     if (matches > 0) {
                          const prizeMeta = LOTTO_PRIZES_META[type][matches];
                          if (prizeMeta) {
-                            allPrizes.push({ matches, prizeMeta });
+                            // Minden nyertes szelvény nyereményét külön kezeljük
+                            awardLottoPrize(prizeMeta, type); 
+                            // Elmentjük a nyereményt a szelvény objektumába a későbbi megjelenítéshez
+                            gameData[type + 'Lotto'].tickets[index].prize = prizeMeta;
+                            anyPrizeWon = true;
                          }
                     }
                 });
                 
-                if(allPrizes.length === 0) {
-                    lottoData.prizesEvaluated = true;
-                    saveGame();
-                    return;
-                }
-                
-                if(allPrizes.length === 1) {
-                    awardLottoPrize(allPrizes[0].prizeMeta, type);
-                } else {
-                    displayPrizeChoice(allPrizes, type);
-                }
-
-                lottoData.prizesEvaluated = true;
+                lottoData.prizesEvaluated = true; // Megjelöljük, hogy a kiértékelés megtörtént
                 saveGame();
+                renderPurchasedTickets(); // Frissítjük a kijelzőt az új eredményekkel
+
+                if(anyPrizeWon) {
+                    alert(`Nyertél a ${type === 'daily' ? 'Napi' : 'Heti'} Lottón! Nézd meg a szelvényeidet és a Szerencse Raktáradat a részletekért!`);
+                }
             });
         }
 
         function awardLottoPrize(prizeMeta, type) {
              let stats = getWeeklyStats();
-             let warehouseDesc = prizeMeta.desc;
+             let prizeDescription = prizeMeta.desc;
              let expiry;
-             if (type === 'daily') {
-                expiry = new Date().getTime() + 24 * 60 * 60 * 1000;
-             } else {
-                const now = new Date();
-                const endOfWeek = new Date(getWeekStartDate(now));
-                endOfWeek.setDate(endOfWeek.getDate() + 7);
-                expiry = endOfWeek.getTime();
-             }
 
-             const prizePayload = { id: prizeMeta.prizeId + '_' + Date.now(), type: prizeMeta.type, description: prizeMeta.desc, expiry: expiry };
-
-             switch (prizeMeta.prizeId.slice(0, 1)) {
-                case 'D': // Daily
+             // Logika a nyeremények raktárba helyezéséhez vagy azonnali jóváírásához
+             switch (prizeMeta.type) {
+                // Azonnali pont/biztosítás jutalmak
+                case undefined: // Pl. 5000 pont, 1 biztosítás
                     if(prizeMeta.prizeId === 'D1') stats.freeHints = (stats.freeHints || 0) + 1;
                     else if(prizeMeta.prizeId === 'D2') addPointsToWeeklyScore(5000);
                     else if(prizeMeta.prizeId === 'D3') updateInsuranceCount(1);
-                    else stats.warehouse.push(prizePayload);
-                    break;
-                case 'W': // Weekly
-                    if(prizeMeta.prizeId === 'W1') addPointsToWeeklyScore(250000);
+                    else if(prizeMeta.prizeId === 'W1') addPointsToWeeklyScore(250000);
                     else if(prizeMeta.prizeId === 'W2') updateInsuranceCount(5);
-                    else if(prizeMeta.prizeId === 'W5') stats.isGrandDetective = true;
-                    else stats.warehouse.push(prizePayload);
+                    break;
+                // Végleges, account-szintű nyeremény
+                case 'grand_detective':
+                    stats.isGrandDetective = true;
+                    break;
+                // Minden más, ami aktiválható, a Raktárba kerül
+                default:
+                    addPrizeToWarehouse(prizeMeta.type, prizeDescription, false);
                     break;
              }
              saveWeeklyStats(stats);
-             alert(`Lottó nyeremény: ${prizeMeta.title}! ${prizeMeta.desc}`);
-        }
-        
+        }        
         function displayPrizeChoice(prizes, type) {
             const prizeChoiceOptions = document.getElementById('prize-choice-options');
             prizeChoiceOptions.innerHTML = '';
@@ -4725,50 +5275,109 @@
             prizeChoiceOverlay.classList.add('visible');
         }
         
-        function displayLottoResults() {
+                       function displayLottoResults() {
             lottoResultsArea.innerHTML = '';
-            ['daily', 'weekly'].forEach(type => {
-                const lottoData = gameData[type + 'Lotto'];
-                if (!lottoData || !lottoData.prizesEvaluated || lottoData.tickets.length === 0) return;
-
-                const container = document.createElement('div');
-                container.className = `lotto-results-container ${type}`;
-                container.innerHTML = `<h3 class="lotto-results-header">${type === 'daily' ? 'Napi' : 'Heti'} Lottó Eredmények</h3>`;
-                
-                const winningNumbersHTML = lottoData.winningNumbers.map(n => `<div class="lotto-ball">${n}</div>`).join('');
-                container.innerHTML += `<div class="winning-numbers-display">${winningNumbersHTML}</div>`;
-
-                const ticketDisplay = document.createElement('div');
-                ticketDisplay.className = 'player-ticket-display';
-                
-                lottoData.tickets.forEach((ticket, i) => {
-                    const matches = ticket.filter(n => lottoData.winningNumbers.includes(n)).length;
-                    const ticketRow = document.createElement('div');
-                    ticketRow.className = 'ticket-row';
-                    let ticketHTML = `<div class="ticket-info">Szelvény #${i+1}:</div>`;
-                    ticketHTML += ticket.map(n => `<div class="lotto-ball ${lottoData.winningNumbers.includes(n) ? 'match' : ''}">${n}</div>`).join('');
-                    ticketHTML += `<div class="ticket-info">${matches} találat</div>`;
-                    ticketRow.innerHTML = ticketHTML;
-                    ticketDisplay.appendChild(ticketRow);
-                });
-                
-                container.appendChild(ticketDisplay);
-                lottoResultsArea.appendChild(container);
-            });
-        }
-        
-        function updateLottoAvailability() {
             const now = new Date();
-            const isDrawTime = now.getHours() >= 19;
-            dailyLottoContainer.classList.toggle('disabled', isDrawTime);
-            weeklyLottoContainer.classList.toggle('disabled', isDrawTime);
+            const daysOfWeek = ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'];
+
+            // --- NAPI LOTTÓ MEGJELENÍTÉSE ---
+            const dailyLotto = gameData.dailyLotto;
+            if (dailyLotto && dailyLotto.winningNumbers && dailyLotto.winningNumbers.length > 0) {
+                const drawDate = new Date(dailyLotto.date);
+                
+                const displayStartDate = new Date(drawDate);
+                displayStartDate.setHours(19, 0, 0, 0);
+
+                const displayEndDate = new Date(drawDate);
+                displayEndDate.setDate(drawDate.getDate() + 1);
+                displayEndDate.setHours(18, 0, 0, 0);
+                
+                if (now >= displayStartDate && now < displayEndDate) {
+                    console.log("NAPI LOTTÓ: A megjelenítési időszak aktív, a számokat kiírom."); // DEBUG ÜZENET
+                    const container = document.createElement('div');
+                    container.className = 'lotto-results-container daily';
+                    
+                    const dayName = daysOfWeek[drawDate.getDay()];
+                    const formattedDate = `${drawDate.getFullYear()}. ${String(drawDate.getMonth() + 1).padStart(2, '0')}. ${String(drawDate.getDate()).padStart(2, '0')}.`;
+                    const headerText = `A napi lottó nyerőszámai ${formattedDate} ${dayName}:`;
+                    
+                    const winningNumbersHTML = dailyLotto.winningNumbers.map(n => `<div class="lotto-ball">${n}</div>`).join('');
+                    
+                    container.innerHTML = `
+                        <h3 class="lotto-results-header">${headerText}</h3>
+                        <div class="winning-numbers-display">${winningNumbersHTML}</div>
+                    `;
+                    lottoResultsArea.appendChild(container);
+                }
+            }
+
+            // --- HETI LOTTÓ MEGJELENÍTÉSE ---
+            const weeklyLotto = gameData.weeklyLotto;
+            if (weeklyLotto && weeklyLotto.winningNumbers && weeklyLotto.winningNumbers.length > 0) {
+                const weekStartDate = new Date(weeklyLotto.week);
+
+                const displayStartDate = new Date(weekStartDate);
+                displayStartDate.setDate(weekStartDate.getDate() + 6);
+                displayStartDate.setHours(19, 0, 0, 0);
+
+                const displayEndDate = new Date(displayStartDate);
+                displayEndDate.setDate(displayStartDate.getDate() + 1);
+                displayEndDate.setHours(18, 0, 0, 0);
+
+                if (now >= displayStartDate && now < displayEndDate) {
+                    console.log("HETI LOTTÓ: A megjelenítési időszak aktív, a számokat kiírom."); // DEBUG ÜZENET
+                    const container = document.createElement('div');
+                    container.className = 'lotto-results-container weekly';
+                    
+                    const drawDateForDisplay = new Date(displayStartDate);
+                    const dayName = daysOfWeek[drawDateForDisplay.getDay()];
+                    const formattedDate = `${drawDateForDisplay.getFullYear()}. ${String(drawDateForDisplay.getMonth() + 1).padStart(2, '0')}. ${String(drawDateForDisplay.getDate()).padStart(2, '0')}.`;
+                    const headerText = `A heti lottó nyerőszámai (${formattedDate} ${dayName}):`;
+                    
+                    const winningNumbersHTML = weeklyLotto.winningNumbers.map(n => `<div class="lotto-ball">${n}</div>`).join('');
+
+                    container.innerHTML = `
+                        <h3 class="lotto-results-header">${headerText}</h3>
+                        <div class="winning-numbers-display">${winningNumbersHTML}</div>
+                    `;
+                    lottoResultsArea.appendChild(container);
+                }
+            }
+        }        
+                function updateLottoAvailability() {
+            const now = new Date();
+            const hour = now.getHours();
+            const day = now.getDay(); // 0 = Vasárnap, 6 = Szombat
+
+            // Napi lottó felfüggesztése
+            const isDailyDrawTime = hour >= 19;
+            dailyLottoContainer.classList.toggle('disabled', isDailyDrawTime);
+            if (isDailyDrawTime) {
+                dailyLottoContainer.querySelector('p').textContent = 'A mai sorsolás lezajlott. Fogadás holnaptól lehetséges.';
+            } else {
+                dailyLottoContainer.querySelector('p').textContent = 'Tedd próbára a szerencséd! Az első szelvény ingyenes, a többi 1.000 pont.';
+            }
+
+            // Heti lottó felfüggesztése (csak vasárnap este 7 után)
+            const isWeeklyDrawTime = (day === 0 && hour >= 19);
+            weeklyLottoContainer.classList.toggle('disabled', isWeeklyDrawTime);
+             if (isWeeklyDrawTime) {
+                weeklyLottoContainer.querySelector('p').textContent = 'A heti sorsolás lezajlott. Fogadás hétfőtől lehetséges.';
+            } else {
+                weeklyLottoContainer.querySelector('p').textContent = 'Játssz a főnyereményért! Egy szelvény ára 100.000 pont.';
+            }
         }
 
-
-        warehouseDisplay.addEventListener('click', () => {
-            renderWarehouse();
-            warehouseOverlay.classList.add('visible');
-        });
+       // -- JAVÍTOTT KÓDRÉSZLET --
+// Kikeressük az ÖSSZES elemet, ami megnyithatja a raktárat
+const warehouseTriggers = document.querySelectorAll('.warehouse-display-trigger');
+// Mindegyikre rátesszük a kattintás-figyelőt
+warehouseTriggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        renderWarehouse();
+        warehouseOverlay.classList.add('visible');
+    });
+});
         closeWarehouseButton.addEventListener('click', () => {
             warehouseOverlay.classList.remove('visible');
         });
@@ -4860,6 +5469,8 @@
         closeWheelButton.addEventListener('click', () => {
             wheelGameOverlay.classList.remove('visible');
             updateUIDisplays();
+        gameData.wheelPlayedThisHour = true;
+            saveGame();
             checkAndDisplayIdleState();
             updateBonusUnlockUI();
         });
@@ -4896,18 +5507,39 @@
         loadTheme();
         initGame();
         
-        setInterval(() => { 
+                              setInterval(() => { 
             const now = new Date();
-            checkForNewHour();
-            updateLottoAvailability();
-            if (now.getMinutes() === 1 && now.getSeconds() < 5) {
+            const hour = now.getHours();
+            const day = now.getDay();
+
+            // 1. Reset és generálás ellenőrzése (csak az első 5 másodpercben percenként)
+            if (now.getSeconds() < 5) {
                 checkResets();
             }
-            if (now.getHours() === 19 && now.getMinutes() === 1 && now.getSeconds() < 5) {
+
+            // 2. Lottó elérhetőségének frissítése
+            updateLottoAvailability();
+
+            // 3. Kiértékelés (csak egyszer, 19:00 után)
+            const dailyLotto = gameData.dailyLotto;
+            if (hour >= 19 && dailyLotto && dailyLotto.date === now.toDateString() && !dailyLotto.prizesEvaluated) {
+                console.log("NAPI LOTTÓ: Kiértékelés indítása..."); // DEBUG ÜZENET
                 evaluateLottoPrizes();
-                displayLottoResults();
             }
+            const weeklyLotto = gameData.weeklyLotto;
+            if (day === 0 && hour >= 19 && weeklyLotto && !weeklyLotto.prizesEvaluated) {
+                console.log("HETI LOTTÓ: Kiértékelés indítása..."); // DEBUG ÜZENET
+                evaluateLottoPrizes();
+            }
+
+            // 4. Eredmények MEGJELENÍTÉSE (minden ciklusban)
+            displayLottoResults();
+
+            // 5. Új óra értesítés
+            checkForNewHour();
+
         }, 5000);
+
     });
     </script>
 </body>

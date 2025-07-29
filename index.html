@@ -3032,18 +3032,22 @@
         let wheelState = {};
         const FULL_ALPHABET = "AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVXYZ";
         const VOWELS = "AÁEÉIÍOÓÖŐUÚÜŰ";
-        
+
                 const JACKPOT_PRIZES = [
-            { id: 'JP1', desc: '24 óra ingyenes szöveges segítség', type: 'free_text_hints_timed' },
-            { id: 'JP2', desc: '24 óra ingyenes betű felfedés', type: 'free_letter_hints_timed' },
-            { id: 'JP3', desc: '24 óra Csőd-mentesség a keréken', type: 'wheel_bankrupt_immunity_timed' },
-            { id: 'JP4', desc: '24 óra ingyenes magánhangzók a keréken', type: 'wheel_free_vowels_timed' },
-            { id: 'JP5', desc: '24 óra Dupla Pont minden megfejtésért', type: 'double_points_timed' },
-            // Az új nyeremények helye itt lesz:
-            { id: 'JP6', desc: 'Azonnali 50,000 pont jutalom', type: 'instant_points_50k' },
-            { id: 'JP7', desc: 'FŐNYEREMÉNY: Azonnali 250,000 pont!', type: 'instant_points_250k' },
-            { id: 'JP8', desc: 'Ajándékcsomag: 3 Biztosítás a raktárba', type: 'add_insurances_3' },
-            { id: 'JP9', desc: 'Tipp-csomag: 5 ingyenes szöveges segítség a raktárba', type: 'add_free_hints_5' }
+            { id: 'JP_POINTS_25K', desc: 'Azonnali 25,000 pont jutalom', type: 'instant_points_25k', isJackpotPrize: true },
+            { id: 'JP_POINTS_75K', desc: 'Főnyeremény: Azonnali 75,000 pont!', type: 'instant_points_75k', isJackpotPrize: true },
+            { id: 'JP_INSURANCE_2', desc: 'Ajándékcsomag: +2 Biztosítás a raktárba', type: 'add_insurances_2', isJackpotPrize: true },
+            { id: 'JP_HINTS_3', desc: 'Tipp-csomag: 3 ingyenes szöveges segítség', type: 'add_free_hints_3', isJackpotPrize: true },
+            { id: 'JP_AMNESTY', desc: 'Amnesztia: 1 rontott szó várakozási idejének törlése', type: 'amnesty', isJackpotPrize: true },
+            { id: 'JP_TIME_BONUS_ALL', desc: 'Időbónusz: +60mp minden hátralévő időfutam feladványhoz', type: 'time_bonus', isJackpotPrize: true },
+            { id: 'JP_CODE_BREAKER', desc: 'Kódfejtő: Felfed egy számjegyet a napi titkos kódból', type: 'code_breaker', isJackpotPrize: true },
+            { id: 'JP_FREE_VOWELS_3', desc: 'Magánhangzó utalvány: 3 ingyenes magánhangzó a keréken', type: 'add_free_vowels_3', isJackpotPrize: true },
+            { id: 'JP_DAILY_LOTTO_FREE', desc: 'Lottószelvény: Egy ingyenes Napi Lottó szelvény', type: 'free_daily_lotto_ticket', isJackpotPrize: true },
+            { id: 'JP_BANKRUPT_IMMUNITY_1H', desc: 'Pajzs: 1 óra CSŐD-mentesség a Szerencsekeréken', type: 'wheel_bankrupt_immunity_timed_1h', isJackpotPrize: true },
+            { id: 'JP_DOUBLE_POINTS_1H', desc: 'Duplázó Bónusz: 1 óráig dupla pont minden megfejtésért', type: 'double_points_timed_1h', isJackpotPrize: true },
+            { id: 'JP_REVEAL_2_LETTERS', desc: 'Szuper Segítség: Azonnal felfed 2 betűt a mostani feladványban', type: 'reveal_2_letters_now', isJackpotPrize: true },
+            { id: 'JP_LUCKY_SPIN', desc: 'Szerencsés Pörgetés: A következő pörgetésed garantáltan nem CSŐD vagy FELEZŐ lesz', type: 'lucky_spin_next', isJackpotPrize: true },
+            { id: 'JP_WEEKLY_JOKER_1H', desc: 'Heti Joker: 1 óráig 50% kedvezmény minden tippre', type: 'weekly_joker_timed_1h', isJackpotPrize: true }
         ];
 
         const LOTTO_PRIZES_META = {
@@ -3349,7 +3353,7 @@
             wheelGameOverlay.classList.add('visible');
             checkAndDisplayIdleState();
         }
-        
+    
         function startNewRound() { 
             wheelState.currentRound++; 
             wheelState.roundScore = 0; 
@@ -3358,11 +3362,17 @@
             wheelState.isPoweringUp = false;
             wheelState.spinResult = null;
             wheelState.roundBankrupt = false;
-            wheelState.vowelsBoughtThisRound = 0;
+            // <<<--- ITT AZ ÚJ SOR --->>>
+            wheelState.vowelsBoughtThisRound = 0; // Nullázzuk a számlálót
+            
             wheelRoundDisplay.textContent = `${wheelState.currentRound}. KÖR`; 
-            const seed = getCurrentHourSeed() + wheelState.currentRound; 
-            const puzzleIndex = Math.floor(seededRandom(seed) * wheelPuzzles.length); 
+            
+            const dailyPuzzles = getOrGenerateDailyPuzzles();
+            const currentHour = new Date().getHours();
+            const puzzleRoundIndex = Math.min(wheelState.currentRound - 1, 2); 
+            const puzzleIndex = dailyPuzzles.sets[currentHour].puzzles[puzzleRoundIndex];
             wheelState.puzzle = wheelPuzzles[puzzleIndex]; 
+
             drawWheel(wheelState.currentRound); 
             setupPuzzleBoard(); 
             createAlphabetPanel(); 
@@ -3403,26 +3413,34 @@
             } 
         }
 
+                // TÖRÖLD A RÉGI handleAlphabetClick() FUNKCIÓT, ÉS CSERÉLD LE ERRE:
         function handleAlphabetClick(letter) {
             if (wheelState.isSpinning || wheelState.guessedLetters.includes(letter)) return;
             const isVowel = VOWELS.includes(letter);
-            const stats = getWeeklyStats();
-            const activeBonuses = (stats.activePrizes || []).filter(p => !p.expiry || p.expiry > Date.now());
-            const freeVowelsActive = activeBonuses.some(p => p.type === 'wheel_free_vowels_timed');
+            
+            // Ingyenes magánhangzó bónusz ellenőrzése
+            let stats = getWeeklyStats();
+            const hasFreeVowelBonus = (stats.freeVowels || 0) > 0;
 
             if (wheelState.gameState === 'choosing_vowel' && isVowel) {
-                if (freeVowelsActive) {
-                    guessLetter(letter);
+                if (hasFreeVowelBonus) {
+                    stats.freeVowels--;
+                    saveWeeklyStats(stats);
+                    alert("Felhasználtál egy ingyenes magánhangzót!");
+                    guessLetter(letter); // Ingyenes, azonnal tippelünk
                     return;
                 }
-                const cost = 250;
+
+                const cost = calculateVowelCost(); // Költség lekérése
                 const effectiveWinnings = wheelState.totalWinnings + wheelState.roundScore;
+
                 if (effectiveWinnings < cost) {
                     showWheelMessage('not_enough_points', { cost });
                     updateUIForGameState('start_round');
                     return;
                 }
-                if (confirm(`Biztosan veszel egy magánhangzót ${cost} pontért?`)) {
+                
+                if (confirm(`Biztosan megveszed a magánhangzót ${cost.toLocaleString('hu-HU')} pontért?`)) {
                     if (wheelState.roundScore >= cost) {
                         wheelState.roundScore -= cost;
                     } else {
@@ -3430,11 +3448,12 @@
                         wheelState.roundScore = 0;
                         wheelState.totalWinnings -= remainingCost;
                     }
-                    wheelState.vowelsBoughtThisRound++;
+                    wheelState.vowelsBoughtThisRound++; // <<<--- SZÁMLÁLÓ NÖVELÉSE --->>>
                     guessLetter(letter);
                 } else {
                     updateUIForGameState('start_round');
                 }
+
             } else if (wheelState.gameState === 'guess_consonant' && !isVowel) {
                 guessLetter(letter);
             }
@@ -3445,13 +3464,8 @@
                 if(wheelState.gameState === 'guess_consonant') showWheelMessage('must_guess_consonant');
                 return;
             };
-            const stats = getWeeklyStats();
-            const activeBonuses = (stats.activePrizes || []).filter(p => !p.expiry || p.expiry > Date.now());
-            const freeVowelsActive = activeBonuses.some(p => p.type === 'wheel_free_vowels_timed');
 
-            if (freeVowelsActive) {
-                 alert("Aktív bónuszod miatt a magánhangzók ingyenesek ebben a körben!");
-            }
+            const cost = calculateVowelCost();
             showWheelMessage('buy_vowel_prompt');
             updateUIForGameState('choosing_vowel');
         }
@@ -3671,15 +3685,9 @@
             stakeAmountEl.textContent = wheelState.initialStake.toLocaleString('hu-HU'); 
         }
 
-        function updateUIForGameState(state) {
+                function updateUIForGameState(state) {
             wheelState.gameState = state;
             const controls = document.getElementById('wheel-controls');
-            controls.style.display = 'none';
-            wheelDecisionControls.style.display = 'none';
-            closeWheelButton.style.display = 'none';
-            powerMeterContainer.style.pointerEvents = 'none';
-            wheelAlphabetPanel.querySelectorAll('.alphabet-key').forEach(k => k.disabled = true);
-        
             switch (state) {
                 case 'start_round':
                     controls.style.display = 'flex';
@@ -3688,6 +3696,16 @@
                     buyVowelButton.disabled = false;
                     powerMeterContainer.style.pointerEvents = 'auto';
                     wheelState.spinResult = null;
+                    
+                    // Gomb szövegének frissítése
+                    const cost = calculateVowelCost();
+                    const freeVowels = (getWeeklyStats().freeVowels || 0);
+                    if (freeVowels > 0) {
+                         buyVowelButton.textContent = `Magánhangzó (${freeVowels} INGYENES)`;
+                    } else {
+                         buyVowelButton.textContent = `Magánhangzó (${cost.toLocaleString('hu-HU')}p)`;
+                    }
+                    
                     break;
                 case 'choosing_vowel':
                     controls.style.display = 'flex';
@@ -4011,6 +4029,7 @@
             }
         }
         
+                // TÖRÖLD A RÉGI initGame() FUNKCIÓT, ÉS CSERÉLD LE ERRE:
         function initGame() {
             try {
                 const storedData = JSON.parse(localStorage.getItem('szonyomozo_progress'));
@@ -4024,37 +4043,43 @@
                 gameData = {};
             }
 
-            checkResets();
-            loadKeyboardSetting();
+            const dailyPuzzles = getOrGenerateDailyPuzzles();
+            const now = new Date();
+            const currentHour = now.getHours();
             const hourSeed = getCurrentHourSeed();
+
+            checkResets(); // Ezt a logikát meghagyjuk a heti és napi lottóhoz.
+            loadKeyboardSetting();
             
             if (!gameData.seed || gameData.seed !== hourSeed) {
                 const oldDailyLotto = gameData.dailyLotto;
                 const oldWeeklyLotto = gameData.weeklyLotto;
-                gameData = {
-                    seed: hourSeed, hourlySet: [], progress: [], timers: {}, gameModes: {},
-                    modeLocked: Array(5).fill(false), secretCode: [], insurancesGainedThisHour: 0,
-                    jackpotSpinsThisHour: 0, bonusUnlocked: false, currentWordIndex: 0, 
-                    currentRow: 0, currentCol: 0, isGameOver: false,
-                    dailyLotto: oldDailyLotto, weeklyLotto: oldWeeklyLotto,
-                     wheelPlayedThisHour: false
-                };
 
-                let availableIndices = Array.from(Array(wordData.length).keys());
-                let chosenIndices = [];
-                for (let i = 0; i < 5; i++) {
-                     if(availableIndices.length === 0) availableIndices = Array.from(Array(wordData.length).keys());
-                     const randomIndex = Math.floor(seededRandom(hourSeed + i) * availableIndices.length);
-                     chosenIndices.push(availableIndices.splice(randomIndex, 1)[0]);
-                }
-                gameData.hourlySet = chosenIndices;
+                const hourlySetForWords = dailyPuzzles.sets[currentHour].words;
+                
+                gameData = {
+                    seed: hourSeed, 
+                    hourlySet: hourlySetForWords, // Csak a szavakat tároljuk itt
+                    progress: Array(5).fill(null).map(() => ({status: 'pending', scored: false})), 
+                    timers: Array(5).fill(180), 
+                    gameModes: Array(5).fill('relax'),
+                    modeLocked: Array(5).fill(false), 
+                    secretCode: [], 
+                    insurancesGainedThisHour: 0,
+                    jackpotSpinsThisHour: 0, 
+                    bonusUnlocked: false, 
+                    currentWordIndex: 0, 
+                    currentRow: 0, 
+                    currentCol: 0, 
+                    isGameOver: false,
+                    dailyLotto: oldDailyLotto, 
+                    weeklyLotto: oldWeeklyLotto,
+                    wheelPlayedThisHour: false
+                };
 
                 for (let i = 0; i < 4; i++) {
                     gameData.secretCode.push(Math.floor(seededRandom(hourSeed + 200 + i) * 10));
                 }
-                gameData.progress = Array(5).fill(null).map(() => ({status: 'pending', scored: false}));
-                gameData.timers = Array(5).fill(180);
-                gameData.gameModes = Array(5).fill('relax');
                 saveGame();
             }
 
@@ -4254,7 +4279,16 @@
             if(activeBonuses.some(p => p.type === 'weekly_joker')) { finalCost = Math.round(finalCost * 0.5); }
             return finalCost;
         }
-
+            function calculateVowelCost() {
+            const vowelsBought = wheelState.vowelsBoughtThisRound || 0;
+            switch (vowelsBought) {
+                case 0: return 250;
+                case 1: return 250;
+                case 2: return 1000;
+                case 3: return 2000;
+                default: return 5000;
+            }
+        }
         function spendPointsForHint(isLetterHint = false) { 
             let stats = getWeeklyStats();
             const cost = calculateHintCost(isLetterHint);
@@ -4764,6 +4798,66 @@
             const now = new Date(); 
             return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate(); 
         }
+        function generateDailyPuzzles() {
+            console.log("Új nap, új feladványok generálása 24 órára...");
+            const todaySeed = getCurrentDaySeed();
+            
+            let availableWordIndices = Array.from(Array(wordData.length).keys());
+            let availablePuzzleIndices = Array.from(Array(wheelPuzzles.length).keys());
+            
+            const dailyPuzzles = {
+                date: new Date().toDateString(),
+                sets: {}
+            };
+
+            for (let hour = 0; hour < 24; hour++) {
+                const hourSeed = todaySeed + hour;
+                
+                // Alapjáték szavai (5 db)
+                let hourlyWords = [];
+                for (let i = 0; i < 5; i++) {
+                    if (availableWordIndices.length === 0) {
+                        console.warn("Elfogytak a szavak, a lista újraindul.");
+                        availableWordIndices = Array.from(Array(wordData.length).keys());
+                    }
+                    const randIndex = Math.floor(seededRandom(hourSeed + i) * availableWordIndices.length);
+                    hourlyWords.push(availableWordIndices.splice(randIndex, 1)[0]);
+                }
+
+                // Szerencsekerék feladványok (3 db)
+                let hourlyPuzzles = [];
+                for (let i = 0; i < 3; i++) {
+                     if (availablePuzzleIndices.length === 0) {
+                        console.warn("Elfogytak a kerék-feladványok, a lista újraindul.");
+                        availablePuzzleIndices = Array.from(Array(wheelPuzzles.length).keys());
+                    }
+                    const randIndex = Math.floor(seededRandom(hourSeed + 100 + i) * availablePuzzleIndices.length);
+                    hourlyPuzzles.push(availablePuzzleIndices.splice(randIndex, 1)[0]);
+                }
+
+                dailyPuzzles.sets[hour] = {
+                    words: hourlyWords,
+                    puzzles: hourlyPuzzles
+                };
+            }
+            
+            localStorage.setItem('szonyomozo_daily_puzzles', JSON.stringify(dailyPuzzles));
+            return dailyPuzzles;
+        }
+
+        function getOrGenerateDailyPuzzles() {
+            const todayString = new Date().toDateString();
+            try {
+                const storedPuzzles = JSON.parse(localStorage.getItem('szonyomozo_daily_puzzles'));
+                if (storedPuzzles && storedPuzzles.date === todayString) {
+                    return storedPuzzles;
+                }
+            } catch (e) {
+                // Hibás adat esetén töröljük és újrageneráljuk
+                localStorage.removeItem('szonyomozo_daily_puzzles');
+            }
+            return generateDailyPuzzles();
+        }
         function setGameMode(mode) {
             gameData.gameModes[gameData.currentWordIndex] = mode;
             gameData.modeLocked[gameData.currentWordIndex] = true;
@@ -4845,16 +4939,25 @@
                 return false; 
             } 
         }        
-               function addPrizeToWarehouse(type, desc, isJackpot = false) {
+        function addPrizeToWarehouse(type, desc, isJackpot = false) {
             let stats = getWeeklyStats();
             if (!stats) return;
             if (!stats.warehouse) stats.warehouse = [];
 
+            // 1. Raktárkapacitás ellenőrzése
+            const existingCount = stats.warehouse.filter(p => p.type === type).length;
+            if (existingCount >= 2) {
+                alert(`A Szerencse Raktárad már tele van ezzel a típusú nyereménnyel (${desc})! Kapsz helyette 5,000 pont vigaszdíjat.`);
+                addPointsToWeeklyScore(5000); // Vigaszdíj
+                updateUIDisplays();
+                return; // A funkció itt véget ér, nem adjuk hozzá a nyereményt.
+            }
+
+            // 2. Ha van hely, a nyeremény hozzáadása
             let expiry;
             if (isJackpot) {
-                // Módosítás: a nyeremény mostantól 24 óráig érvényes az aktiválástól számítva.
-                // Az expiry-t az activatePrize funkció fogja beállítani.
-                expiry = undefined; // Az expiry-t majd aktiváláskor állítjuk be.
+                // A jackpot nyeremények mostantól a típusuk alapján kapnak lejárati időt az aktiváláskor
+                expiry = undefined; 
             } else if (type === 'weekly_joker') {
                 const now = new Date();
                 const endOfWeek = new Date(getWeekStartDate(now));
@@ -4866,7 +4969,6 @@
                 id: type + '_' + Date.now(),
                 type: type,
                 description: desc,
-                // A 'jackpot' flag hozzáadása, hogy tudjuk, meddig érvényes
                 isJackpotPrize: isJackpot 
             };
            
@@ -4876,8 +4978,7 @@
             saveWeeklyStats(stats);
             updateUIDisplays();
         }
-
-        function renderWarehouse() {
+            function renderWarehouse() {
             let stats = getWeeklyStats();
             if (!stats) return;
             stats.warehouse = (stats.warehouse || []).filter(p => !p.expiry || p.expiry > Date.now());
@@ -4912,74 +5013,98 @@
             });
         }
 
-                function activatePrize(prizeId) {
+        function activatePrize(prizeId) {
             let stats = getWeeklyStats();
             const prizeIndex = (stats.warehouse || []).findIndex(p => p.id === prizeId);
             if (prizeIndex === -1) return;
 
+            // Kiveszzük a nyereményt a raktárból
             const [prize] = stats.warehouse.splice(prizeIndex, 1);
             
-            // Új azonnali nyeremények kezelése
+            // Azonnali, nem tárolandó nyeremények kezelése
             switch(prize.type) {
-                case 'instant_points_50k':
-                    addPointsToWeeklyScore(50000);
-                    alert(`Jóváírtunk 50,000 pontot!`);
-                    saveWeeklyStats(stats);
-                    updateUIDisplays();
-                    renderWarehouse();
-                    warehouseOverlay.classList.remove('visible');
-                    return; // Kilépünk, mert ez nem egy aktív bónusz
-                case 'instant_points_250k':
-                    addPointsToWeeklyScore(250000);
-                    alert(`FŐNYEREMÉNY! Jóváírtunk 250,000 pontot!`);
-                    saveWeeklyStats(stats);
-                    updateUIDisplays();
-                    renderWarehouse();
-                    warehouseOverlay.classList.remove('visible');
-                    return;
-                case 'add_insurances_3':
-                    updateInsuranceCount(3);
-                    alert(`Jóváírtunk 3 biztosítást!`);
-                    saveWeeklyStats(stats);
-                    updateUIDisplays();
-                    renderWarehouse();
-                    warehouseOverlay.classList.remove('visible');
-                    return;
-                case 'add_free_hints_5':
-                    stats.freeHints = (stats.freeHints || 0) + 5;
-                    alert(`Jóváírtunk 5 ingyenes szöveges segítséget!`);
-                    saveWeeklyStats(stats);
-                    updateUIDisplays();
-                    renderWarehouse();
-                    warehouseOverlay.classList.remove('visible');
-                    return;
+                case 'instant_points_25k':
+                    addPointsToWeeklyScore(25000);
+                    alert(`Jóváírtunk 25,000 pontot!`);
+                    break;
+                case 'instant_points_75k':
+                    addPointsToWeeklyScore(75000);
+                    alert(`FŐNYEREMÉNY! Jóváírtunk 75,000 pontot!`);
+                    break;
+                case 'add_insurances_2':
+                    updateInsuranceCount(2);
+                    alert(`Jóváírtunk 2 biztosítást!`);
+                    break;
+                case 'add_free_hints_3':
+                    stats.freeHints = (stats.freeHints || 0) + 3;
+                    alert(`Jóváírtunk 3 ingyenes szöveges segítséget!`);
+                    break;
+                case 'add_free_vowels_3':
+                    stats.freeVowels = (stats.freeVowels || 0) + 3;
+                    alert(`Kaptál 3 ingyenes magánhangzót a Szerencsekerékhez!`);
+                    break;
+                case 'reveal_2_letters_now':
+                    // Ez csak akkor működik, ha épp a Szerencsekerék játékban vagyunk
+                    if (wheelGameOverlay.classList.contains('visible') && !gameData.isGameOver) {
+                        alert("Azonnal felfedünk 2 betűt a feladványból!");
+                        revealRandomLetter(); // Első betű felfedése
+                        setTimeout(revealRandomLetter, 200); // Második betű felfedése kis késleltetéssel
+                    } else {
+                        alert("Ezt a nyereményt csak a Szerencsekerék játék közben tudod aktiválni. A biztonság kedvéért visszakerült a raktáradba.");
+                        stats.warehouse.push(prize); // Visszatesszük a nyereményt
+                    }
+                    break;
+                case 'free_daily_lotto_ticket':
+                    const lottoData = gameData.dailyLotto;
+                    if(lottoData) {
+                        lottoData.freeJackpotTickets = (lottoData.freeJackpotTickets || 0) + 1;
+                        alert("Nyertél egy ingyenes Napi Lottó szelvényt! A következő vásárlásod ingyenes lesz.");
+                    }
+                    break;
+                 case 'amnesty':
+                     const failedWordIndex = gameData.progress.findIndex(p => p.status === 'failed' && (Date.now() - (p.failTimestamp || 0)) > 0);
+                     if (failedWordIndex !== -1) {
+                          gameData.progress[failedWordIndex].status = 'pending';
+                          progress.failTimestamp = 0;
+                          clearInterval(cooldownIntervals[failedWordIndex]);
+                          delete cooldownIntervals[failedWordIndex];
+                          alert("Amnesztia! Egy rontott szavad várakozási ideje törölve!");
+                          renderWordTracker();
+                     } else {
+                          alert("Amnesztia! Jelenleg nincs rontott szavad, amit törölhetne. Visszakerült a raktárba.");
+                          stats.warehouse.push(prize);
+                     }
+                     break;
+
+                // Időzített vagy állapotot befolyásoló bónuszok (ezek bekerülnek az activePrizes-ba)
+                default:
+                    if(!stats.activePrizes) stats.activePrizes = [];
+                    stats.activePrizes = stats.activePrizes.filter(p => !p.expiry || p.expiry > Date.now());
+
+                    // Lejárati idő beállítása az aktiváláskor
+                    let durationMs = 0;
+                    if (prize.type.includes('_1h')) {
+                        durationMs = 60 * 60 * 1000; // 1 óra
+                    } else if (prize.isJackpotPrize) {
+                        durationMs = 24 * 60 * 60 * 1000; // Alapértelmezett 24 óra a többi jackpot nyereménynek
+                    }
+                    
+                    if (durationMs > 0) {
+                        prize.expiry = Date.now() + durationMs;
+                    }
+                    
+                    stats.activePrizes.push(prize);
+                    alert(`"${prize.description}" aktiválva!`);
+                    break;
             }
 
-            // Meglévő időzített bónuszok kezelése
-            if(!stats.activePrizes) stats.activePrizes = [];
-            
-            stats.activePrizes = stats.activePrizes.filter(p => !p.expiry || p.expiry > Date.now());
-
-            // A jackpot nyeremények mostantól 24 órás lejárattal aktiválódnak
-            if (prize.isJackpotPrize) {
-                prize.expiry = Date.now() + 24 * 60 * 60 * 1000;
-            }
-
-            const existingPrizeIndex = stats.activePrizes.findIndex(p => p.type === prize.type);
-            if(existingPrizeIndex > -1){
-                // Ha már van ilyen aktív bónusz, összeadjuk a lejárati időket
-                const existingExpiry = stats.activePrizes[existingPrizeIndex].expiry || Date.now();
-                stats.activePrizes[existingPrizeIndex].expiry = existingExpiry + (24 * 60 * 60 * 1000);
-            } else {
-                 stats.activePrizes.push(prize);
-            }
-
+            saveGame();
             saveWeeklyStats(stats);
             renderWarehouse();
-            alert(`"${prize.description}" aktiválva!`);
             warehouseOverlay.classList.remove('visible');
             updateHintButtons();
             updateBonusUnlockUI();
+            updateUIDisplays();
         }
 
         function generateLottoNumbers(type) {
@@ -5499,8 +5624,19 @@ warehouseTriggers.forEach(trigger => {
             } 
         });
         
-        dailyLottoContainer.addEventListener('click', () => showLottoPage('daily'));
-        weeklyLottoContainer.addEventListener('click', () => showLottoPage('weekly'));
+        dailyLottoContainer.addEventListener('click', () => {
+            if (dailyLottoContainer.classList.contains('disabled')) {
+                return;
+            }
+            showLottoPage('daily');
+        });
+                // CSERÉLD LE ERRE:
+        weeklyLottoContainer.addEventListener('click', () => {
+            if (weeklyLottoContainer.classList.contains('disabled')) {
+                return;
+            }
+            showLottoPage('weekly');
+        });
         submitLottoButtonPage.addEventListener('click', submitLottoTicketOnPage);
         backToGameButton.addEventListener('click', hideLottoPage);
         
